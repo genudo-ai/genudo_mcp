@@ -1,0 +1,54 @@
+{
+  "name": "genudo-mcp-client",
+  "version": "1.0.0",
+  "description": "A lightweight bridge connecting Claude Code to Genudo's Model Context Protocol (MCP) server for AI-powered workflow automation",
+  "main": "index.js",
+  "bin": {
+    "genudo-mcp-client": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "claude",
+    "claude-code",
+    "genudo",
+    "ai",
+    "automation",
+    "bridge",
+    "stdio",
+    "sse",
+    "http"
+  ],
+  "author": {
+    "name": "Genudo",
+    "email": "support@genudo.ai",
+    "url": "https://genudo.ai"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/genudo/genudo-mcp-client.git"
+  },
+  "bugs": {
+    "url": "https://github.com/genudo/genudo-mcp-client/issues",
+    "email": "support@genudo.ai"
+  },
+  "homepage": "https://github.com/genudo/genudo-mcp-client#readme",
+  "dependencies": {
+    "eventsource": "^2.0.2",
+    "node-fetch": "^2.7.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "index.js",
+    "README.md",
+    "LICENSE",
+    ".env.example"
+  ]
+}

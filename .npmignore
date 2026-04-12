@@ -1,0 +1,46 @@
+# Development files
+.env
+.env.local
+.env.*.local
+
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage
+.nyc_output
+test
+
+# Temporary files
+tmp
+temp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation (keep LICENSE and README.md)
+docs/
+*.md
+!README.md
+!LICENSE
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

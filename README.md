@@ -1,8 +1,7 @@
 # Genudo MCP Client
 
-[![npm version](https://img.shields.io/npm/v/genudo-mcp-client.svg)](https://www.npmjs.com/package/genudo-mcp-client)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/node/v/genudo-mcp-client.svg)](https://nodejs.org)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen)](https://nodejs.org)
 
 A lightweight bridge that connects [Claude Code](https://code.claude.com) to Genudo's Model Context Protocol (MCP) server, enabling AI-powered workflow automation directly from your Claude Code interface.
 
@@ -23,11 +22,12 @@ Access Genudo's powerful business automation tools from Claude Code:
 ## Quick Start
 
 ```bash
-# Install globally via npm
-npm install -g genudo-mcp-client
+# Clone the repository
+git clone https://github.com/EngMahmoudElgml/genudo_mcp.git
+cd genudo_mcp
 
-# Or use directly with npx (no installation needed)
-npx genudo-mcp-client
+# Install dependencies
+npm install
 ```
 
 Add to your `~/.claude.json`:
@@ -36,8 +36,8 @@ Add to your `~/.claude.json`:
   "mcpServers": {
     "genudo": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["genudo-mcp-client"],
+      "command": "node",
+      "args": ["/absolute/path/to/genudo_mcp/index.js"],
       "env": {
         "GENUDO_API_KEY": "your_api_key_here"
       }
@@ -56,7 +56,7 @@ Restart Claude Code and start using Genudo tools!
 
 ## Installation
 
-### Option 1: Install from Local Directory (Development)
+> **Note:** This package is not available on npm. Installation is only available by cloning the repository.
 
 1. Clone this repository:
 ```bash
@@ -69,22 +69,9 @@ cd genudo_mcp
 npm install
 ```
 
-~~3. Get your API key from your Genudo account settings~~
+3. Get your API key from your Genudo account settings (see Configuration section below)
 
 4. Configure Claude Code to use the client (see Configuration section below)
-
-### Option 2: Install via npm
-
-```bash
-npm install -g genudo-mcp-client
-```
-
-### Option 3: Use with npx (No Installation)
-
-```bash
-# Just add to config and Claude Code will run it automatically
-# No separate installation needed
-```
 
 ## Configuration
 
@@ -99,14 +86,13 @@ npm install -g genudo-mcp-client
 
 Edit your Claude Code configuration file at `~/.claude.json` and add:
 
-**Recommended (using npx):**
 ```json
 {
   "mcpServers": {
     "genudo": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["genudo-mcp-client"],
+      "command": "node",
+      "args": ["/absolute/path/to/genudo_mcp/index.js"],
       "env": {
         "GENUDO_API_KEY": "your_api_key_here"
       }
@@ -115,20 +101,7 @@ Edit your Claude Code configuration file at `~/.claude.json` and add:
 }
 ```
 
-**Using global installation:**
-```json
-{
-  "mcpServers": {
-    "genudo": {
-      "type": "stdio",
-      "command": "genudo-mcp-client",
-      "env": {
-        "GENUDO_API_KEY": "your_api_key_here"
-      }
-    }
-  }
-}
-```
+**Important:** Replace `/absolute/path/to/genudo_mcp/` with the actual absolute path where you cloned the repository.
 
 ### Step 3: Restart Claude Code
 

@@ -60,8 +60,8 @@ Restart Claude Code and start using Genudo tools!
 
 1. Clone this repository:
 ```bash
-git clone <repository-url>
-cd genudo-mcp-client
+git clone https://github.com/EngMahmoudElgml/genudo_mcp.git
+cd genudo_mcp
 ```
 
 2. Install dependencies:
@@ -69,7 +69,7 @@ cd genudo-mcp-client
 npm install
 ```
 
-3. Get your API key from your Genudo account settings
+~~3. Get your API key from your Genudo account settings~~
 
 4. Configure Claude Code to use the client (see Configuration section below)
 

@@ -5,13 +5,15 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.1] - 2026-07-04
+## [1.0.2] - 2026-07-04
 
 ### Added
 - Server `instructions` in the `initialize` handshake: concise, high-signal
   guidance (workflow patterns + failure-preventing rules for pipelines, stages,
   actions, and variables) that any MCP client (Claude, Codex, Cursor) injects
   into the model's context for fast time-to-value — no user prompt engineering.
+
+## [1.0.1] - 2026-07-04
 
 ### Changed
 - Answer the MCP `initialize` handshake locally so the client connects instantly,
@@ -35,5 +37,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   certificates by default (previously certificate verification was always off
   for the SSE leg).
 
+[1.0.2]: https://github.com/genudo-ai/genudo_mcp/releases/tag/v1.0.2
 [1.0.1]: https://github.com/genudo-ai/genudo_mcp/releases/tag/v1.0.1
 [1.0.0]: https://github.com/genudo-ai/genudo_mcp/releases/tag/v1.0.0

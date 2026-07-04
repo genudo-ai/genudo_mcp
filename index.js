@@ -171,7 +171,7 @@ async function processInput(line) {
         result: {
           protocolVersion: (request.params && request.params.protocolVersion) || '2024-11-05',
           capabilities: { tools: {} },
-          serverInfo: { name: 'Genudo', version: '1.0.1' },
+          serverInfo: { name: 'Genudo', version: '1.0.2' },
           instructions: SERVER_INSTRUCTIONS
         }
       }));

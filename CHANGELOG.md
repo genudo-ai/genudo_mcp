@@ -5,6 +5,28 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-07-04
+
+### Added
+- **Guided instruction editing (client-side, zero backend changes).** The connector
+  now teaches the agent *how* to write good pipeline/stage instructions, not just
+  which tools exist:
+  - Two local tools, answered by the bridge itself (not proxied): `get_instruction_guides`
+    (authoring principles, persona/global + stage templates, token-aware QA checklist)
+    and `get_editing_playbook` (the safe load → edit → diff → confirm → push workflow).
+  - Three MCP Prompts (portable slash-commands): `edit_instructions`, `build_pipeline`,
+    `audit_pipeline`. Advertised via the new `prompts` capability.
+  - The `initialize` `instructions` preamble now points the agent at the guides before
+    any instruction write, and requires a before/after diff + explicit user confirmation
+    before `update_pipeline` / `update_stage`.
+- The guides read current instruction text from the existing tools — `list_pipelines`
+  (pipeline `persona` + `instructions`) and `list_pipeline_stages` (stage `instructions`,
+  `enter_condition`, `ai_persona`) — so no `get_instructions` backend tool is needed.
+
+### Changed
+- `tools/list` is now merged: the 21 proxied backend tools plus the 2 local guide tools.
+  If the backend is briefly unreachable, the local guide tools are still served.
+
 ## [1.0.2] - 2026-07-04
 
 ### Added

@@ -4,6 +4,7 @@ const EventSource = require('eventsource');
 const fetch = require('node-fetch');
 const readline = require('readline');
 const https = require('https');
+const guides = require('./guides');
 
 // Configuration from environment variables
 const BASE_URL = process.env.GENUDO_BASE_URL || 'https://api.genudo.ai';
@@ -28,6 +29,7 @@ const SERVER_INSTRUCTIONS = [
   '- Audit a pipeline: list_pipelines -> list_pipeline_stages -> list_variables -> list_opportunities -> list_contacts -> list_messages',
   '- Build from scratch: start_pipeline_journey (ALWAYS first) -> get_pipeline_options (valid IDs) -> create_pipeline -> create_stage (xN) -> create_variable -> create_action',
   '- Add an integration: list_pipelines -> list_pipeline_stages -> list_variables -> create_variable -> create_action',
+  '- Edit agent instructions: get_instruction_guides -> read current text (list_pipelines gives persona+instructions; list_pipeline_stages gives stage instructions+enter_condition+ai_persona) -> edit only what must change -> show DIFF + expected impact -> confirm -> update_pipeline / update_stage.',
   '- Report activity: get_account_summary -> get_ai_performance -> list_opportunities -> get_messaging_stats',
   '',
   'RULES THAT PREVENT FAILURES:',
@@ -36,7 +38,8 @@ const SERVER_INSTRUCTIONS = [
   '3. create_pipeline: if is_model_routing_enabled=true, model_pool is required with exactly 4 tiers (router, simple, moderate, complex). persona + instructions drive quality — ask the user for a 1-2 sentence business description, then offer to write them.',
   '4. create_stage nature in {neutral, won, lost}. create_action fixed_trigger in {stage_started, on_any_message, on_user_message, custom}; omit stage_id for a pipeline-wide action.',
   '5. Immutable after create: pipeline agent_type; action fixed_trigger can only change to on_user_message/custom on update; update_opportunities stage moves must stay within the same pipeline.',
-  '6. Not exposed (do not attempt): listing actions, deleting actions/stages/pipelines, KB management, sending manual messages, reading plan limits.',
+  '6. Editing instructions is a WRITE to a live agent: before touching any pipeline persona/instructions or stage instructions/enter_condition/ai_persona, call get_instruction_guides (rules+templates) and get_editing_playbook (safe load->edit->diff->confirm->push). Never push update_pipeline/update_stage without showing a before/after diff and getting explicit user confirmation. Prompts (slash-commands): edit_instructions, build_pipeline, audit_pipeline.',
+  '7. Not exposed (do not attempt): listing actions, deleting actions/stages/pipelines, KB management, sending manual messages, reading plan limits.',
   '',
   'Confirm before bulk writes (update_opportunities is bulk). The backend can be slow on the first call — retries are automatic.'
 ].join('\n');
@@ -170,8 +173,8 @@ async function processInput(line) {
         id: request.id,
         result: {
           protocolVersion: (request.params && request.params.protocolVersion) || '2024-11-05',
-          capabilities: { tools: {} },
-          serverInfo: { name: 'Genudo', version: '1.0.2' },
+          capabilities: { tools: {}, prompts: {} },
+          serverInfo: { name: 'Genudo', version: '1.1.0' },
           instructions: SERVER_INSTRUCTIONS
         }
       }));
@@ -182,6 +185,59 @@ async function processInput(line) {
 
     // Handshake is handled locally, so there is no server session to notify.
     if (request.method === 'notifications/initialized') {
+      return;
+    }
+
+    // Prompts are portable slash-commands served entirely client-side.
+    if (request.method === 'prompts/list') {
+      console.log(JSON.stringify({
+        jsonrpc: '2.0',
+        id: request.id,
+        result: { prompts: guides.PROMPTS }
+      }));
+      return;
+    }
+    if (request.method === 'prompts/get') {
+      const name = request.params && request.params.name;
+      const result = guides.getPromptMessages(name, request.params && request.params.arguments);
+      if (result) {
+        console.log(JSON.stringify({ jsonrpc: '2.0', id: request.id, result }));
+      } else {
+        console.log(JSON.stringify({
+          jsonrpc: '2.0',
+          id: request.id,
+          error: { code: -32602, message: `Unknown prompt: ${name}` }
+        }));
+      }
+      return;
+    }
+
+    // tools/list: proxy the backend tools, then append our local guide tools.
+    if (request.method === 'tools/list') {
+      let backendTools = [];
+      try {
+        const backendResponse = await forwardRequest(request);
+        backendTools = (backendResponse && backendResponse.result && backendResponse.result.tools) || [];
+      } catch (error) {
+        // Backend unreachable — still expose the local guide tools (they are static).
+        debug('tools/list backend fetch failed, serving local tools only:', error.message);
+      }
+      console.log(JSON.stringify({
+        jsonrpc: '2.0',
+        id: request.id,
+        result: { tools: [...backendTools, ...guides.LOCAL_TOOLS] }
+      }));
+      return;
+    }
+
+    // tools/call: answer the local guide tools ourselves; proxy everything else.
+    if (request.method === 'tools/call'
+        && request.params && guides.LOCAL_TOOL_NAMES.has(request.params.name)) {
+      console.log(JSON.stringify({
+        jsonrpc: '2.0',
+        id: request.id,
+        result: guides.handleLocalToolCall(request.params.name)
+      }));
       return;
     }
 

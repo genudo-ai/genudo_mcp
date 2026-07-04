@@ -26,6 +26,20 @@ Access Genudo's business automation tools directly from Claude Code. The server 
 2. **Analyze my agent performance** — spot expensive agents, low-completion stages, and actions that aren't triggering.
 3. **Create or improve a pipeline** — e.g. "Create a Messenger sales agent for a summer camp; collect name, phone, branch, child age; escalate on special-needs questions."
 
+### Guided instruction editing (built in)
+
+The connector doesn't just expose tools — it teaches the agent *how* to write good agent
+instructions, entirely client-side (no extra setup):
+
+- **Guide tools** — `get_instruction_guides` (authoring rules + persona/global + stage
+  templates + a token-aware QA checklist) and `get_editing_playbook` (a safe
+  load → edit → diff → confirm → push workflow). The agent pulls these on demand.
+- **Prompts (slash-commands in any MCP client)** — `edit_instructions`, `build_pipeline`,
+  `audit_pipeline`.
+- **Safety** — before changing a live agent, the agent reads current text from
+  `list_pipelines` / `list_pipeline_stages`, shows you a before/after diff with expected
+  impact, and pushes with `update_pipeline` / `update_stage` only after you confirm.
+
 ## Quick Start
 
 One command — no clone, no manual config:

@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "genudo",
   "display_name": "Genudo",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Connect Claude to your Genudo workspace: audit operations, analyze agent performance, and build sales pipelines.",
   "long_description": "Genudo MCP gives Claude control and analytics over your Genudo workspace — AI pipelines, stages, actions/webhooks, variables, contacts, opportunities, and messages. Ask Claude to audit your AI business operations, diagnose agent performance and cost, or create and improve sales pipelines end to end.",
   "author": {

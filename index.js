@@ -17,6 +17,30 @@ const ALLOW_INSECURE_SSL = process.env.GENUDO_ALLOW_INSECURE_SSL === 'true';
 const REQUEST_TIMEOUT = parseInt(process.env.GENUDO_REQUEST_TIMEOUT || '8000', 10);
 const REQUEST_RETRIES = parseInt(process.env.GENUDO_REQUEST_RETRIES || '4', 10);
 
+// Server-level guidance returned in the `initialize` handshake. MCP clients
+// (Claude Code, Codex, Cursor, ...) inject this into the model's context, so it
+// teaches any client how to get value fast and avoid the common failure modes —
+// without the user having to write prompts. Keep it concise and high-signal.
+const SERVER_INSTRUCTIONS = [
+  'Genudo MCP: control + analytics for AI sales/support pipelines (pipelines, stages, actions/webhooks, variables, contacts, opportunities, messages, analytics). 21 tools, read + write.',
+  '',
+  'PICK A PATTERN:',
+  '- Audit a pipeline: list_pipelines -> list_pipeline_stages -> list_variables -> list_opportunities -> list_contacts -> list_messages',
+  '- Build from scratch: start_pipeline_journey (ALWAYS first) -> get_pipeline_options (valid IDs) -> create_pipeline -> create_stage (xN) -> create_variable -> create_action',
+  '- Add an integration: list_pipelines -> list_pipeline_stages -> list_variables -> create_variable -> create_action',
+  '- Report activity: get_account_summary -> get_ai_performance -> list_opportunities -> get_messaging_stats',
+  '',
+  'RULES THAT PREVENT FAILURES:',
+  '1. Discover IDs before writing: get_pipeline_options (agent_type_id, ai_model_id, language_id, channel_id); list_pipelines (pipeline_id); list_pipeline_stages (stage_id); list_variables (variable_id).',
+  '2. Actions CANNOT use raw system placeholders. Never put {{opportunity.contact_email}} in an action url/headers/payload. Instead create_variable {type:"from_system", value:"opportunity.contact_email"} and reference {{its_name}}. Variable types: fixed | from_system | from_action | from_ai.',
+  '3. create_pipeline: if is_model_routing_enabled=true, model_pool is required with exactly 4 tiers (router, simple, moderate, complex). persona + instructions drive quality — ask the user for a 1-2 sentence business description, then offer to write them.',
+  '4. create_stage nature in {neutral, won, lost}. create_action fixed_trigger in {stage_started, on_any_message, on_user_message, custom}; omit stage_id for a pipeline-wide action.',
+  '5. Immutable after create: pipeline agent_type; action fixed_trigger can only change to on_user_message/custom on update; update_opportunities stage moves must stay within the same pipeline.',
+  '6. Not exposed (do not attempt): listing actions, deleting actions/stages/pipelines, KB management, sending manual messages, reading plan limits.',
+  '',
+  'Confirm before bulk writes (update_opportunities is bulk). The backend can be slow on the first call — retries are automatic.'
+].join('\n');
+
 // HTTPS agent configuration
 // For local development with self-signed certificates, set GENUDO_ALLOW_INSECURE_SSL=true
 const httpsAgent = new https.Agent({
@@ -147,7 +171,8 @@ async function processInput(line) {
         result: {
           protocolVersion: (request.params && request.params.protocolVersion) || '2024-11-05',
           capabilities: { tools: {} },
-          serverInfo: { name: 'Genudo', version: '1.0.0' }
+          serverInfo: { name: 'Genudo', version: '1.0.1' },
+          instructions: SERVER_INSTRUCTIONS
         }
       }));
       forwardRequest({ jsonrpc: '2.0', id: 'warmup', method: 'tools/list', params: {} })

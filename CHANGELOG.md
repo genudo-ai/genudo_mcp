@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.1] - 2026-07-04
 
+### Added
+- Server `instructions` in the `initialize` handshake: concise, high-signal
+  guidance (workflow patterns + failure-preventing rules for pipelines, stages,
+  actions, and variables) that any MCP client (Claude, Codex, Cursor) injects
+  into the model's context for fast time-to-value — no user prompt engineering.
+
 ### Changed
 - Answer the MCP `initialize` handshake locally so the client connects instantly,
   independent of backend cold-start latency.

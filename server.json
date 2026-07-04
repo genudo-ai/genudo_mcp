@@ -3,7 +3,7 @@
   "name": "io.github.genudo-ai/genudo_mcp",
   "title": "Genudo",
   "description": "Connect Claude and MCP clients to your Genudo workspace: audit, analyze agents, build pipelines.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": {
     "url": "https://github.com/genudo-ai/genudo_mcp",
     "source": "github"

@@ -45,7 +45,7 @@ function connectSSE() {
       headers: {
         'Api-Key': API_KEY
       },
-      https: { rejectUnauthorized: false }
+      https: { rejectUnauthorized: !ALLOW_INSECURE_SSL }
     });
 
     eventSource.addEventListener('endpoint', (event) => {

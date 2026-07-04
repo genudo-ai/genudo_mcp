@@ -4,7 +4,7 @@ Thank you for your interest in contributing to the Genudo MCP Client! We welcome
 
 ## Code of Conduct
 
-By participating in this project, you agree to abide by our Code of Conduct. Please be respectful and constructive in all interactions.
+Please be respectful and constructive in all interactions.
 
 ## How Can I Contribute?
 
@@ -58,8 +58,8 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 1. Clone your fork:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/genudo-mcp-client.git
-   cd genudo-mcp-client
+   git clone https://github.com/YOUR_USERNAME/genudo_mcp.git
+   cd genudo_mcp
    ```
 
 2. Install dependencies:
@@ -137,7 +137,7 @@ Update README with troubleshooting section
 ## Project Structure
 
 ```
-genudo-mcp-client/
+genudo_mcp/
 ├── index.js           # Main bridge script
 ├── package.json       # Project configuration
 ├── README.md          # User documentation
@@ -152,10 +152,9 @@ genudo-mcp-client/
 Releases are managed by project maintainers:
 
 1. Version bump in package.json
-2. Update CHANGELOG.md
-3. Create git tag
-4. Publish to npm
-5. Create GitHub release
+2. Create git tag
+3. Publish to npm (`npm publish --access public`)
+4. Create a GitHub release with notes describing the changes
 
 ## Getting Help
 

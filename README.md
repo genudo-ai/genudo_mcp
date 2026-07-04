@@ -11,13 +11,19 @@ Genudo MCP Client bridges the communication gap between Claude Code's stdio-base
 
 ## Features
 
-Access Genudo's powerful business automation tools from Claude Code:
+Access Genudo's business automation tools directly from Claude Code. The server exposes 21 tools across five areas:
 
-- **📊 Account Analytics** - Get comprehensive account summaries including channels, contacts, and message statistics
-- **📈 Messaging Insights** - Retrieve detailed messaging volume statistics with date and provider filtering
-- **🤖 AI Performance Metrics** - Monitor AI agent performance, response times, and operational costs
-- **⚙️ Pipeline Management** - List available agent types, AI models, languages, and connected channels
-- **🚀 Pipeline Creation** - Create and configure new AI-powered automation pipelines on the fly
+- **📊 Analytics** — account summary, messaging volume stats, AI performance & cost (`get_account_summary`, `get_messaging_stats`, `get_ai_performance`)
+- **🔎 Read your workspace** — list pipelines, stages, contacts, messages, opportunities, and variables (`list_pipelines`, `list_pipeline_stages`, `list_contacts`, `list_messages`, `list_opportunities`, `list_variables`)
+- **🚀 Build pipelines** — a guided step-by-step builder plus direct create/update (`start_pipeline_journey`, `get_pipeline_options`, `create_pipeline`, `update_pipeline`)
+- **🧩 Stages & actions** — configure pipeline stages and external-integration actions/webhooks (`create_stage`, `update_stage`, `create_action`, `update_action`)
+- **⚙️ Variables & opportunities** — manage pipeline variables and update opportunities (`create_variable`, `update_variable`, `delete_variable`, `update_opportunities`)
+
+### Three workflows to start with
+
+1. **Audit my AI business operations** — Claude pulls your account, messaging, and AI-cost stats and surfaces the top fixes.
+2. **Analyze my agent performance** — spot expensive agents, low-completion stages, and actions that aren't triggering.
+3. **Create or improve a pipeline** — e.g. "Create a Messenger sales agent for a summer camp; collect name, phone, branch, child age; escalate on special-needs questions."
 
 ## Quick Start
 
@@ -66,17 +72,22 @@ Then configure Claude Code manually (see Configuration section below).
 3. Click **Generate New API Key**
 4. Copy your API key (keep it secure!)
 
-### Step 2: Configure Claude Code
+### Step 2: Connect your MCP client
 
-Edit your Claude Code configuration file at `~/.claude.json` and add:
+**Recommended — Claude Code, one command:**
+
+```bash
+claude mcp add --env GENUDO_API_KEY=YOUR_KEY --transport stdio genudo -- npx -y genudo-mcp-client
+```
+
+**Other clients (Codex, Cursor, Windsurf, Claude Desktop):** same package, add this block to the client's MCP config:
 
 ```json
 {
   "mcpServers": {
     "genudo": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["/absolute/path/to/genudo_mcp/index.js"],
+      "command": "npx",
+      "args": ["-y", "genudo-mcp-client"],
       "env": {
         "GENUDO_API_KEY": "your_api_key_here"
       }
@@ -85,7 +96,25 @@ Edit your Claude Code configuration file at `~/.claude.json` and add:
 }
 ```
 
-**Important:** Replace `/absolute/path/to/genudo_mcp/` with the actual absolute path where you cloned the repository.
+<details>
+<summary>Running from source instead (contributors)</summary>
+
+If you cloned the repo rather than using the published package, point at your local `index.js`:
+
+```json
+{
+  "mcpServers": {
+    "genudo": {
+      "command": "node",
+      "args": ["/absolute/path/to/genudo_mcp/index.js"],
+      "env": { "GENUDO_API_KEY": "your_api_key_here" }
+    }
+  }
+}
+```
+
+Replace the path with where you cloned the repo.
+</details>
 
 ### Step 3: Restart Claude Code
 
@@ -214,10 +243,10 @@ Quick overview:
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for a list of changes and version history.
+See the [GitHub Releases](https://github.com/genudo-ai/genudo_mcp/releases) page for changes and version history.
 
 ## Related Projects
 
-- [Genudo Platform](https://github.com/genudo/platform) - The main Genudo automation platform
+- [Genudo](https://genudo.ai) - The main Genudo automation platform
 - [Model Context Protocol](https://modelcontextprotocol.io) - Learn more about MCP
 - [Claude Code](https://code.claude.com) - The Claude AI coding assistant

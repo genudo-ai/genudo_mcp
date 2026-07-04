@@ -18,6 +18,8 @@
   },
   "keywords": ["genudo", "mcp", "pipelines", "ai-agents", "sales", "automation"],
   "license": "MIT",
+  "icon": "icon.png",
+  "privacy_policies": ["https://genudo.ai/legal/privacy-policy"],
   "server": {
     "type": "node",
     "entry_point": "index.js",

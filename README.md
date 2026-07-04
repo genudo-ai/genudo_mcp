@@ -220,6 +220,24 @@ Claude Code → (stdin) → Bridge → (HTTPS) → Genudo MCP Server
 - Use HTTPS in production
 - Limit API key permissions to minimum required access
 
+## Privacy Policy
+
+This client is a local bridge. It does not collect, store, or transmit your data
+anywhere except your configured Genudo endpoint.
+
+- **Data handled:** your `GENUDO_API_KEY` and the JSON-RPC requests your MCP
+  client makes are sent, over HTTPS, only to your Genudo server
+  (`https://api.genudo.ai` by default) using the `Api-Key` header.
+- **Local storage:** none. The bridge keeps no logs, no cache, and no telemetry;
+  it holds nothing on disk. Your API key stays in your MCP client's own config.
+- **Third parties:** no data is sent to any party other than Genudo.
+- **Retention & account data:** data you access or create through Genudo is
+  governed by Genudo's policies.
+
+Full policies: [Privacy Policy](https://genudo.ai/legal/privacy-policy) ·
+[Terms of Service](https://genudo.ai/legal/terms-of-service). Questions:
+support@genudo.ai.
+
 ## License
 
 MIT

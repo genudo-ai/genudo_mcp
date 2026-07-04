@@ -41,3 +41,6 @@ temp/
 
 # MCP registry publisher binary (do not commit)
 mcp-publisher
+
+# Built desktop extension bundle
+*.mcpb

@@ -1,0 +1,17 @@
+# Keep the .mcpb bundle to just what the server needs at runtime.
+.git
+.gitignore
+.npmignore
+.mcpbignore
+.env
+.env.*
+.github
+*.mcpb
+mcp-publisher
+server.json
+package-lock.json
+CHANGELOG.md
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+SECURITY.md
+GENUDO_MCP_CAPABILITIES.md

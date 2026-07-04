@@ -1,0 +1,54 @@
+{
+  "manifest_version": "0.3",
+  "name": "genudo",
+  "display_name": "Genudo",
+  "version": "1.0.2",
+  "description": "Connect Claude to your Genudo workspace: audit operations, analyze agent performance, and build sales pipelines.",
+  "long_description": "Genudo MCP gives Claude control and analytics over your Genudo workspace — AI pipelines, stages, actions/webhooks, variables, contacts, opportunities, and messages. Ask Claude to audit your AI business operations, diagnose agent performance and cost, or create and improve sales pipelines end to end.",
+  "author": {
+    "name": "Genudo",
+    "url": "https://genudo.ai"
+  },
+  "homepage": "https://genudo.ai",
+  "documentation": "https://github.com/genudo-ai/genudo_mcp#readme",
+  "support": "https://github.com/genudo-ai/genudo_mcp/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/genudo-ai/genudo_mcp"
+  },
+  "keywords": ["genudo", "mcp", "pipelines", "ai-agents", "sales", "automation"],
+  "license": "MIT",
+  "server": {
+    "type": "node",
+    "entry_point": "index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/index.js"],
+      "env": {
+        "GENUDO_API_KEY": "${user_config.api_key}",
+        "GENUDO_BASE_URL": "${user_config.base_url}"
+      }
+    }
+  },
+  "user_config": {
+    "api_key": {
+      "type": "string",
+      "title": "Genudo API Key",
+      "description": "Get it from your Genudo account: Settings → API Keys.",
+      "required": true,
+      "sensitive": true
+    },
+    "base_url": {
+      "type": "string",
+      "title": "Base URL (advanced)",
+      "description": "Only change this for a self-hosted Genudo instance.",
+      "required": false,
+      "default": "https://api.genudo.ai"
+    }
+  },
+  "compatibility": {
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  }
+}

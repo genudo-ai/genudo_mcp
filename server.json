@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.genudo-ai/genudo_mcp",
   "title": "Genudo",
-  "description": "Connect Claude and other MCP clients to your Genudo workspace — audit AI business operations, analyze agent performance, and build sales pipelines.",
+  "description": "Connect Claude and MCP clients to your Genudo workspace: audit, analyze agents, build pipelines.",
   "version": "1.0.0",
   "repository": {
     "url": "https://github.com/genudo-ai/genudo_mcp",

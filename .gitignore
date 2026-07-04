@@ -38,3 +38,6 @@ build/
 # Temporary files
 tmp/
 temp/
+
+# MCP registry publisher binary (do not commit)
+mcp-publisher

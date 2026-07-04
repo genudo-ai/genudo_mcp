@@ -10,7 +10,7 @@ By participating in this project, you agree to abide by our Code of Conduct. Ple
 
 ### Reporting Bugs
 
-Before creating bug reports, please check the [existing issues](https://github.com/genudo/genudo-mcp-client/issues) to avoid duplicates.
+Before creating bug reports, please check the [existing issues](https://github.com/genudo-ai/genudo_mcp/issues) to avoid duplicates.
 
 When creating a bug report, please include:
 
@@ -160,7 +160,7 @@ Releases are managed by project maintainers:
 ## Getting Help
 
 - **Documentation**: Check the [README.md](README.md)
-- **Issues**: Browse [existing issues](https://github.com/genudo/genudo-mcp-client/issues)
+- **Issues**: Browse [existing issues](https://github.com/genudo-ai/genudo_mcp/issues)
 - **Discussions**: Join our [community forum](https://community.genudo.ai)
 - **Email**: Contact support@genudo.ai
 

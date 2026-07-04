@@ -31,13 +31,13 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/genudo/genudo-mcp-client.git"
+    "url": "git+https://github.com/genudo-ai/genudo_mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/genudo/genudo-mcp-client/issues",
+    "url": "https://github.com/genudo-ai/genudo_mcp/issues",
     "email": "support@genudo.ai"
   },
-  "homepage": "https://github.com/genudo/genudo-mcp-client#readme",
+  "homepage": "https://github.com/genudo-ai/genudo_mcp#readme",
   "dependencies": {
     "eventsource": "^2.0.2",
     "node-fetch": "^2.7.0"

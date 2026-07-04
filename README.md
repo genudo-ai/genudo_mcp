@@ -21,32 +21,13 @@ Access Genudo's powerful business automation tools from Claude Code:
 
 ## Quick Start
 
+One command — no clone, no manual config:
+
 ```bash
-# Clone the repository
-git clone https://github.com/EngMahmoudElgml/genudo_mcp.git
-cd genudo_mcp
-
-# Install dependencies
-npm install
+claude mcp add --env GENUDO_API_KEY=YOUR_KEY --transport stdio genudo -- npx -y genudo-mcp-client
 ```
 
-Add to your `~/.claude.json`:
-```json
-{
-  "mcpServers": {
-    "genudo": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["/absolute/path/to/genudo_mcp/index.js"],
-      "env": {
-        "GENUDO_API_KEY": "your_api_key_here"
-      }
-    }
-  }
-}
-```
-
-Restart Claude Code and start using Genudo tools!
+Replace `YOUR_KEY` with your Genudo API key (Settings → API Keys). Restart Claude Code and start using Genudo tools!
 
 ## Prerequisites
 
@@ -56,22 +37,25 @@ Restart Claude Code and start using Genudo tools!
 
 ## Installation
 
-> **Note:** This package is not available on npm. Installation is only available by cloning the repository.
+### Recommended: one command
 
-1. Clone this repository:
 ```bash
-git clone https://github.com/EngMahmoudElgml/genudo_mcp.git
-cd genudo_mcp
+claude mcp add --env GENUDO_API_KEY=YOUR_KEY --transport stdio genudo -- npx -y genudo-mcp-client
 ```
 
-2. Install dependencies:
+`npx` fetches and runs the published package — no clone, no local path. Get your API key from Settings → API Keys, then restart Claude Code.
+
+### Alternative: from source
+
+For local development or contributions:
+
 ```bash
+git clone https://github.com/genudo-ai/genudo_mcp.git
+cd genudo_mcp
 npm install
 ```
 
-3. Get your API key from your Genudo account settings (see Configuration section below)
-
-4. Configure Claude Code to use the client (see Configuration section below)
+Then configure Claude Code manually (see Configuration section below).
 
 ## Configuration
 
@@ -214,7 +198,7 @@ Need help? We're here for you:
 
 - 📖 [Documentation](https://docs.genudo.ai)
 - 💬 [Community Forum](https://community.genudo.ai)
-- 🐛 [Report an Issue](https://github.com/genudo/genudo-mcp-client/issues)
+- 🐛 [Report an Issue](https://github.com/genudo-ai/genudo_mcp/issues)
 - 📧 [Email Support](mailto:support@genudo.ai)
 
 ## Contributing

@@ -1,0 +1,34 @@
+name: Bug report
+description: Report a problem with the Genudo MCP client
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What went wrong, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Configure with '...'
+        2. Ask Claude to '...'
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / error output
+      description: Paste stderr output ([Genudo MCP Bridge] lines). Do NOT include your API key.
+      render: shell
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "Node version, OS, MCP client (Claude Code / Codex / Cursor) + version"
+    validations:
+      required: true

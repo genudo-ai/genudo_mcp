@@ -1,0 +1,41 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.genudo-ai/genudo_mcp",
+  "title": "Genudo",
+  "description": "Connect Claude and other MCP clients to your Genudo workspace — audit AI business operations, analyze agent performance, and build sales pipelines.",
+  "version": "1.0.0",
+  "repository": {
+    "url": "https://github.com/genudo-ai/genudo_mcp",
+    "source": "github"
+  },
+  "websiteUrl": "https://genudo.ai",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "genudo-mcp-client",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "GENUDO_API_KEY",
+          "description": "Your Genudo API key (Settings → API Keys).",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "GENUDO_BASE_URL",
+          "description": "Base URL for self-hosted Genudo instances. Defaults to https://api.genudo.ai.",
+          "isRequired": false
+        },
+        {
+          "name": "GENUDO_ALLOW_INSECURE_SSL",
+          "description": "Set to true to allow self-signed certificates (local development only).",
+          "isRequired": false
+        }
+      ]
+    }
+  ]
+}

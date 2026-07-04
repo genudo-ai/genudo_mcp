@@ -1,0 +1,43 @@
+name: Publish
+
+# Publishes to npm and the MCP Registry when a GitHub Release is published.
+# Setup required once:
+#   - Add an npm automation token as the NPM_TOKEN repository secret, OR
+#     configure npm Trusted Publishing (OIDC) for this repo.
+#   - The MCP Registry step authenticates via GitHub OIDC (no secret needed);
+#     the server.json name must be io.github.<owner>/<repo>.
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write # npm provenance + MCP Registry OIDC
+
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+      - run: npm install --no-audit --no-fund --omit=dev
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  mcp-registry:
+    needs: npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install mcp-publisher
+        run: |
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
+      - name: Publish to MCP Registry
+        run: |
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish

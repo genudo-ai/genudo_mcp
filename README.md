@@ -1,7 +1,8 @@
 # Genudo MCP Client
 
+[![npm version](https://img.shields.io/npm/v/genudo-mcp-client)](https://www.npmjs.com/package/genudo-mcp-client)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen)](https://nodejs.org)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org)
 
 A lightweight bridge that connects [Claude Code](https://code.claude.com) to Genudo's Model Context Protocol (MCP) server, enabling AI-powered workflow automation directly from your Claude Code interface.
 
@@ -37,7 +38,7 @@ Replace `YOUR_KEY` with your Genudo API key (Settings → API Keys). Restart Cla
 
 ## Prerequisites
 
-- Node.js 14.0.0 or higher
+- Node.js 18.0.0 or higher
 - A Genudo account with API access
 - Your Genudo API key
 
@@ -165,7 +166,7 @@ node index.js
 - Verify the API key is valid in your Genudo account
 
 ### "Timeout waiting for endpoint from SSE"
-- Check that the GENUDO_SSE_URL is correct
+- Check that `GENUDO_BASE_URL` is correct (defaults to `https://api.genudo.ai`)
 - Verify your server is running and accessible
 - Check firewall/network settings
 

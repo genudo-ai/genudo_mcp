@@ -50,7 +50,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ### Prerequisites
 
-- Node.js 14.0.0 or higher
+- Node.js 18.0.0 or higher
 - npm or yarn
 - A Genudo account with API access
 

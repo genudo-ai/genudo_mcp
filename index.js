@@ -11,6 +11,12 @@ const SSE_URL = `${BASE_URL}/api/user/mcp/sse`;
 const API_KEY = process.env.GENUDO_API_KEY;
 const ALLOW_INSECURE_SSL = process.env.GENUDO_ALLOW_INSECURE_SSL === 'true';
 
+// The Genudo backend can be slow to answer the first request after connecting
+// (cold start — observed 1s to 30s+). Rather than let one slow attempt hang the
+// whole MCP handshake, we time out each attempt fast and retry.
+const REQUEST_TIMEOUT = parseInt(process.env.GENUDO_REQUEST_TIMEOUT || '8000', 10);
+const REQUEST_RETRIES = parseInt(process.env.GENUDO_REQUEST_RETRIES || '4', 10);
+
 // HTTPS agent configuration
 // For local development with self-signed certificates, set GENUDO_ALLOW_INSECURE_SSL=true
 const httpsAgent = new https.Agent({
@@ -80,26 +86,46 @@ async function forwardRequest(jsonRpcRequest) {
 
   debug('Forwarding request:', jsonRpcRequest.method, 'id:', jsonRpcRequest.id);
 
-  const response = await fetch(messageEndpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Api-Key': API_KEY
-    },
-    body: JSON.stringify(jsonRpcRequest),
-    agent: httpsAgent
-  });
+  let lastError;
+  for (let attempt = 1; attempt <= REQUEST_RETRIES; attempt++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+    try {
+      const response = await fetch(messageEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Api-Key': API_KEY
+        },
+        body: JSON.stringify(jsonRpcRequest),
+        agent: httpsAgent,
+        signal: controller.signal
+      });
+      clearTimeout(timer);
 
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      // Handle 204 No Content (for notifications)
+      if (response.status === 204) {
+        return null;
+      }
+
+      return await response.json();
+    } catch (error) {
+      clearTimeout(timer);
+      lastError = error;
+      const reason = error.name === 'AbortError'
+        ? `timeout after ${REQUEST_TIMEOUT}ms`
+        : error.message;
+      debug(`Attempt ${attempt}/${REQUEST_RETRIES} failed (${reason})`);
+      if (attempt < REQUEST_RETRIES) {
+        await new Promise((r) => setTimeout(r, 500));
+      }
+    }
   }
-
-  // Handle 204 No Content (for notifications)
-  if (response.status === 204) {
-    return null;
-  }
-
-  return await response.json();
+  throw lastError;
 }
 
 /**
@@ -109,6 +135,30 @@ async function processInput(line) {
   try {
     const request = JSON.parse(line);
     debug('Received request:', request.method);
+
+    // Answer the MCP handshake locally so Claude's startup never blocks on
+    // backend cold-start latency. The Genudo server accepts tool calls without a
+    // forwarded initialize (verified), so we synthesize the response and warm the
+    // backend in the background for the first real request.
+    if (request.method === 'initialize') {
+      console.log(JSON.stringify({
+        jsonrpc: '2.0',
+        id: request.id,
+        result: {
+          protocolVersion: (request.params && request.params.protocolVersion) || '2024-11-05',
+          capabilities: { tools: {} },
+          serverInfo: { name: 'Genudo', version: '1.0.0' }
+        }
+      }));
+      forwardRequest({ jsonrpc: '2.0', id: 'warmup', method: 'tools/list', params: {} })
+        .catch(() => {});
+      return;
+    }
+
+    // Handshake is handled locally, so there is no server session to notify.
+    if (request.method === 'notifications/initialized') {
+      return;
+    }
 
     const response = await forwardRequest(request);
 

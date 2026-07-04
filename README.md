@@ -185,6 +185,8 @@ node index.js
 | `GENUDO_API_KEY` | **Yes** | - | Your Genudo API key from account settings |
 | `GENUDO_BASE_URL` | No | `https://api.genudo.ai` | Base URL for self-hosted Genudo instances |
 | `GENUDO_ALLOW_INSECURE_SSL` | No | `false` | Allow self-signed SSL certificates (local development only) |
+| `GENUDO_REQUEST_TIMEOUT` | No | `8000` | Per-attempt request timeout in ms before retrying |
+| `GENUDO_REQUEST_RETRIES` | No | `4` | Number of attempts for a request before giving up |
 
 ## Development
 

@@ -1,7 +1,9 @@
 # Genudo Plugin for Claude
 
-Everything your team needs to build, run, and improve Genudo AI sales/support pipelines —
-skills, agents, and the Genudo connector — in one installable plugin.
+Genudo is the platform to build AI agents for any communication or sequence-based channel —
+pipeline-aware agents with integration capabilities and company-knowledge access, all managed
+from one platform, one inbox, and one analytics dashboard. This plugin brings the skills,
+agents, and the Genudo connector to build, run, and improve them from Claude.
 
 ## What's inside
 

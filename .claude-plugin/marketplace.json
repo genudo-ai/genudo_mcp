@@ -5,12 +5,12 @@
     "email": "help@genudo.ai",
     "url": "https://genudo.ai"
   },
-  "description": "Genudo plugins for Claude — build, edit, automate, and analyze AI sales/support pipelines.",
+  "description": "Genudo — the platform to build AI agents for any communication or sequence-based channel, managed from one platform, one inbox, and one analytics dashboard.",
   "plugins": [
     {
       "name": "genudo",
       "source": "./genudo-plugin",
-      "description": "Build, edit, automate, and analyze Genudo AI sales/support pipelines from Claude — 18 skills, 5 agents, and the Genudo connector."
+      "description": "Genudo — the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integrations and company-knowledge access, from one platform, one inbox, and one dashboard. 18 skills, 5 agents, and the Genudo connector."
     }
   ]
 }

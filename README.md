@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org)
 
-A lightweight bridge that connects [Claude Code](https://code.claude.com) to Genudo's Model Context Protocol (MCP) server, enabling AI-powered workflow automation directly from your Claude Code interface.
+Genudo is the platform to build AI agents for any communication or sequence-based channel — pipeline-aware agents with integration capabilities and company-knowledge access, all managed from one platform, one inbox, and one analytics dashboard. This lightweight bridge connects [Claude](https://claude.com) and other MCP clients to your Genudo workspace so you can build, run, and improve those agents directly from chat.
 
 ## Overview
 
@@ -250,7 +250,7 @@ anywhere except your configured Genudo endpoint.
 
 Full policies: [Privacy Policy](https://genudo.ai/legal/privacy-policy) ·
 [Terms of Service](https://genudo.ai/legal/terms-of-service). Questions:
-support@genudo.ai.
+help@genudo.ai.
 
 ## License
 
@@ -263,7 +263,7 @@ Need help? We're here for you:
 - 📖 [Documentation](https://docs.genudo.ai)
 - 💬 [Community Forum](https://community.genudo.ai)
 - 🐛 [Report an Issue](https://github.com/genudo-ai/genudo_mcp/issues)
-- 📧 [Email Support](mailto:support@genudo.ai)
+- 📧 [Email Support](mailto:help@genudo.ai)
 
 ## Contributing
 

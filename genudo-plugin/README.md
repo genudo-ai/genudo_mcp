@@ -52,4 +52,4 @@ confirmation. Agents never claim an action succeeded without a confirming tool r
 
 ---
 
-MIT · [genudo.ai](https://genudo.ai) · support@genudo.ai
+MIT · [genudo.ai](https://genudo.ai) · help@genudo.ai

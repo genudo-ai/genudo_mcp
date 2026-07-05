@@ -6,6 +6,10 @@
 
 Genudo is the platform to build AI agents for any communication or sequence-based channel — pipeline-aware agents with integration capabilities and company-knowledge access, all managed from one platform, one inbox, and one analytics dashboard. This lightweight bridge connects [Claude](https://claude.com) and other MCP clients to your Genudo workspace so you can build, run, and improve those agents directly from chat.
 
+> 📖 **Which install is right for you?** See **[CONNECT.md](CONNECT.md)** — every way to connect
+> Genudo to Claude (plugin, connector, desktop extension, other MCP clients, remote OAuth),
+> weighted by value with copy-paste install commands.
+
 ## Overview
 
 Genudo MCP Client bridges the communication gap between Claude Code's stdio-based MCP implementation and Genudo's HTTP/SSE-based MCP server. This allows you to leverage Genudo's powerful business automation tools directly within your Claude Code conversations.

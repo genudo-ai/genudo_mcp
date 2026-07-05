@@ -1,0 +1,16 @@
+{
+  "name": "genudo-ai",
+  "owner": {
+    "name": "Genudo",
+    "email": "support@genudo.ai",
+    "url": "https://genudo.ai"
+  },
+  "description": "Genudo plugins for Claude — build, edit, automate, and analyze AI sales/support pipelines.",
+  "plugins": [
+    {
+      "name": "genudo",
+      "source": "./genudo-plugin",
+      "description": "Build, edit, automate, and analyze Genudo AI sales/support pipelines from Claude — 18 skills, 5 agents, and the Genudo connector."
+    }
+  ]
+}

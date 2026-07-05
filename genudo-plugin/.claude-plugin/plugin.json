@@ -1,5 +1,6 @@
 {
   "name": "genudo",
+  "displayName": "Genudo",
   "version": "1.0.0",
   "description": "Build, edit, automate, and analyze Genudo AI sales/support pipelines from Claude — pipelines, stages, personas, instructions, actions/webhooks, variables, opportunities, and conversations.",
   "author": {

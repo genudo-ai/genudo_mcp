@@ -30,7 +30,7 @@
   "mcpServers": {
     "genudo": {
       "command": "npx",
-      "args": ["-y", "genudo-mcp-client"],
+      "args": ["-y", "genudo-mcp-client@1.1.0"],
       "env": {
         "GENUDO_API_KEY": "${user_config.api_key}",
         "GENUDO_BASE_URL": "${user_config.base_url}"

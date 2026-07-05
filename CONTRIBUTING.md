@@ -161,7 +161,7 @@ Releases are managed by project maintainers:
 - **Documentation**: Check the [README.md](README.md)
 - **Issues**: Browse [existing issues](https://github.com/genudo-ai/genudo_mcp/issues)
 - **Discussions**: Join our [community forum](https://community.genudo.ai)
-- **Email**: Contact support@genudo.ai
+- **Email**: Contact help@genudo.ai
 
 ## Recognition
 

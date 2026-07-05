@@ -11,7 +11,7 @@ The latest published version of `genudo-mcp-client` on npm receives security upd
 Report vulnerabilities privately via either:
 
 - GitHub [private vulnerability reporting](https://github.com/genudo-ai/genudo_mcp/security/advisories/new), or
-- Email **support@genudo.ai**
+- Email **help@genudo.ai**
 
 Please include reproduction steps and impact. We aim to acknowledge reports
 within 3 business days.

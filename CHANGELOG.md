@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-07-05
+
+### Changed
+- Repositioned the package/server descriptions: Genudo as the platform to build AI
+  agents for any communication or sequence-based channel — pipeline-aware agents with
+  integration capabilities and company-knowledge access, managed from one platform,
+  one inbox, and one analytics dashboard. No functional change to the bridge.
+
 ## [1.1.0] - 2026-07-04
 
 ### Added

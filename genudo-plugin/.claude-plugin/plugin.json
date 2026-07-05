@@ -1,0 +1,40 @@
+{
+  "name": "genudo",
+  "version": "1.0.0",
+  "description": "Build, edit, automate, and analyze Genudo AI sales/support pipelines from Claude — pipelines, stages, personas, instructions, actions/webhooks, variables, opportunities, and conversations.",
+  "author": {
+    "name": "Genudo",
+    "email": "support@genudo.ai",
+    "url": "https://genudo.ai"
+  },
+  "homepage": "https://genudo.ai",
+  "repository": "https://github.com/genudo-ai/genudo_mcp",
+  "license": "MIT",
+  "keywords": ["genudo", "sales", "pipelines", "ai-agents", "automation", "crm", "whatsapp"],
+  "userConfig": {
+    "api_key": {
+      "type": "string",
+      "title": "Genudo API Key",
+      "description": "From your Genudo account: Settings → API Keys.",
+      "sensitive": true,
+      "required": true
+    },
+    "base_url": {
+      "type": "string",
+      "title": "Base URL (advanced)",
+      "description": "Only change for a self-hosted Genudo instance.",
+      "required": false,
+      "default": "https://api.genudo.ai"
+    }
+  },
+  "mcpServers": {
+    "genudo": {
+      "command": "npx",
+      "args": ["-y", "genudo-mcp-client"],
+      "env": {
+        "GENUDO_API_KEY": "${user_config.api_key}",
+        "GENUDO_BASE_URL": "${user_config.base_url}"
+      }
+    }
+  }
+}

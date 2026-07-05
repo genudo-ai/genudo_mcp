@@ -1,0 +1,55 @@
+# Genudo Plugin for Claude
+
+Everything your team needs to build, run, and improve Genudo AI sales/support pipelines —
+skills, agents, and the Genudo connector — in one installable plugin.
+
+## What's inside
+
+- **Connector** — the Genudo MCP server (`genudo-mcp-client`), exposing all workspace tools
+  (pipelines, stages, actions, variables, opportunities, messages, analytics). The tool list
+  grows automatically as the backend adds capabilities.
+- **18 skills** — real playbooks for the actual work: creating a pipeline through a guided
+  interview, editing a live agent safely, wiring webhook automations, analyzing conversations
+  for drift, managing the funnel, and reporting.
+- **5 agents** (Cowork & Code) — specialists that orchestrate the skills end to end.
+
+## Install
+
+**Upload (claude.ai):** Customize → Personal plugins → **+** → **Upload plugin** → drop the
+zipped folder → **Upload**. Enter your Genudo API key when prompted.
+
+**Claude Code:** add this repo as a marketplace, then `/plugin install genudo`.
+
+Get your API key from Genudo → **Settings → API Keys**.
+
+## Where each part runs
+
+| Component | Web chat | Mobile | Desktop | Cowork | Code |
+|---|---|---|---|---|---|
+| Skills | ✅ | limited | ✅ | ✅ | ✅ |
+| Agents | — | — | — | ✅ | ✅ |
+| Connector (local) | — | — | ✅ | local | ✅ |
+
+For web + mobile tool access, pair with the remote OAuth connector (backend roadmap).
+
+## Working files
+
+Build and edit skills stage their work as local markdown before any account write, so you
+always get a diff to review:
+
+- New pipelines → `./genudo-build/<pipeline>/`
+- Instruction edits → `./instructions-updates/<pipeline>_<date>/vN/` (per the connector's
+  editing playbook)
+- Cached authoring guides → `./genudo-guides/`
+
+No filesystem (plain web chat)? Skills keep the before/after inline and still gate on your
+confirmation before writing.
+
+## Safety
+
+Every skill that writes to a live account shows what it will change and waits for explicit
+confirmation. Agents never claim an action succeeded without a confirming tool result.
+
+---
+
+MIT · [genudo.ai](https://genudo.ai) · support@genudo.ai

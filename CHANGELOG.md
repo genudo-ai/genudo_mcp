@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-07-07
+
+### Changed
+- **Breaking:** the env var is renamed `GENUDO_API_KEY` → `GENUDO_TOKEN`, since the
+  credential is now a Bearer token, not an API key. Update your MCP client config
+  (`claude mcp add --env GENUDO_TOKEN=...`, `.env`, `.mcpb`/plugin `user_config`) —
+  the old `GENUDO_API_KEY` var is no longer read.
+
 ## [2.0.0] - 2026-07-07
 
 ### Changed

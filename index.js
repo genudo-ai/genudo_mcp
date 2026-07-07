@@ -9,7 +9,7 @@ const guides = require('./guides');
 // Configuration from environment variables
 const BASE_URL = process.env.GENUDO_BASE_URL || 'https://api.genudo.ai';
 const SSE_URL = `${BASE_URL}/api/user/mcp/sse`;
-const API_KEY = process.env.GENUDO_API_KEY;
+const TOKEN = process.env.GENUDO_TOKEN;
 const ALLOW_INSECURE_SSL = process.env.GENUDO_ALLOW_INSECURE_SSL === 'true';
 
 // The Genudo backend can be slow to answer the first request after connecting
@@ -51,8 +51,8 @@ const httpsAgent = new https.Agent({
 });
 
 // Validate configuration
-if (!API_KEY) {
-  console.error('ERROR: GENUDO_API_KEY environment variable is required');
+if (!TOKEN) {
+  console.error('ERROR: GENUDO_TOKEN environment variable is required');
   process.exit(1);
 }
 
@@ -76,7 +76,7 @@ function connectSSE() {
 
     const eventSource = new EventSource(SSE_URL, {
       headers: {
-        'Authorization': `Bearer ${API_KEY}`
+        'Authorization': `Bearer ${TOKEN}`
       },
       https: { rejectUnauthorized: !ALLOW_INSECURE_SSL }
     });
@@ -122,7 +122,7 @@ async function forwardRequest(jsonRpcRequest) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`
+          'Authorization': `Bearer ${TOKEN}`
         },
         body: JSON.stringify(jsonRpcRequest),
         agent: httpsAgent,
@@ -174,7 +174,7 @@ async function processInput(line) {
         result: {
           protocolVersion: (request.params && request.params.protocolVersion) || '2024-11-05',
           capabilities: { tools: {}, prompts: {} },
-          serverInfo: { name: 'Genudo', version: '2.0.0' },
+          serverInfo: { name: 'Genudo', version: '2.0.1' },
           instructions: SERVER_INSTRUCTIONS
         }
       }));

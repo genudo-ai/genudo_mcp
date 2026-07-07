@@ -18,11 +18,11 @@ agents, and the Genudo connector to build, run, and improve them from Claude.
 ## Install
 
 **Upload (claude.ai):** Customize → Personal plugins → **+** → **Upload plugin** → drop the
-zipped folder → **Upload**. Enter your Genudo API key when prompted.
+zipped folder → **Upload**. Enter your Genudo token when prompted.
 
 **Claude Code:** add this repo as a marketplace, then `/plugin install genudo`.
 
-Get your API key from Genudo → **Settings → API Keys**.
+Get your token from Genudo → **Settings → API Keys**.
 
 ## Where each part runs
 

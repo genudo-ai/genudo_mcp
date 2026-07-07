@@ -68,7 +68,7 @@ Browse plugins → **Install**.
 **C. By file — upload the zip**
 Customize → Personal plugins → **+** → **Upload plugin** → drop `genudo-plugin.zip` → **Upload**.
 
-Enter your API key when prompted (Genudo → Settings → API Keys).
+Enter your token when prompted (Genudo → Settings → API Keys).
 
 **Runs on:** Claude Code, Claude Desktop, Cowork. (Skills work in all; **agents run in Cowork &
 Code**; the bundled connector runs on Desktop/Code — web/mobile need option ⑤.)
@@ -85,7 +85,7 @@ The published `genudo-mcp-client` bridge: **21 tools** + a guidance preamble + t
 
 **Claude Code — one command:**
 ```
-claude mcp add --env GENUDO_API_KEY=YOUR_KEY --transport stdio genudo -- npx -y genudo-mcp-client@2.0.0
+claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.0.1
 ```
 
 **Any MCP client — JSON config:**
@@ -94,8 +94,8 @@ claude mcp add --env GENUDO_API_KEY=YOUR_KEY --transport stdio genudo -- npx -y 
   "mcpServers": {
     "genudo": {
       "command": "npx",
-      "args": ["-y", "genudo-mcp-client@2.0.0"],
-      "env": { "GENUDO_API_KEY": "your_api_key_here" }
+      "args": ["-y", "genudo-mcp-client@2.0.1"],
+      "env": { "GENUDO_TOKEN": "your_token_here" }
     }
   }
 }
@@ -111,7 +111,7 @@ Claude to *know how* to build/fix pipelines, use the Plugin instead.
 ## ③ Desktop extension (`.mcpb`) — one-click connector on Desktop ★★★☆☆
 
 Same connector as ②, packaged as a Claude Desktop extension (with the Genudo logo). Double-click
-`genudo.mcpb` → enter API key → done. No terminal, no Node config.
+`genudo.mcpb` → enter token → done. No terminal, no Node config.
 
 **Runs on:** Claude Desktop (macOS/Windows). Tools only — no skills/agents.
 
@@ -172,10 +172,10 @@ sequences, knowledge base) — no reinstall needed.
 | Full experience (Code) | `/plugin marketplace add genudo-ai/genudo_mcp` → `/plugin install genudo@genudo-ai` |
 | Full experience (claude.ai) | Add marketplace `genudo-ai/genudo_mcp` → Browse plugins → Install |
 | Full experience (offline file) | Upload `genudo-plugin.zip` |
-| Tools only (Code) | `claude mcp add --env GENUDO_API_KEY=KEY --transport stdio genudo -- npx -y genudo-mcp-client@2.0.0` |
+| Tools only (Code) | `claude mcp add --env GENUDO_TOKEN=TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.0.1` |
 | Tools only (Desktop, one-click) | Install `genudo.mcpb` |
 | Tools only (other client) | Add the JSON block from option ② |
-| Get an API key | Genudo → Settings → API Keys |
+| Get a token | Genudo → Settings → API Keys |
 
 ---
 
@@ -200,9 +200,9 @@ sequences, knowledge base) — no reinstall needed.
 ## Quick troubleshooting
 
 - **"Tool not found" / stale behaviour** → you're on an old cached build. Reinstall the Plugin,
-  or clear the npx cache: `rm -rf ~/.npm/_npx`. The connector must be **≥ 2.0.0** (older
+  or clear the npx cache: `rm -rf ~/.npm/_npx`. The connector must be **≥ 2.0.1** (older
   versions send the retired `Api-Key` header and will 401 against the current backend).
-- **401 / not connected** → API key wrong or expired. Remove and re-add with a fresh key.
+- **401 / not connected** → token wrong or expired. Remove and re-add with a fresh token.
 - **Agents greyed out** → agents run only in **Cowork & Code**, not plain web/desktop chat.
 - **Nothing works on web/mobile** → expected today; those need the remote OAuth connector (⑤).
 

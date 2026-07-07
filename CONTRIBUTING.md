@@ -70,12 +70,12 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 3. Set up environment variables:
    ```bash
    cp .env.example .env
-   # Edit .env and add your GENUDO_API_KEY
+   # Edit .env and add your GENUDO_TOKEN
    ```
 
 4. Test the bridge:
    ```bash
-   export GENUDO_API_KEY="your_api_key"
+   export GENUDO_TOKEN="your_token"
    echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | node index.js
    ```
 
@@ -83,7 +83,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 Currently, the project uses manual testing. To test your changes:
 
-1. Run the bridge with your API key
+1. Run the bridge with your token
 2. Send test JSON-RPC messages via stdin
 3. Verify responses are correct
 4. Test integration with Claude Code

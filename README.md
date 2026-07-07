@@ -49,26 +49,26 @@ instructions, entirely client-side (no extra setup):
 One command — no clone, no manual config:
 
 ```bash
-claude mcp add --env GENUDO_API_KEY=YOUR_KEY --transport stdio genudo -- npx -y genudo-mcp-client
+claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client
 ```
 
-Replace `YOUR_KEY` with your Genudo API key (Settings → API Keys). Restart Claude Code and start using Genudo tools!
+Replace `YOUR_TOKEN` with your Genudo token (Settings → API Keys). Restart Claude Code and start using Genudo tools!
 
 ## Prerequisites
 
 - Node.js 18.0.0 or higher
 - A Genudo account with API access
-- Your Genudo API key
+- Your Genudo token
 
 ## Installation
 
 ### Recommended: one command
 
 ```bash
-claude mcp add --env GENUDO_API_KEY=YOUR_KEY --transport stdio genudo -- npx -y genudo-mcp-client
+claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client
 ```
 
-`npx` fetches and runs the published package — no clone, no local path. Get your API key from Settings → API Keys, then restart Claude Code.
+`npx` fetches and runs the published package — no clone, no local path. Get your token from Settings → API Keys, then restart Claude Code.
 
 ### Alternative: from source
 
@@ -84,19 +84,19 @@ Then configure Claude Code manually (see Configuration section below).
 
 ## Configuration
 
-### Step 1: Get Your API Key
+### Step 1: Get Your Token
 
 1. Log in to your [Genudo account](https://genudo.ai)
 2. Navigate to **Settings** → **API Keys**
-3. Click **Generate New API Key**
-4. Copy your API key (keep it secure!)
+3. Click **Generate New Token**
+4. Copy your token (keep it secure!)
 
 ### Step 2: Connect your MCP client
 
 **Recommended — Claude Code, one command:**
 
 ```bash
-claude mcp add --env GENUDO_API_KEY=YOUR_KEY --transport stdio genudo -- npx -y genudo-mcp-client
+claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client
 ```
 
 **Other clients (Codex, Cursor, Windsurf, Claude Desktop):** same package, add this block to the client's MCP config:
@@ -108,7 +108,7 @@ claude mcp add --env GENUDO_API_KEY=YOUR_KEY --transport stdio genudo -- npx -y 
       "command": "npx",
       "args": ["-y", "genudo-mcp-client"],
       "env": {
-        "GENUDO_API_KEY": "your_api_key_here"
+        "GENUDO_TOKEN": "your_token_here"
       }
     }
   }
@@ -126,7 +126,7 @@ If you cloned the repo rather than using the published package, point at your lo
     "genudo": {
       "command": "node",
       "args": ["/absolute/path/to/genudo_mcp/index.js"],
-      "env": { "GENUDO_API_KEY": "your_api_key_here" }
+      "env": { "GENUDO_TOKEN": "your_token_here" }
     }
   }
 }
@@ -165,8 +165,8 @@ Claude: [Uses get_pipeline_options and create_pipeline tools]
 You can test the bridge manually:
 
 ```bash
-# Set your API key
-export GENUDO_API_KEY="your_api_key_here"
+# Set your token
+export GENUDO_TOKEN="your_token_here"
 
 # Run the bridge
 node index.js
@@ -179,9 +179,9 @@ node index.js
 
 ## Troubleshooting
 
-### "GENUDO_API_KEY environment variable is required"
-- Make sure you've set the API key in your Claude Code config
-- Verify the API key is valid in your Genudo account
+### "GENUDO_TOKEN environment variable is required"
+- Make sure you've set the token in your Claude Code config
+- Verify the token is valid in your Genudo account
 
 ### "Timeout waiting for endpoint from SSE"
 - Check that `GENUDO_BASE_URL` is correct (defaults to `https://api.genudo.ai`)
@@ -189,8 +189,8 @@ node index.js
 - Check firewall/network settings
 
 ### "HTTP 401: Unauthorized"
-- Your API key is invalid or expired
-- Generate a new API key in your Genudo account settings
+- Your token is invalid or expired
+- Generate a new token in your Genudo account settings
 
 ### Connection Issues with Self-Signed Certificates
 - The bridge is configured to accept self-signed certificates for local development
@@ -200,7 +200,7 @@ node index.js
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `GENUDO_API_KEY` | **Yes** | - | Your Genudo API key from account settings |
+| `GENUDO_TOKEN` | **Yes** | - | Your Genudo token from account settings |
 | `GENUDO_BASE_URL` | No | `https://api.genudo.ai` | Base URL for self-hosted Genudo instances |
 | `GENUDO_ALLOW_INSECURE_SSL` | No | `false` | Allow self-signed SSL certificates (local development only) |
 | `GENUDO_REQUEST_TIMEOUT` | No | `8000` | Per-attempt request timeout in ms before retrying |
@@ -232,22 +232,22 @@ Claude Code → (stdin) → Bridge → (HTTPS) → Genudo MCP Server
 
 ## Security Notes
 
-- **Never commit your API key** to version control
-- Store API keys securely (environment variables, secrets manager)
-- Rotate API keys regularly
+- **Never commit your token** to version control
+- Store tokens securely (environment variables, secrets manager)
+- Rotate tokens regularly
 - Use HTTPS in production
-- Limit API key permissions to minimum required access
+- Limit token scopes to minimum required access
 
 ## Privacy Policy
 
 This client is a local bridge. It does not collect, store, or transmit your data
 anywhere except your configured Genudo endpoint.
 
-- **Data handled:** your `GENUDO_API_KEY` and the JSON-RPC requests your MCP
+- **Data handled:** your `GENUDO_TOKEN` and the JSON-RPC requests your MCP
   client makes are sent, over HTTPS, only to your Genudo server
   (`https://api.genudo.ai` by default) using the `Authorization: Bearer` header.
 - **Local storage:** none. The bridge keeps no logs, no cache, and no telemetry;
-  it holds nothing on disk. Your API key stays in your MCP client's own config.
+  it holds nothing on disk. Your token stays in your MCP client's own config.
 - **Third parties:** no data is sent to any party other than Genudo.
 - **Retention & account data:** data you access or create through Genudo is
   governed by Genudo's policies.

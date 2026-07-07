@@ -11,4 +11,4 @@
 - [ ] Tested manually against a live Genudo server (`initialize` + a tool call)
 - [ ] Updated README / docs if behavior changed
 - [ ] Added a CHANGELOG.md entry under an "Unreleased" or next-version heading
-- [ ] No secrets (API keys) committed
+- [ ] No secrets (tokens) committed

@@ -75,7 +75,11 @@ function connectSSE() {
     debug('Connecting to SSE endpoint:', SSE_URL);
 
     const eventSource = new EventSource(SSE_URL, {
+      // ponytail: sending both auth styles until prod backend supports Bearer everywhere.
+      // Api-Key covers legacy prod; Authorization covers backends that already migrated.
+      // Drop 'Api-Key' once legacy auth is retired fleet-wide.
       headers: {
+        'Api-Key': TOKEN,
         'Authorization': `Bearer ${TOKEN}`
       },
       https: { rejectUnauthorized: !ALLOW_INSECURE_SSL }
@@ -122,6 +126,7 @@ async function forwardRequest(jsonRpcRequest) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Api-Key': TOKEN,
           'Authorization': `Bearer ${TOKEN}`
         },
         body: JSON.stringify(jsonRpcRequest),
@@ -174,7 +179,7 @@ async function processInput(line) {
         result: {
           protocolVersion: (request.params && request.params.protocolVersion) || '2024-11-05',
           capabilities: { tools: {}, prompts: {} },
-          serverInfo: { name: 'Genudo', version: '2.0.1' },
+          serverInfo: { name: 'Genudo', version: '2.0.2' },
           instructions: SERVER_INSTRUCTIONS
         }
       }));

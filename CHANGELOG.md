@@ -5,6 +5,16 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.2] - 2026-07-07
+
+### Fixed
+- **Prod-breaking regression from 2.0.0/2.0.1:** those versions sent only
+  `Authorization: Bearer`, but the production backend hasn't rolled out Bearer support
+  yet and still expects the legacy `Api-Key` header — so 2.0.0 and 2.0.1 401'd against
+  prod entirely. 2.0.2 sends both `Api-Key` and `Authorization: Bearer` on every request,
+  restoring prod compatibility while staying forward-compatible with backends that have
+  migrated. Drop the legacy header once prod fully retires it fleet-wide.
+
 ## [2.0.1] - 2026-07-07
 
 ### Changed

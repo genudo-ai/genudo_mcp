@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "genudo",
   "display_name": "Genudo",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Connect Claude to Genudo — build and manage pipeline-aware AI agents for any messaging channel, with integrations and company knowledge.",
   "long_description": "Genudo is the platform to build AI agents for any communication or sequence-based channel — WhatsApp, Messenger, Instagram, LinkedIn, email, and more. Build pipeline-aware agents with integration capabilities (webhooks to your CRM, Zapier, Make, or n8n) and company-knowledge access, all managed from one platform, one inbox, and one analytics dashboard. This connector lets Claude create, edit, automate, and analyze those agents end to end.",
   "author": {

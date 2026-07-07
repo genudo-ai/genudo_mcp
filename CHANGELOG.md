@@ -5,6 +5,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-07-07
+
+### Changed
+- **Breaking:** authentication now sends `Authorization: Bearer <token>` instead of
+  the `Api-Key` header, matching the Genudo backend's new token-based auth (scoped,
+  revocable tokens with the `mcp:access` scope, created via the Authentication guide).
+  `GENUDO_API_KEY` still holds the credential — the env var name is unchanged, only
+  its value (now a bearer token, not the old-style API key) and how it's sent.
+- Older connector versions (< 2.0.0) send the retired `Api-Key` header and will get
+  `401 Unauthorized` against the current backend — upgrade required.
+
 ## [1.1.1] - 2026-07-05
 
 ### Changed

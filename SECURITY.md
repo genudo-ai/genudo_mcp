@@ -21,7 +21,7 @@ within 3 business days.
 - Your `GENUDO_API_KEY` is a secret. Never commit it to version control or paste
   it into shared logs, screenshots, or issues.
 - The client transmits the key only to your configured Genudo endpoint over HTTPS,
-  in the `Api-Key` request header.
+  in the `Authorization: Bearer` request header.
 - If a key may have been exposed, rotate it immediately in **Settings → API Keys**.
 - Keep `GENUDO_ALLOW_INSECURE_SSL` unset (or `false`) outside of local development —
   enabling it disables TLS certificate verification.

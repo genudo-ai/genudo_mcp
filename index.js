@@ -76,7 +76,7 @@ function connectSSE() {
 
     const eventSource = new EventSource(SSE_URL, {
       headers: {
-        'Api-Key': API_KEY
+        'Authorization': `Bearer ${API_KEY}`
       },
       https: { rejectUnauthorized: !ALLOW_INSECURE_SSL }
     });
@@ -122,7 +122,7 @@ async function forwardRequest(jsonRpcRequest) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Api-Key': API_KEY
+          'Authorization': `Bearer ${API_KEY}`
         },
         body: JSON.stringify(jsonRpcRequest),
         agent: httpsAgent,
@@ -174,7 +174,7 @@ async function processInput(line) {
         result: {
           protocolVersion: (request.params && request.params.protocolVersion) || '2024-11-05',
           capabilities: { tools: {}, prompts: {} },
-          serverInfo: { name: 'Genudo', version: '1.1.1' },
+          serverInfo: { name: 'Genudo', version: '2.0.0' },
           instructions: SERVER_INSTRUCTIONS
         }
       }));

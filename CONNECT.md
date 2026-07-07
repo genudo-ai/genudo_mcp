@@ -85,7 +85,7 @@ The published `genudo-mcp-client` bridge: **21 tools** + a guidance preamble + t
 
 **Claude Code — one command:**
 ```
-claude mcp add --env GENUDO_API_KEY=YOUR_KEY --transport stdio genudo -- npx -y genudo-mcp-client@1.1.1
+claude mcp add --env GENUDO_API_KEY=YOUR_KEY --transport stdio genudo -- npx -y genudo-mcp-client@2.0.0
 ```
 
 **Any MCP client — JSON config:**
@@ -94,7 +94,7 @@ claude mcp add --env GENUDO_API_KEY=YOUR_KEY --transport stdio genudo -- npx -y 
   "mcpServers": {
     "genudo": {
       "command": "npx",
-      "args": ["-y", "genudo-mcp-client@1.1.1"],
+      "args": ["-y", "genudo-mcp-client@2.0.0"],
       "env": { "GENUDO_API_KEY": "your_api_key_here" }
     }
   }
@@ -172,7 +172,7 @@ sequences, knowledge base) — no reinstall needed.
 | Full experience (Code) | `/plugin marketplace add genudo-ai/genudo_mcp` → `/plugin install genudo@genudo-ai` |
 | Full experience (claude.ai) | Add marketplace `genudo-ai/genudo_mcp` → Browse plugins → Install |
 | Full experience (offline file) | Upload `genudo-plugin.zip` |
-| Tools only (Code) | `claude mcp add --env GENUDO_API_KEY=KEY --transport stdio genudo -- npx -y genudo-mcp-client@1.1.1` |
+| Tools only (Code) | `claude mcp add --env GENUDO_API_KEY=KEY --transport stdio genudo -- npx -y genudo-mcp-client@2.0.0` |
 | Tools only (Desktop, one-click) | Install `genudo.mcpb` |
 | Tools only (other client) | Add the JSON block from option ② |
 | Get an API key | Genudo → Settings → API Keys |
@@ -200,7 +200,8 @@ sequences, knowledge base) — no reinstall needed.
 ## Quick troubleshooting
 
 - **"Tool not found" / stale behaviour** → you're on an old cached build. Reinstall the Plugin,
-  or clear the npx cache: `rm -rf ~/.npm/_npx`. The connector must be **≥ 1.1.0**.
+  or clear the npx cache: `rm -rf ~/.npm/_npx`. The connector must be **≥ 2.0.0** (older
+  versions send the retired `Api-Key` header and will 401 against the current backend).
 - **401 / not connected** → API key wrong or expired. Remove and re-add with a fresh key.
 - **Agents greyed out** → agents run only in **Cowork & Code**, not plain web/desktop chat.
 - **Nothing works on web/mobile** → expected today; those need the remote OAuth connector (⑤).

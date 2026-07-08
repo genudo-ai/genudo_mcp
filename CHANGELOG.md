@@ -5,6 +5,22 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.3] - 2026-07-08
+
+### Fixed
+- **Retry storm from wrong/expired tokens.** A bad token made every client hammer
+  the backend indefinitely: the SSE connection auto-reconnected ~once per second
+  forever, and each forwarded request retried its `401` up to 4 times. Across many
+  misconfigured clients this became thousands of doomed requests per hour. Now:
+  - SSE auth failures (`401`/`403`) are **fatal** — the bridge logs a clear
+    "check GENUDO_TOKEN" message and exits instead of reconnecting a token that can
+    never work.
+  - SSE reconnects for transient errors (network, `5xx`) are **capped** at
+    `GENUDO_MAX_RECONNECTS` (default 5), then the bridge exits.
+  - Forwarded requests **no longer retry `4xx`** (`401`/`403`/`400`/`404`/`429`) —
+    those are permanent for the token/request and only added load. `5xx`, timeouts,
+    and network errors still retry as before.
+
 ## [2.0.2] - 2026-07-07
 
 ### Fixed

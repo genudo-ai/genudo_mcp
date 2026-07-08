@@ -18,6 +18,23 @@ const ALLOW_INSECURE_SSL = process.env.GENUDO_ALLOW_INSECURE_SSL === 'true';
 const REQUEST_TIMEOUT = parseInt(process.env.GENUDO_REQUEST_TIMEOUT || '8000', 10);
 const REQUEST_RETRIES = parseInt(process.env.GENUDO_REQUEST_RETRIES || '4', 10);
 
+// The `eventsource` lib auto-reconnects every ~1s forever on a dropped/failed
+// SSE connection. With a bad token or a down backend that becomes a retry storm
+// (many clients x 1/sec). Cap it, and treat auth failures as fatal — a wrong
+// token can NEVER succeed by retrying.
+const MAX_RECONNECTS = parseInt(process.env.GENUDO_MAX_RECONNECTS || '5', 10);
+
+// A request is worth retrying only if it might succeed next time: transient
+// network/timeout errors (no HTTP status) or 5xx. Any 4xx — 401/403 bad token,
+// 400 bad request, 404, 429 overloaded — is permanent for this token/request;
+// retrying just piles load on the backend.
+function isRetryableStatus(status) {
+  return typeof status !== 'number' || status >= 500;
+}
+function isAuthError(status) {
+  return status === 401 || status === 403;
+}
+
 // Server-level guidance returned in the `initialize` handshake. MCP clients
 // (Claude Code, Codex, Cursor, ...) inject this into the model's context, so it
 // teaches any client how to get value fast and avoid the common failure modes —
@@ -59,6 +76,21 @@ if (!TOKEN) {
 // Global state
 let messageEndpoint = null;
 let isInitialized = false;
+let eventSource = null;
+let reconnectCount = 0;
+
+/**
+ * Stop the SSE connection and exit. Used when retrying can't help (bad token) or
+ * we've hit the reconnect cap — exiting is far lighter on the backend than an
+ * unbounded in-process reconnect loop.
+ */
+function fatalExit(message) {
+  debug(message);
+  if (eventSource) {
+    try { eventSource.close(); } catch (e) { /* already closed */ }
+  }
+  process.exit(1);
+}
 
 /**
  * Log debug messages to stderr (won't interfere with stdout JSON-RPC)
@@ -74,7 +106,7 @@ function connectSSE() {
   return new Promise((resolve, reject) => {
     debug('Connecting to SSE endpoint:', SSE_URL);
 
-    const eventSource = new EventSource(SSE_URL, {
+    eventSource = new EventSource(SSE_URL, {
       // ponytail: sending both auth styles until prod backend supports Bearer everywhere.
       // Api-Key covers legacy prod; Authorization covers backends that already migrated.
       // Drop 'Api-Key' once legacy auth is retired fleet-wide.
@@ -85,16 +117,33 @@ function connectSSE() {
       https: { rejectUnauthorized: !ALLOW_INSECURE_SSL }
     });
 
+    // A successful (re)connection means the storm guard can reset.
+    eventSource.addEventListener('open', () => {
+      reconnectCount = 0;
+    });
+
     eventSource.addEventListener('endpoint', (event) => {
       messageEndpoint = event.data;
+      reconnectCount = 0;
       debug('Received message endpoint:', messageEndpoint);
       isInitialized = true;
       resolve(messageEndpoint);
     });
 
     eventSource.onerror = (error) => {
-      debug('SSE connection error:', error);
-      // Don't reject - SSE will auto-reconnect
+      const status = error && error.status;
+      // Wrong/expired token: reconnecting can NEVER succeed and just hammers the
+      // backend. This is the retry storm — stop it dead.
+      if (isAuthError(status)) {
+        return fatalExit(`SSE auth failed (HTTP ${status}) — check GENUDO_TOKEN. Not retrying a bad token.`);
+      }
+      // Transient error: the lib will auto-reconnect (~1s). Bound it so a down
+      // backend can't turn into an unbounded reconnect loop.
+      reconnectCount++;
+      debug(`SSE connection error${status ? ` (HTTP ${status})` : ''} — reconnect ${reconnectCount}/${MAX_RECONNECTS}`);
+      if (reconnectCount >= MAX_RECONNECTS) {
+        return fatalExit(`Giving up after ${MAX_RECONNECTS} SSE reconnect attempts.`);
+      }
     };
 
     // Timeout if no endpoint received within 10 seconds
@@ -136,7 +185,9 @@ async function forwardRequest(jsonRpcRequest) {
       clearTimeout(timer);
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        const err = new Error(`HTTP ${response.status}: ${response.statusText}`);
+        err.noRetry = !isRetryableStatus(response.status);
+        throw err;
       }
 
       // Handle 204 No Content (for notifications)
@@ -151,6 +202,11 @@ async function forwardRequest(jsonRpcRequest) {
       const reason = error.name === 'AbortError'
         ? `timeout after ${REQUEST_TIMEOUT}ms`
         : error.message;
+      // Permanent failure (4xx) — retrying won't fix it, so don't add load.
+      if (error.noRetry) {
+        debug(`Request failed, not retrying (${reason})`);
+        throw error;
+      }
       debug(`Attempt ${attempt}/${REQUEST_RETRIES} failed (${reason})`);
       if (attempt < REQUEST_RETRIES) {
         await new Promise((r) => setTimeout(r, 500));
@@ -179,7 +235,7 @@ async function processInput(line) {
         result: {
           protocolVersion: (request.params && request.params.protocolVersion) || '2024-11-05',
           capabilities: { tools: {}, prompts: {} },
-          serverInfo: { name: 'Genudo', version: '2.0.2' },
+          serverInfo: { name: 'Genudo', version: '2.0.3' },
           instructions: SERVER_INSTRUCTIONS
         }
       }));
@@ -326,5 +382,9 @@ process.on('SIGTERM', () => {
   process.exit(0);
 });
 
-// Start the bridge
-main();
+// Start the bridge (only when run directly, so tests can require the helpers)
+if (require.main === module) {
+  main();
+}
+
+module.exports = { isRetryableStatus, isAuthError };

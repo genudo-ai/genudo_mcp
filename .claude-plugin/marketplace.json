@@ -11,6 +11,11 @@
       "name": "genudo",
       "source": "./genudo-plugin",
       "description": "Genudo — the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integrations and company-knowledge access, from one platform, one inbox, and one dashboard. 18 skills, 5 agents, and the Genudo connector."
+    },
+    {
+      "name": "genudo-skills",
+      "source": "./genudo-plugin-lite",
+      "description": "Genudo skills + agents WITHOUT the bundled MCP connector. Install globally, then add the connector per project (claude mcp add ... --scope local) so each folder uses its own token/account. 18 skills and 5 agents."
     }
   ]
 }

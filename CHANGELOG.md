@@ -5,6 +5,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2026-07-09
+
+### Fixed
+- **Claude Desktop extension (.mcpb) never started (2.0.3–2.2.0 regression).** The
+  retry-storm fix added an `if (require.main === module)` guard so tests could import
+  helpers — but Claude Desktop's MCPB host loads the entry file via `require()`, where
+  `require.main !== module`, so `main()` never ran: the extension showed "Unable to
+  connect to extension server" while the process sat silent. The guard is replaced with
+  a `GENUDO_SKIP_MAIN` env opt-out (used only by tests). npx/Claude Code launches were
+  never affected (direct execution).
+
 ## [2.2.0] - 2026-07-09
 
 ### Changed

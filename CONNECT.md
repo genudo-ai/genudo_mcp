@@ -85,7 +85,7 @@ The published `genudo-mcp-client` bridge: **29 tools** + a guidance preamble + t
 
 **Claude Code — one command:**
 ```
-claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.2.0
+claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.2.1
 ```
 
 **Any MCP client — JSON config:**
@@ -94,7 +94,7 @@ claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y 
   "mcpServers": {
     "genudo": {
       "command": "npx",
-      "args": ["-y", "genudo-mcp-client@2.2.0"],
+      "args": ["-y", "genudo-mcp-client@2.2.1"],
       "env": { "GENUDO_TOKEN": "your_token_here" }
     }
   }
@@ -172,7 +172,7 @@ sequences, knowledge base) — no reinstall needed.
 | Full experience (Code) | `/plugin marketplace add genudo-ai/genudo_mcp` → `/plugin install genudo@genudo-ai` |
 | Full experience (claude.ai) | Add marketplace `genudo-ai/genudo_mcp` → Browse plugins → Install |
 | Full experience (offline file) | Upload `genudo-plugin.zip` |
-| Tools only (Code) | `claude mcp add --env GENUDO_TOKEN=TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.2.0` |
+| Tools only (Code) | `claude mcp add --env GENUDO_TOKEN=TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.2.1` |
 | Tools only (Desktop, one-click) | Install `genudo.mcpb` |
 | Tools only (other client) | Add the JSON block from option ② |
 | Get a token | Genudo → Settings → API Keys |

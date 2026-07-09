@@ -1,6 +1,6 @@
 # GenuDo MCP Capability Guide
 
-Last verified live: 2026-07-04
+Last verified live: 2026-07-09 (staging, 29-tool backend)
 
 This document describes what the GenuDo MCP currently exposes and how to use it safely and effectively. It is based on a live audit of the MCP connected to this account, not just a static code read.
 
@@ -15,13 +15,15 @@ The GenuDo MCP is an account-scoped control and inspection layer for:
 - messages
 - contacts
 - opportunities
+- knowledge tables (structured knowledge base)
+- per-stage follow-up sequences
 - account analytics
 
 It supports both read and write operations. It is strong for pipeline administration and operational analysis, but it does not expose every internal object directly.
 
 ## Live-Verified Scope
 
-The MCP exposed `21` tools during the live check.
+The MCP exposed `29` tools during the live check.
 
 The connected account summary returned:
 
@@ -426,17 +428,8 @@ Important limitation:
 
 - if an action already references the variable, renaming it may be ignored
 
-#### `delete_variable`
-
-Deletes a variable.
-
-Required:
-
-- `variable_id`
-
-Important limitation:
-
-- deletion fails if the variable is still referenced by actions
+> `delete_variable` was removed from the backend — there is no variable-delete tool anymore.
+> To retire a variable, remove its references and deactivate the actions that used it.
 
 ### 6. Pipeline Updates
 
@@ -592,6 +585,79 @@ Important behavior:
 - stage moves are only allowed inside the same pipeline
 - tags can be auto-created by name
 
+### 8. Knowledge Base (Structured Knowledge Tables)
+
+The pipeline agent retrieves from these tables at runtime to answer grounded questions.
+
+#### `list_knowledge_tables`
+
+Lists knowledge tables with column counts and attached pipelines. No required params. Call
+before any other KB tool to confirm `knowledge_table_id` and column names.
+
+#### `create_knowledge_table`
+
+Required: `name` (unique), `columns` (at least one — the schema).
+Optional: `description` — write it as a when-to-use so the agent picks the right table.
+
+#### `upsert_knowledge_points`
+
+Required: `knowledge_table_id`, `points` (rows).
+
+Rules:
+
+- every row must include `default_id` — a stable identifier you choose; matching `default_id`
+  updates the row, a new one inserts
+- every row must carry a value for every column defined on the table
+
+#### `search_knowledge_table`
+
+Required: `knowledge_table_id`, `query` (natural language).
+Optional: `limit` (default 5, max 20), `use_hybrid` (default true — vector + keyword; false for
+pure vector).
+
+Use it to verify what the agent would retrieve after fixing a row.
+
+#### `delete_knowledge_points`
+
+Required: `knowledge_table_id`, `ids` (array of `default_id` values).
+
+There is no table-delete tool — only rows can be removed. No undo.
+
+### 9. Per-Stage Follow-ups
+
+Timed re-engagement messages for opportunities that go quiet in a stage.
+
+#### `get_stage_followup`
+
+Required: `stage_id`. Returns the followup config including its interval schedule and the
+`followup_id` needed by `update_followup`. Call it FIRST — each stage holds at most ONE followup.
+
+#### `create_followup`
+
+Required: `stage_id`, `is_active`, `intervals` (the timed schedule — each entry
+`{interval_value: 1–100, interval_unit: minute|hour|day|week|month}`, array order = firing
+sequence, max 100 entries; verified live).
+Optional: `instructions` (how the AI drafts each message), `after_followup_stage_id` (stage to
+move to when all intervals are exhausted without a reply — typically a lost stage), `assets`
+(media/links to attach).
+
+#### `update_followup`
+
+Required: `followup_id` (from `get_stage_followup`). Only provided fields change.
+
+Critical rule:
+
+- `intervals` REPLACES the entire schedule — always send the full list, never a delta
+- pass `after_followup_stage_id: null` to remove the transition
+
+### 10. Action Discovery
+
+#### `list_actions`
+
+Required: `pipeline_id`. Optional: `stage_id` (filter to one stage; omit for all actions
+including pipeline-level ones). Returns id, name, trigger, method, url, is_active, order,
+stage_id, max_fires, retries per action.
+
 ## What This MCP Can Already Do Well
 
 ### Full Pipeline Administration
@@ -651,12 +717,11 @@ It already supports useful operations reporting for:
 
 Based on the live tool inventory, the MCP does not currently expose dedicated tools for:
 
-- listing actions directly
 - deleting actions directly
 - deleting stages directly
 - deleting pipelines directly
-- reading knowledge-base tables or files directly
-- attaching knowledge resources to pipelines directly
+- deleting variables directly (`delete_variable` was removed)
+- deleting whole knowledge tables (only rows, via `delete_knowledge_points`)
 - sending a manual message directly
 - reading subscription tier or plan limits directly
 - reading remaining pipeline capacity directly
@@ -703,17 +768,17 @@ Usually fetch IDs from:
 
 - `list_pipelines`
 - `list_pipeline_stages`
+- `list_actions`
 - `list_variables`
+- `list_knowledge_tables`
+- `get_stage_followup`
 - `get_pipeline_options`
 
-### 4. Some Objects Are Writable but Not Fully Discoverable
+### 4. Actions Are Fully Discoverable
 
-You can create and update actions, but there is no live-exposed `list_actions` tool in this MCP inventory.
-
-Practical consequence:
-
-- action authoring is supported
-- action auditing is only partially exposed unless another API path is used
+`list_actions` (pipeline_id required, stage_id optional) returns every action including
+pipeline-level ones — audit before creating to avoid duplicates, and to find `action_id`
+for `update_action`.
 
 ### 5. Analytics Need Sanity Checks
 
@@ -781,4 +846,4 @@ If this document is adapted for a public README or NPM page, position the MCP as
 
 ## Short Capability Summary
 
-The GenuDo MCP already offers end-to-end pipeline setup, stage design, AI behavior configuration, variable-driven webhook actions, workspace analytics, and operational discovery across messages, contacts, and opportunities. Its strongest surfaces are pipeline administration and automation orchestration. Its main current gaps are direct action listing, direct deletion surfaces for several object types, explicit KB management, and subscription-limit visibility.
+The GenuDo MCP already offers end-to-end pipeline setup, stage design, AI behavior configuration, variable-driven webhook actions, workspace analytics, and operational discovery across messages, contacts, and opportunities. Its strongest surfaces are pipeline administration and automation orchestration. It now also covers knowledge-table management (create/upsert/search/delete rows) and per-stage follow-up sequences. Its main current gaps are deletion surfaces for pipelines/stages/actions/variables and subscription-limit visibility.

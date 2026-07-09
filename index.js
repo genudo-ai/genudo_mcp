@@ -40,25 +40,29 @@ function isAuthError(status) {
 // teaches any client how to get value fast and avoid the common failure modes —
 // without the user having to write prompts. Keep it concise and high-signal.
 const SERVER_INSTRUCTIONS = [
-  'Genudo MCP: control + analytics for AI sales/support pipelines (pipelines, stages, actions/webhooks, variables, contacts, opportunities, messages, analytics). 21 tools, read + write.',
+  'Genudo MCP: control + analytics for AI sales/support pipelines (pipelines, stages, actions/webhooks, variables, contacts, opportunities, messages, knowledge tables, follow-ups, analytics). 29 tools, read + write.',
   '',
   'PICK A PATTERN:',
-  '- Audit a pipeline: list_pipelines -> list_pipeline_stages -> list_variables -> list_opportunities -> list_contacts -> list_messages',
+  '- Audit a pipeline: list_pipelines -> list_pipeline_stages -> list_actions -> list_variables -> list_opportunities -> list_contacts -> list_messages',
   '- Build from scratch: start_pipeline_journey (ALWAYS first) -> get_pipeline_options (valid IDs) -> create_pipeline -> create_stage (xN) -> create_variable -> create_action',
-  '- Add an integration: list_pipelines -> list_pipeline_stages -> list_variables -> create_variable -> create_action',
+  '- Add an integration: list_pipelines -> list_pipeline_stages -> list_actions (avoid duplicates) -> list_variables -> create_variable -> create_action; tune existing ones with update_action.',
+  '- Knowledge base: list_knowledge_tables -> create_knowledge_table (columns = the schema) -> upsert_knowledge_points (rows) -> search_knowledge_table (verify retrieval) -> delete_knowledge_points (remove rows). The pipeline agent searches these tables at runtime.',
+  '- Follow-ups: get_stage_followup FIRST (one follow-up per stage) -> create_followup (new) or update_followup (existing).',
   '- Edit agent instructions: get_instruction_guides -> read current text (list_pipelines gives persona+instructions; list_pipeline_stages gives stage instructions+enter_condition+ai_persona) -> edit only what must change -> show DIFF + expected impact -> confirm -> update_pipeline / update_stage.',
   '- Report activity: get_account_summary -> get_ai_performance -> list_opportunities -> get_messaging_stats',
   '',
   'RULES THAT PREVENT FAILURES:',
-  '1. Discover IDs before writing: get_pipeline_options (agent_type_id, ai_model_id, language_id, channel_id); list_pipelines (pipeline_id); list_pipeline_stages (stage_id); list_variables (variable_id).',
+  '1. Discover IDs before writing: get_pipeline_options (agent_type_id, ai_model_id, language_id, channel_id); list_pipelines (pipeline_id); list_pipeline_stages (stage_id); list_actions (action_id); list_variables (variable_id); list_knowledge_tables (knowledge_table_id); get_stage_followup (followup_id).',
   '2. Actions CANNOT use raw system placeholders. Never put {{opportunity.contact_email}} in an action url/headers/payload. Instead create_variable {type:"from_system", value:"opportunity.contact_email"} and reference {{its_name}}. Variable types: fixed | from_system | from_action | from_ai.',
   '3. create_pipeline: if is_model_routing_enabled=true, model_pool is required with exactly 4 tiers (router, simple, moderate, complex). persona + instructions drive quality — ask the user for a 1-2 sentence business description, then offer to write them.',
   '4. create_stage nature in {neutral, won, lost}. create_action fixed_trigger in {stage_started, on_any_message, on_user_message, custom}; omit stage_id for a pipeline-wide action.',
-  '5. Immutable after create: pipeline agent_type; action fixed_trigger can only change to on_user_message/custom on update; update_opportunities stage moves must stay within the same pipeline.',
+  '5. Immutable after create: pipeline agent_type; action fixed_trigger can only change to on_user_message/custom on update; update_opportunities stage moves must stay within the same pipeline; update_variable name change is ignored once actions reference the variable.',
   '6. Editing instructions is a WRITE to a live agent: before touching any pipeline persona/instructions or stage instructions/enter_condition/ai_persona, call get_instruction_guides (rules+templates) and get_editing_playbook (safe load->edit->diff->confirm->push). Never push update_pipeline/update_stage without showing a before/after diff and getting explicit user confirmation. Prompts (slash-commands): edit_instructions, build_pipeline, audit_pipeline.',
-  '7. Not exposed (do not attempt): listing actions, deleting actions/stages/pipelines, KB management, sending manual messages, reading plan limits.',
+  '7. Knowledge rows: every row needs a stable default_id (upsert matches on it) and a value for EVERY column of the table. There is no table-delete tool — only delete_knowledge_points for rows.',
+  '8. Follow-ups: each stage holds at most ONE followup. update_followup intervals REPLACE the whole schedule — send the full list, not a delta.',
+  '9. Not exposed (do not attempt): deleting pipelines/stages/actions/variables, sending manual messages, reading plan limits.',
   '',
-  'Confirm before bulk writes (update_opportunities is bulk). The backend can be slow on the first call — retries are automatic.'
+  'Confirm before bulk writes (update_opportunities is bulk) and before delete_knowledge_points. The backend can be slow on the first call — retries are automatic.'
 ].join('\n');
 
 // HTTPS agent configuration
@@ -235,7 +239,7 @@ async function processInput(line) {
         result: {
           protocolVersion: (request.params && request.params.protocolVersion) || '2024-11-05',
           capabilities: { tools: {}, prompts: {} },
-          serverInfo: { name: 'Genudo', version: '2.0.3' },
+          serverInfo: { name: 'Genudo', version: '2.1.0' },
           instructions: SERVER_INSTRUCTIONS
         }
       }));

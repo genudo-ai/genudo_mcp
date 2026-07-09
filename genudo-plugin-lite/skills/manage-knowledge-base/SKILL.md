@@ -1,29 +1,40 @@
 ---
 name: manage-knowledge-base
-description: Manage a Genudo pipeline's knowledge base — its sources (each with a name and a when-to-use description) and their rows, which the agent uses to answer grounded questions. Use when the agent gives wrong or outdated facts, or the user wants to add a source, fix a row, or change when a source is used. Knowledge-base tools are not yet in the connector; this skill activates automatically when they ship and can advise in the meantime.
+description: Manage a Genudo pipeline's knowledge base — structured knowledge tables the agent searches at runtime to answer grounded questions. Use when the agent gives wrong or outdated facts, or the user wants to create a knowledge table, add or fix rows, verify what the agent retrieves, or remove stale entries.
 ---
 
 # Manage Knowledge Base
 
-Curate the grounded facts an agent answers from. A knowledge base is a set of **sources**;
-each source has a **name**, a **when-to-use** description, and **rows** (like a spreadsheet).
+Curate the grounded facts an agent answers from. A knowledge base is a set of **knowledge
+tables**; each table has a **name**, a **when-to-use description**, **columns** (the schema),
+and **rows** the pipeline agent retrieves via semantic search at runtime.
 
-> **Tool availability:** knowledge-base tools are **not yet in the connector**. This skill is a
-> ready playbook — when the backend ships KB tools (e.g. list/search sources, read/edit rows,
-> edit source name + when-to-use), they surface in the connector automatically and this skill
-> works without any change. Until then, advise the user and flag the gap.
+## Tools
 
-## Playbook (activates when tools exist)
+| Task | Tool |
+|---|---|
+| See tables, their columns + attached pipelines | `list_knowledge_tables` |
+| Create a table with its columns | `create_knowledge_table` |
+| Insert or update rows | `upsert_knowledge_points` |
+| Test what the agent would retrieve | `search_knowledge_table` |
+| Remove rows | `delete_knowledge_points` |
 
-1. **List sources** — review each source's name + when-to-use to find the right one.
-2. **Locate the fact** — search rows within that source.
-3. **Fix** — edit the offending row(s), or edit the source's name / when-to-use so the agent
-   retrieves it at the right moments.
-4. Confirm before writing; a wrong fact in the KB propagates to every conversation.
+## Workflow
 
-## Meanwhile (no tools yet)
+1. **Discover** — `list_knowledge_tables` to find the right table (or confirm none exists).
+2. **Create** — `create_knowledge_table` needs `name` and at least one column; write the
+   `description` as a when-to-use so the agent picks the right table.
+3. **Fill / fix** — `upsert_knowledge_points`: every row needs a stable `default_id` (matching
+   `default_id` updates the row, new one inserts) **and a value for every column**. Reuse the
+   same `default_id` to correct a fact in place.
+4. **Verify retrieval** — `search_knowledge_table` with a question a real customer would ask;
+   confirm the fixed row comes back (hybrid search is on by default; `limit` up to 20).
+5. **Prune** — `delete_knowledge_points` by `default_id` values. Confirm with the user first;
+   there is no undo, and there is no table-delete tool — only rows can be removed.
 
-If the agent is giving wrong facts and the KB can't be edited through the connector, either
-(a) correct the fact in the pipeline's global `instructions` as an approved fact (via
-`edit-pipeline-instructions`) if it's stable, or (b) tell the user to fix the source in the
-Genudo dashboard, and note it for the backend tool request.
+## Cautions
+
+- A wrong fact in the KB propagates to every conversation — confirm every write.
+- For a stable business fact the agent must always know, prefer the pipeline's global
+  `instructions` (via `edit-pipeline-instructions`); use the KB for facts that vary by
+  product, plan, or row.

@@ -25,11 +25,11 @@ Variables are how actions get runtime data. Actions cannot use raw system placeh
 2. **Create missing** — `create_variable` for each needed value, **before** any action
    references it. For `from_system` give the dotted source; for `from_ai` describe what to
    extract; for `from_action` point at the source action's output.
-3. **Edit / remove** — `update_variable`, `delete_variable`.
+3. **Edit** — `update_variable`; only the fields you pass change. There is no delete tool —
+   to retire a variable, remove its references and deactivate the actions that used it.
 
 ## Cautions
 
-- Renaming a variable that an action already references may be ignored.
-- `delete_variable` fails if the variable is still referenced by an action — remove the
-  reference first.
-- Confirm creates/deletes with the user.
+- Renaming via `update_variable` is IGNORED once any action references the variable — pick
+  names carefully at creation (`^[A-Za-z0-9_]+$`, unique per pipeline).
+- Confirm creates/edits with the user.

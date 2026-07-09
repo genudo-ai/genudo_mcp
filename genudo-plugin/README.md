@@ -10,10 +10,10 @@ agents, and the Genudo connector to build, run, and improve them from Claude.
 - **Connector** — the Genudo MCP server (`genudo-mcp-client`), exposing all workspace tools
   (pipelines, stages, actions, variables, opportunities, messages, analytics). The tool list
   grows automatically as the backend adds capabilities.
-- **18 skills** — real playbooks for the actual work: creating a pipeline through a guided
+- **20 skills** — real playbooks for the actual work: creating a pipeline through a guided
   interview, editing a live agent safely, wiring webhook automations, analyzing conversations
   for drift, managing the funnel, and reporting.
-- **5 agents** (Cowork & Code) — specialists that orchestrate the skills end to end.
+- **6 agents** (Cowork & Code) — specialists that orchestrate the skills end to end.
 
 ## Install
 

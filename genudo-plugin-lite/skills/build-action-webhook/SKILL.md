@@ -27,9 +27,11 @@ their name.
 
 ## Workflow
 
-1. `list_variables`; create any missing (delegate to `manage-pipeline-variables`).
-2. Confirm the full action spec with the user.
-3. `create_action` (or `update_action` to change one). Report the action ID.
+1. `list_actions` for the pipeline — avoid duplicating an existing action, and find the
+   `action_id` when the user means to change one.
+2. `list_variables`; create any missing (delegate to `manage-pipeline-variables`).
+3. Confirm the full action spec with the user.
+4. `create_action` (or `update_action` to change one). Report the action ID.
 
 ## Cautions
 

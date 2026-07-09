@@ -45,8 +45,8 @@ mcp-publisher
 # Built desktop extension bundle
 *.mcpb
 
-# Built plugin bundle
-*.zip
+# # Built plugin bundle
+# *.zip
 
 # Internal docs (not shipped/published)
 docs/

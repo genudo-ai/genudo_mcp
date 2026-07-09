@@ -9,7 +9,7 @@
 //   - prompts/list + prompts/get -> PROMPTS + getPromptMessages()
 //
 // IMPORTANT: all tool/field names below are the REAL Genudo MCP surface,
-// verified live (2026-07-04). There is NO get_instructions tool; the
+// verified live (2026-07-09, 29-tool backend). There is NO get_instructions tool; the
 // current instruction text is read from existing tools:
 //   - list_pipelines        -> pipeline `persona`, `instructions`
 //   - list_pipeline_stages  -> per stage `id`, `name`, `nature`, `order`,

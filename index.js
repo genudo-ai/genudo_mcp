@@ -234,7 +234,7 @@ async function processInput(line) {
         result: {
           protocolVersion: (request.params && request.params.protocolVersion) || '2024-11-05',
           capabilities: { tools: {}, prompts: {} },
-          serverInfo: { name: 'Genudo', version: '2.2.0' },
+          serverInfo: { name: 'Genudo', version: '2.2.1' },
           instructions: SERVER_INSTRUCTIONS
         }
       }));
@@ -381,8 +381,10 @@ process.on('SIGTERM', () => {
   process.exit(0);
 });
 
-// Start the bridge (only when run directly, so tests can require the helpers)
-if (require.main === module) {
+// Start the bridge. Claude Desktop's MCPB host require()s this file (so
+// require.main !== module there — a `require.main` guard breaks it); tests
+// opt out via env instead.
+if (!process.env.GENUDO_SKIP_MAIN) {
   main();
 }
 

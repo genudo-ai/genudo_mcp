@@ -1,6 +1,7 @@
 // Self-check for the retry/auth classification that stops the wrong-token
 // retry storm. Run: node test_retry.js
 process.env.GENUDO_TOKEN = 'test-token'; // required by index.js at load time
+process.env.GENUDO_SKIP_MAIN = '1'; // import helpers without starting the bridge
 const assert = require('assert');
 const { isRetryableStatus, isAuthError } = require('./index');
 

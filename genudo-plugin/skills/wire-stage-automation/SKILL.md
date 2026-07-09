@@ -15,7 +15,8 @@ composes three skills into one coherent change.
 
 ## Steps
 
-1. **Read the stage** — `list_pipeline_stages` to load the target stage's current `instructions`.
+1. **Read the stage** — `list_pipeline_stages` to load the target stage's current
+   `instructions`, and `list_actions` to see what automations the stage already fires.
 2. **Variables** — via `manage-pipeline-variables`, ensure the fields exist (usually `from_system`
    for contact data + `from_ai` for anything profiled from the chat).
 3. **Action** — via `build-action-webhook`, create the webhook with the payload mapped to those

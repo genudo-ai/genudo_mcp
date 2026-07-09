@@ -10,7 +10,7 @@ Build, edit, and analyze your Genudo AI sales/support agents from Claude.
    `genudo-plugin.zip` → **Upload** → **Continue**.
 4. **Paste your token** when prompted.
 5. **Check it connected** — Customize → Genudo → **Connectors → genudo** should show
-   `-y genudo-mcp-client@2.0.2`.
+   `-y genudo-mcp-client@2.1.0`.
 
 ## Use it
 
@@ -21,15 +21,16 @@ Type `/` in chat to run a skill, or just say what you want:
 - *"Why did my agent say that? Here's the conversation link."* → root-cause + fix
 - *"How's my funnel doing?"* → funnel + numbers
 
-**Agents** (pipeline-architect, pipeline-doctor, automation-engineer, revenue-analyst)
+**Agents** (pipeline-architect, pipeline-doctor, automation-engineer, revenue-analyst,
+kb-librarian, pipeline-migrator)
 run in **Cowork** for hands-off, multi-step work.
 
 ## Good to know
 
 - **It always confirms before changing your account** — you see a diff first.
 - New pipelines and edits are drafted as local files you can review.
-- Two skills (follow-ups, knowledge base) are ready and switch on automatically when
-  those features reach the connector.
+- Knowledge-base and follow-up management are fully live, and `pipeline-migrator` can
+  upgrade old-format pipelines to the current authoring approach.
 
 ## Trouble?
 

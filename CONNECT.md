@@ -31,10 +31,10 @@ Genudo's Claude integration is layered. Each layer adds capability on top of the
 
 | Layer | Role | Analogy |
 |---|---|---|
-| **Connector** (MCP tools) | The 21 actions — read pipelines, create stages, run webhooks, pull conversations, report. | The **hands** |
+| **Connector** (MCP tools) | The 29 actions — read pipelines, create stages, run webhooks, manage knowledge tables, schedule follow-ups, pull conversations, report. | The **hands** |
 | **Prompts** (slash-commands) | Named launchers: `/edit_instructions`, `/build_pipeline`, `/audit_pipeline`. | The **shortcuts** |
-| **Skills** (18) | Task know-how Claude auto-invokes — how to interview for a pipeline, safely edit a live agent, wire an automation, debug a conversation. | The **playbooks / steering** |
-| **Agents** (5) | Specialists that run multi-step jobs autonomously (architect, doctor, automation-engineer, analyst, kb-librarian). | The **autopilot / orchestration** |
+| **Skills** (20) | Task know-how Claude auto-invokes — how to interview for a pipeline, safely edit a live agent, wire an automation, debug a conversation. | The **playbooks / steering** |
+| **Agents** (6) | Specialists that run multi-step jobs autonomously (architect, doctor, automation-engineer, analyst, kb-librarian, migrator). | The **autopilot / orchestration** |
 
 - **Connector alone** = capable hands, but *you* supply the strategy every time.
 - **+ Skills** = Claude already knows the right procedure and guardrails for each task.
@@ -43,13 +43,13 @@ Genudo's Claude integration is layered. Each layer adds capability on top of the
 
 > Even the bare connector isn't "dumb tools": it ships a guidance preamble plus two guide tools
 > (`get_instruction_guides`, `get_editing_playbook`) and the three prompts. The Plugin is what
-> adds the 18 skills and 5 agents.
+> adds the 20 skills and 6 agents.
 
 ---
 
 ## ① Plugin — everything in one install ★★★★★
 
-The complete Genudo workforce: connector + 18 skills + 5 agents + prompts. Claude auto-invokes
+The complete Genudo workforce: connector + 20 skills + 6 agents + prompts. Claude auto-invokes
 the right skill, agents handle heavy multi-step work, and every write to your account is shown
 as a diff and confirmed first.
 
@@ -80,12 +80,12 @@ Code**; the bundled connector runs on Desktop/Code — web/mobile need option �
 
 ## ② Connector (MCP) — tools + guidance, you steer ★★★☆☆
 
-The published `genudo-mcp-client` bridge: **21 tools** + a guidance preamble + the guide tools +
+The published `genudo-mcp-client` bridge: **29 tools** + a guidance preamble + the guide tools +
 3 prompts. No skills or agents — you prompt Claude to use the tools.
 
 **Claude Code — one command:**
 ```
-claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.0.2
+claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.1.0
 ```
 
 **Any MCP client — JSON config:**
@@ -94,7 +94,7 @@ claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y 
   "mcpServers": {
     "genudo": {
       "command": "npx",
-      "args": ["-y", "genudo-mcp-client@2.0.2"],
+      "args": ["-y", "genudo-mcp-client@2.1.0"],
       "env": { "GENUDO_TOKEN": "your_token_here" }
     }
   }
@@ -122,7 +122,7 @@ Same connector as ②, packaged as a Claude Desktop extension (with the Genudo l
 ## ④ Other MCP clients — Codex, Cursor, Windsurf ★★☆☆☆
 
 The same connector works in any MCP-compatible client. Add the JSON block from ② to that client's
-MCP config. You get the 21 tools + prompts; skills/agents are Claude-specific.
+MCP config. You get the 29 tools + prompts; skills/agents are Claude-specific.
 
 **Best for:** teams standardized on a non-Claude AI client who still want Genudo tool access.
 
@@ -152,13 +152,13 @@ mobile.
 
 ---
 
-## What the connector can do (21 tools)
+## What the connector can do (29 tools)
 
 - **Analytics** — account summary, messaging stats, AI performance & cost.
-- **Discover** — list pipelines, stages, variables, contacts, opportunities, messages; pipeline options.
-- **Build** — guided journey, create pipeline / stage / variable / action.
-- **Update** — pipeline, stage, action, variable, opportunities (bulk).
-- **Delete** — variable.
+- **Discover** — list pipelines, stages, actions, variables, contacts, opportunities, messages, knowledge tables; search knowledge; follow-up configs; pipeline options.
+- **Build** — guided journey, create pipeline / stage / variable / action / follow-up / knowledge table; upsert knowledge rows.
+- **Update** — pipeline, stage, action, variable, follow-up, opportunities (bulk).
+- **Delete** — knowledge rows (by stable id).
 
 The tool list **grows automatically** as Genudo's backend adds capabilities (e.g. follow-up
 sequences, knowledge base) — no reinstall needed.
@@ -172,7 +172,7 @@ sequences, knowledge base) — no reinstall needed.
 | Full experience (Code) | `/plugin marketplace add genudo-ai/genudo_mcp` → `/plugin install genudo@genudo-ai` |
 | Full experience (claude.ai) | Add marketplace `genudo-ai/genudo_mcp` → Browse plugins → Install |
 | Full experience (offline file) | Upload `genudo-plugin.zip` |
-| Tools only (Code) | `claude mcp add --env GENUDO_TOKEN=TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.0.2` |
+| Tools only (Code) | `claude mcp add --env GENUDO_TOKEN=TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.1.0` |
 | Tools only (Desktop, one-click) | Install `genudo.mcpb` |
 | Tools only (other client) | Add the JSON block from option ② |
 | Get a token | Genudo → Settings → API Keys |
@@ -200,7 +200,7 @@ sequences, knowledge base) — no reinstall needed.
 ## Quick troubleshooting
 
 - **"Tool not found" / stale behaviour** → you're on an old cached build. Reinstall the Plugin,
-  or clear the npx cache: `rm -rf ~/.npm/_npx`. The connector must be **≥ 2.0.2** — versions
+  or clear the npx cache: `rm -rf ~/.npm/_npx`. The connector must be **≥ 2.0.2** (2.1.0 recommended: 29-tool guidance + bounded auth retries) — versions
   2.0.0–2.0.1 sent only `Authorization: Bearer` and 401 against prod, which still expects
   `Api-Key`. 2.0.2 sends both headers, so it works against prod today and against Bearer-only
   backends once they roll out.

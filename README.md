@@ -16,13 +16,13 @@ Genudo MCP Client bridges the communication gap between Claude Code's stdio-base
 
 ## Features
 
-Access Genudo's business automation tools directly from Claude Code. The server exposes 21 tools across five areas:
+Access Genudo's business automation tools directly from Claude Code. The server exposes 29 tools across five areas:
 
 - **📊 Analytics** — account summary, messaging volume stats, AI performance & cost (`get_account_summary`, `get_messaging_stats`, `get_ai_performance`)
-- **🔎 Read your workspace** — list pipelines, stages, contacts, messages, opportunities, and variables (`list_pipelines`, `list_pipeline_stages`, `list_contacts`, `list_messages`, `list_opportunities`, `list_variables`)
-- **🚀 Build pipelines** — a guided step-by-step builder plus direct create/update (`start_pipeline_journey`, `get_pipeline_options`, `create_pipeline`, `update_pipeline`)
-- **🧩 Stages & actions** — configure pipeline stages and external-integration actions/webhooks (`create_stage`, `update_stage`, `create_action`, `update_action`)
-- **⚙️ Variables & opportunities** — manage pipeline variables and update opportunities (`create_variable`, `update_variable`, `delete_variable`, `update_opportunities`)
+- **🔎 Discover** — list pipelines, stages, actions, variables, contacts, opportunities, messages, and knowledge tables; search knowledge; read follow-up configs; valid build options (`list_pipelines`, `list_pipeline_stages`, `list_actions`, `list_variables`, `list_contacts`, `list_opportunities`, `list_messages`, `list_knowledge_tables`, `search_knowledge_table`, `get_stage_followup`, `get_pipeline_options`)
+- **🚀 Build** — a guided step-by-step builder plus direct creation of pipelines, stages, variables, webhook actions, follow-up sequences, and knowledge tables (`start_pipeline_journey`, `create_pipeline`, `create_stage`, `create_variable`, `create_action`, `create_followup`, `create_knowledge_table`, `upsert_knowledge_points`)
+- **🔧 Update** — tune live pipelines, stages, actions, variables, opportunities (bulk), and follow-ups (`update_pipeline`, `update_stage`, `update_action`, `update_variable`, `update_opportunities`, `update_followup`)
+- **🗑️ Delete** — remove knowledge rows by stable id (`delete_knowledge_points`)
 
 ### Three workflows to start with
 

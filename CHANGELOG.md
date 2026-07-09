@@ -5,6 +5,27 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-07-09
+
+### Changed
+- **Guidance updated for the 29-tool backend** (verified live). The `initialize`
+  preamble now covers the new tool groups and no longer steers clients away from
+  tools that exist:
+  - New patterns: **knowledge base** (`list_knowledge_tables`,
+    `create_knowledge_table`, `upsert_knowledge_points`, `search_knowledge_table`,
+    `delete_knowledge_points`), **follow-ups** (`get_stage_followup`,
+    `create_followup`, `update_followup`), and **action auditing** (`list_actions`,
+    `update_action`).
+  - The old "Not exposed (do not attempt)" rule wrongly listed action listing and
+    KB management — both are now real. The rule now lists only what is genuinely
+    absent: deleting pipelines/stages/actions/variables, manual messages, plan limits.
+  - New rules: one follow-up per stage; `update_followup` intervals replace the whole
+    schedule; knowledge rows need a stable `default_id` + every column; variable
+    renames are ignored once actions reference the variable.
+- Note: `delete_variable` no longer exists on the backend and was removed from all
+  guidance.
+- 2.0.3 (retry-storm fix) was never published separately; this release carries it.
+
 ## [2.0.3] - 2026-07-08
 
 ### Fixed

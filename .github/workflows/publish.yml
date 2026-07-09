@@ -2,8 +2,9 @@ name: Publish
 
 # Publishes to npm and the MCP Registry when a GitHub Release is published.
 # Setup required once:
-#   - Add an npm automation token as the NPM_TOKEN repository secret, OR
-#     configure npm Trusted Publishing (OIDC) for this repo.
+#   - npm Trusted Publishing (OIDC): npmjs.com/package/genudo-mcp-client ->
+#     Settings -> Trusted Publisher -> GitHub Actions -> genudo-ai/genudo_mcp,
+#     workflow publish.yml. No NPM_TOKEN secret needed; OTP bypassed by design.
 #   - The MCP Registry step authenticates via GitHub OIDC (no secret needed);
 #     the server.json name must be io.github.<owner>/<repo>.
 
@@ -24,10 +25,11 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org
+      # Trusted Publishing (OIDC) needs npm >= 11.5.1; Node 20 bundles npm 10.
+      # Pinned major to avoid pulling an arbitrary future npm into the publish job.
+      - run: npm install -g npm@11
       - run: npm install --no-audit --no-fund --omit=dev
       - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   mcp-registry:
     needs: npm

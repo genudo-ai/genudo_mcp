@@ -245,8 +245,7 @@ anywhere except your configured Genudo endpoint.
 
 - **Data handled:** your `GENUDO_TOKEN` and the JSON-RPC requests your MCP
   client makes are sent, over HTTPS, only to your Genudo server
-  (`https://api.genudo.ai` by default) using both the `Api-Key` and
-  `Authorization: Bearer` headers (prod still expects the former; sent both until it doesn't).
+  (`https://api.genudo.ai` by default) in the `Authorization: Bearer` header.
 - **Local storage:** none. The bridge keeps no logs, no cache, and no telemetry;
   it holds nothing on disk. Your token stays in your MCP client's own config.
 - **Third parties:** no data is sent to any party other than Genudo.

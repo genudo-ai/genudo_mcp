@@ -10,7 +10,7 @@ Build, edit, and analyze your Genudo AI sales/support agents from Claude.
    `genudo-plugin.zip` → **Upload** → **Continue**.
 4. **Paste your token** when prompted.
 5. **Check it connected** — Customize → Genudo → **Connectors → genudo** should show
-   `-y genudo-mcp-client@2.1.0`.
+   `-y genudo-mcp-client@2.2.0`.
 
 ## Use it
 

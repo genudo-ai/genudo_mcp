@@ -5,6 +5,15 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-07-09
+
+### Changed
+- **Bearer-only authentication.** The production backend has completed its token-auth
+  migration, so the transitional legacy `Api-Key` header is no longer sent — every request
+  now carries only `Authorization: Bearer <token>`. Verified live against production
+  (SSE handshake, tools/list = 29, read calls). Requires a backend that accepts Bearer
+  tokens; all Genudo environments do as of this release.
+
 ## [2.1.0] - 2026-07-09
 
 ### Changed

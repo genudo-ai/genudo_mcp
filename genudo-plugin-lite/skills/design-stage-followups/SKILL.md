@@ -15,7 +15,9 @@ exists, you will `update_followup` (it returns the `followup_id`); if not, `crea
 ## Design (per stage)
 
 - **Intervals** — the timed schedule: when each message fires after the lead goes quiet
-  (e.g. 10h, then 24h, then 3 days). Short and value-led.
+  (e.g. 10h, then 24h, then 3 days). Short and value-led. Each entry is
+  `{interval_value: 1–100, interval_unit: minute|hour|day|week|month}`; array order is the
+  firing sequence.
 - **Instructions** — how the AI drafts each follow-up (angle, what to reference, the ask).
   These control drafting, not a fixed script.
 - **Assets** — optional attention hooks: a video, a case study, a material link.

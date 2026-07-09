@@ -634,7 +634,9 @@ Required: `stage_id`. Returns the followup config including its interval schedul
 
 #### `create_followup`
 
-Required: `stage_id`, `is_active`, `intervals` (the timed schedule).
+Required: `stage_id`, `is_active`, `intervals` (the timed schedule — each entry
+`{interval_value: 1–100, interval_unit: minute|hour|day|week|month}`, array order = firing
+sequence, max 100 entries; verified live).
 Optional: `instructions` (how the AI drafts each message), `after_followup_stage_id` (stage to
 move to when all intervals are exhausted without a reply — typically a lost stage), `assets`
 (media/links to attach).

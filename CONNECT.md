@@ -76,7 +76,7 @@ The Desktop app's plugin upload (Settings → **Plugins** → **Add** → **Uplo
 pieces instead:
 
 1. **Skills + agents** — Settings → **Plugins** → **Add** → **Upload plugin** → drop
-   `genudo-plugin-lite.zip` (skills + agents, no connector).
+   `genudo-plugin-desktop.zip` (skills + agents, no connector).
 2. **Connector** — Settings → **Extensions** → install `genudo.mcpb` → enter your token when
    prompted (this is option ③ below).
 
@@ -185,7 +185,7 @@ sequences, knowledge base) — no reinstall needed.
 | Tools only (Code) | `claude mcp add --env GENUDO_TOKEN=TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.2.1` |
 | Tools only (Desktop, one-click) | Install `genudo.mcpb` |
 | Tools only (other client) | Add the JSON block from option ② |
-| Desktop app (full experience) | Upload `genudo-plugin-lite.zip` (Plugins) + install `genudo.mcpb` (Extensions) |
+| Desktop app (full experience) | Upload `genudo-plugin-desktop.zip` (Plugins) + install `genudo.mcpb` (Extensions) |
 | Get a token | See [Get a token](#get-a-token) |
 
 ---

@@ -24,7 +24,7 @@ Never add `loredex: routed` yourself — the router stamps it after filing.
 A pre-stamped file is skipped as already-filed and will never reach the vault.
 
 **Repo-specific rule:** only `docs/` holds loredex notes here. `genudo-plugin/` and
-`genudo-plugin-lite/` are SHIPPED PRODUCT FILES (skills/agents with their own
+`genudo-plugin-desktop/` are SHIPPED PRODUCT FILES (skills/agents with their own
 frontmatter) — never run bare `loredex route` or `loredex adopt` in this repo (the LLM
 classifier will misfile them); the Stop hook's `route --strict` is the only safe mode.
 <!-- loredex:end -->

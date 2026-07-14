@@ -21,7 +21,7 @@
       "environmentVariables": [
         {
           "name": "GENUDO_TOKEN",
-          "description": "Your Genudo token (Settings → API Keys), sent as a Bearer token.",
+          "description": "Your Genudo token (API Keys & Tokens → Create token, mcp:use scope), sent as a Bearer token.",
           "isRequired": true,
           "isSecret": true
         },

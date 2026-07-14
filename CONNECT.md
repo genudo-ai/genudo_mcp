@@ -68,7 +68,17 @@ Browse plugins → **Install**.
 **C. By file — upload the zip**
 Customize → Personal plugins → **+** → **Upload plugin** → drop `genudo-plugin.zip` → **Upload**.
 
-Enter your token when prompted (Genudo → Settings → API Keys).
+Enter your token when prompted (see [Get a token](#get-a-token) below).
+
+**D. Claude Desktop app — two files**
+The Desktop app's plugin upload (Settings → **Plugins** → **Add** → **Upload plugin**) does
+**not** prompt for a token, so the bundled connector can't authenticate there. Install two
+pieces instead:
+
+1. **Skills + agents** — Settings → **Plugins** → **Add** → **Upload plugin** → drop
+   `genudo-plugin-lite.zip` (skills + agents, no connector).
+2. **Connector** — Settings → **Extensions** → install `genudo.mcpb` → enter your token when
+   prompted (this is option ③ below).
 
 **Runs on:** Claude Code, Claude Desktop, Cowork. (Skills work in all; **agents run in Cowork &
 Code**; the bundled connector runs on Desktop/Code — web/mobile need option ⑤.)
@@ -175,7 +185,22 @@ sequences, knowledge base) — no reinstall needed.
 | Tools only (Code) | `claude mcp add --env GENUDO_TOKEN=TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.2.1` |
 | Tools only (Desktop, one-click) | Install `genudo.mcpb` |
 | Tools only (other client) | Add the JSON block from option ② |
-| Get a token | Genudo → Settings → API Keys |
+| Desktop app (full experience) | Upload `genudo-plugin-lite.zip` (Plugins) + install `genudo.mcpb` (Extensions) |
+| Get a token | See [Get a token](#get-a-token) |
+
+---
+
+## Get a token
+
+1. Log in at [app.genudo.ai](https://app.genudo.ai).
+2. Sidebar → **Developer** → **API Keys & Tokens**.
+3. Click **Create token**.
+4. Name it (e.g. `claude-mcp`).
+5. Under **Scopes**, scroll the list and check **`mcp:use`** (Access MCP server — SSE + JSON-RPC
+   tool calls).
+6. Pick an **Expiry** — 30 days, 90 days, 1 year, or No Expiry.
+7. Click **Create token** and copy it immediately — **the full token is shown only once**;
+   Genudo keeps only a hashed copy. Lost it? Revoke and create a new one.
 
 ---
 

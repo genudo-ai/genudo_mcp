@@ -36,3 +36,5 @@ genudo-plugin
 genudo-plugin/**
 genudo-plugin-desktop
 genudo-plugin-desktop/**
+chatgpt
+chatgpt/**

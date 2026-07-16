@@ -1,0 +1,16 @@
+{
+  "name": "genudo-chatgpt",
+  "owner": {
+    "name": "Genudo",
+    "email": "help@genudo.ai",
+    "url": "https://genudo.ai"
+  },
+  "description": "Genudo plugins for ChatGPT Work and Codex.",
+  "plugins": [
+    {
+      "name": "genudo",
+      "source": "./genudo-chatgpt-plugin",
+      "description": "Genudo — the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integrations and company-knowledge access, from one platform, one inbox, and one dashboard. 26 skills and the Genudo connector, packaged for ChatGPT Work and Codex."
+    }
+  ]
+}

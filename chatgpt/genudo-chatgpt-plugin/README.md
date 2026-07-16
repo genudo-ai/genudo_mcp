@@ -23,6 +23,14 @@ platform, one inbox, and one analytics dashboard.
 
 Codex CLI instead: `codex plugin marketplace add genudo-ai/chatgpt-plugin`.
 
+**Manual server (advanced, editable config):** instead of (or besides) the plugin's
+bundled connector, add a standalone server you can edit in Settings → MCPs →
+"+ Add server": Command `npx`, Arguments `-y` and `genudo-mcp-client@2.3.0`, and
+optionally env `GENUDO_TOKEN` = your token (skip it and the "Connect Genudo" flow
+takes over). Plugin-bundled servers appear under "From plugins" and are not
+editable — that's the app's design, not a Genudo limitation. Don't run both
+copies enabled at once (duplicate tools).
+
 The connector runs `npx -y genudo-mcp-client` (Node 18+ required) and talks to
 `https://api.genudo.ai`. A `GENUDO_TOKEN` env var still takes precedence over the
 saved token; `GENUDO_BASE_URL` points at a self-hosted instance.

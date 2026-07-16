@@ -40,7 +40,8 @@ function saveToken(t) {
 function deleteSavedToken() {
   try { fs.unlinkSync(TOKEN_FILE); } catch (e) { /* not saved */ }
 }
-let TOKEN = isUsableToken(process.env.GENUDO_TOKEN)
+const TOKEN_FROM_ENV = isUsableToken(process.env.GENUDO_TOKEN);
+let TOKEN = TOKEN_FROM_ENV
   ? process.env.GENUDO_TOKEN.trim()
   : readSavedToken();
 
@@ -121,8 +122,17 @@ const SETUP_INSTRUCTIONS = [
 
 const CONNECT_TOOL = {
   name: 'genudo_connect',
-  description: 'Connect the Genudo account. Opens a secure page in the user\'s local browser where they paste their Genudo API token (Genudo -> API Keys & Tokens -> Create token with the mcp:use scope). Call when Genudo tools are missing or not connected, or after the user says they saved the token. Never ask for the token in chat.',
-  inputSchema: { type: 'object', properties: {}, required: [] }
+  description: 'Connect the Genudo account. Opens a secure page in the user\'s local browser where they paste their Genudo API token (Genudo -> API Keys & Tokens -> Create token with the mcp:use scope). Call when Genudo tools are missing or not connected, or after the user says they saved the token. Pass reconnect:true when the user wants to switch Genudo accounts, replace, or update the saved token. Never ask for the token in chat.',
+  inputSchema: {
+    type: 'object',
+    properties: {
+      reconnect: {
+        type: 'boolean',
+        description: 'Discard the saved token and reopen the connect page — use to switch accounts or update the token (default false).'
+      }
+    },
+    required: []
+  }
 };
 
 // Global state
@@ -428,7 +438,20 @@ function toolText(id, text) {
   return { jsonrpc: '2.0', id, result: { content: [{ type: 'text', text }] } };
 }
 
-async function handleConnectCall(id) {
+async function handleConnectCall(id, args) {
+  // reconnect: discard the saved token and force fresh entry (account switch).
+  if (args && args.reconnect) {
+    if (TOKEN_FROM_ENV) {
+      return console.log(JSON.stringify(toolText(id,
+        'The Genudo token is set via the GENUDO_TOKEN environment variable, which overrides the connect flow. Remove it from the host/server config to switch accounts via the connect page.')));
+    }
+    debug('reconnect requested — discarding saved token');
+    deleteSavedToken();
+    TOKEN = null;
+    isInitialized = false;
+    messageEndpoint = null;
+    if (eventSource) { try { eventSource.close(); } catch (e) { /* already closed */ } }
+  }
   // Token may have arrived since startup (env at launch, or saved via the page).
   if (!TOKEN) {
     TOKEN = readSavedToken();
@@ -601,7 +624,7 @@ async function processInput(line) {
     // genudo_connect: handled entirely locally.
     if (request.method === 'tools/call'
         && request.params && request.params.name === CONNECT_TOOL.name) {
-      await handleConnectCall(request.id);
+      await handleConnectCall(request.id, request.params.arguments);
       return;
     }
 
@@ -668,10 +691,26 @@ async function main() {
   try {
     debug('Starting Genudo MCP Bridge...');
 
-    if (TOKEN) {
-      // Connect to SSE and get message endpoint
+    if (TOKEN && TOKEN_FROM_ENV) {
+      // Env-configured token: fail fast like always — the operator set it and
+      // should see the process die on a bad token.
       await connectSSE();
       debug('Bridge initialized successfully');
+    } else if (TOKEN) {
+      // Saved (genudo_connect) token: a revoked token must NOT kill the server —
+      // clear it and fall back to setup mode so the connect page can reopen.
+      try {
+        await connectSSE({ exitOnAuthError: false });
+        debug('Bridge initialized successfully');
+      } catch (e) {
+        if (e.authError) {
+          debug('Saved token was rejected — clearing it; starting in setup mode.');
+          deleteSavedToken();
+          TOKEN = null;
+        } else {
+          debug(`Startup connect failed (${e.message}) — will retry on demand.`);
+        }
+      }
     } else {
       debug('No token configured — starting in setup mode (genudo_connect only).');
     }

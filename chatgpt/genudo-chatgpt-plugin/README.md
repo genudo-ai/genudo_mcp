@@ -15,17 +15,17 @@ platform, one inbox, and one analytics dashboard.
    (dev testing from the monorepo instead: Source `genudo-ai/genudo_mcp` + Sparse
    paths `chatgpt`, or point Source at a local `genudo_mcp/chatgpt` folder)
 2. Install **genudo** from the plugin list.
-3. Wire the token: Settings → MCP servers → genudo (gear icon) →
-   Environment variables → set **`GENUDO_TOKEN`** to your token (literal value).
-   Get the token from your Genudo account: API Keys & Tokens → Create token with the
-   `mcp:use` scope (shown only once — copy it at creation).
-4. Save, toggle the server on, then try: "Use Genudo to list my pipelines."
+3. In a chat, say **"Connect Genudo"**. A secure page opens in your browser —
+   paste your Genudo token there (Genudo account → API Keys & Tokens → Create token
+   with the `mcp:use` scope; shown only once) and click Save. The token is stored
+   locally (`~/.config/genudo/token`), never in the chat.
+4. Try: "Use Genudo to list my pipelines."
 
 Codex CLI instead: `codex plugin marketplace add genudo-ai/chatgpt-plugin`.
 
 The connector runs `npx -y genudo-mcp-client` (Node 18+ required) and talks to
-`https://api.genudo.ai`. For a self-hosted instance add a `GENUDO_BASE_URL` env var
-in the same MCP settings form.
+`https://api.genudo.ai`. A `GENUDO_TOKEN` env var still takes precedence over the
+saved token; `GENUDO_BASE_URL` points at a self-hosted instance.
 
 ## What's inside
 

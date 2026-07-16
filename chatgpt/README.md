@@ -4,9 +4,10 @@ Install Genudo in **ChatGPT Work (desktop)** or **Codex**:
 
 1. Plugins → Create ▾ → **Add marketplace** → Source: `genudo-ai/chatgpt-plugin`
 2. Install **genudo** (26 skills + the Genudo connector).
-3. Settings → MCP servers → genudo (gear) → set env var **`GENUDO_TOKEN`** to your
-   Genudo token (account → API Keys & Tokens → Create token, `mcp:use` scope).
-4. Toggle the server on and try: *"Use Genudo to list my pipelines."*
+3. In a chat, say **"Connect Genudo"** — a secure local page opens in your browser;
+   paste your Genudo token there (account → API Keys & Tokens → Create token,
+   `mcp:use` scope) and click Save.
+4. Try: *"Use Genudo to list my pipelines."*
 
 Codex CLI: `codex plugin marketplace add genudo-ai/chatgpt-plugin`
 

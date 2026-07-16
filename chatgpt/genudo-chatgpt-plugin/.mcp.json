@@ -1,9 +1,9 @@
 {
   "genudo": {
     "command": "npx",
-    "args": ["-y", "genudo-mcp-client@2.2.1"],
-    "env": {
-      "GENUDO_TOKEN": "${GENUDO_TOKEN}"
-    }
+    "args": [
+      "-y",
+      "genudo-mcp-client@2.3.0"
+    ]
   }
 }

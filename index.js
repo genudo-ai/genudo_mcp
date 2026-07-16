@@ -9,6 +9,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawn } = require('child_process');
+const crypto = require('crypto');
 const guides = require('./guides');
 const pkg = require('./package.json');
 
@@ -293,8 +294,11 @@ async function forwardRequest(jsonRpcRequest) {
 // ---------------------------------------------------------------------------
 let setupServer = null;
 let setupPort = null;
+// Random single-use path segment: a page in the user's regular browser can't
+// guess it, so drive-by CSRF/DNS-rebinding POSTs to the setup server miss.
+let setupNonce = null;
 
-const SETUP_PAGE = (msg, ok) => `<!doctype html>
+const SETUP_PAGE = (msg, ok, action) => `<!doctype html>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Connect Genudo</title>
 <style>
@@ -312,7 +316,7 @@ const SETUP_PAGE = (msg, ok) => `<!doctype html>
   <p>Paste your Genudo API token. Get it from your Genudo account:
      <b>API Keys &amp; Tokens → Create token</b> with the <b>mcp:use</b> scope
      (shown only once — copy it at creation).</p>
-  <form method="POST" action="/save">
+  <form method="POST" action="${action}">
     <input type="password" name="token" placeholder="Genudo token" autofocus required>
     <button type="submit">Save &amp; connect</button>
   </form>`}
@@ -340,13 +344,31 @@ async function verifyTokenRemote(tok) {
 
 function startSetupServer() {
   if (setupServer) return Promise.resolve(setupPort);
+  setupNonce = crypto.randomBytes(16).toString('hex');
   return new Promise((resolve, reject) => {
     const srv = http.createServer((req, res) => {
-      if (req.method === 'GET') {
-        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        return res.end(SETUP_PAGE('', false));
+      // Anti-CSRF / anti-DNS-rebinding: only same-origin browser traffic for
+      // exactly this host:port, and only on the unguessable nonce path.
+      const host = req.headers.host || '';
+      if (host !== `127.0.0.1:${setupPort}` && host !== `localhost:${setupPort}`) {
+        res.writeHead(403); return res.end();
       }
-      if (req.method === 'POST' && req.url === '/save') {
+      const origin = req.headers.origin;
+      if (origin && origin !== `http://127.0.0.1:${setupPort}` && origin !== `http://localhost:${setupPort}`) {
+        res.writeHead(403); return res.end();
+      }
+      if (req.headers['sec-fetch-site'] === 'cross-site') {
+        res.writeHead(403); return res.end();
+      }
+      const saveAction = `/save/${setupNonce}`;
+      if (req.method === 'GET' && req.url === `/connect/${setupNonce}`) {
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        return res.end(SETUP_PAGE('', false, saveAction));
+      }
+      if (req.method === 'POST' && req.url === saveAction) {
+        if (!(req.headers['content-type'] || '').startsWith('application/x-www-form-urlencoded')) {
+          res.writeHead(403); return res.end();
+        }
         let body = '';
         req.on('data', (c) => { body += c; if (body.length > 65536) req.destroy(); });
         req.on('end', async () => {
@@ -354,16 +376,16 @@ function startSetupServer() {
             .replace(/\+/g, ' ').trim();
           if (!isUsableToken(tok)) {
             res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-            return res.end(SETUP_PAGE('That does not look like a token — try again.', false));
+            return res.end(SETUP_PAGE('That does not look like a token — try again.', false, saveAction));
           }
           if (!(await verifyTokenRemote(tok))) {
             res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-            return res.end(SETUP_PAGE('Genudo rejected this token. Check it has the mcp:use scope and try again.', false));
+            return res.end(SETUP_PAGE('Genudo rejected this token. Check it has the mcp:use scope and try again.', false, saveAction));
           }
           saveToken(tok);
           TOKEN = tok;
           res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-          res.end(SETUP_PAGE('Token saved — Genudo is connecting.', true));
+          res.end(SETUP_PAGE('Token saved — Genudo is connecting.', true, saveAction));
           debug('Token saved via setup page; connecting...');
           lazyConnect()
             .then(() => notify('notifications/tools/list_changed'))
@@ -425,7 +447,7 @@ async function handleConnectCall(id) {
     }
   }
   const port = await startSetupServer();
-  const url = `http://127.0.0.1:${port}/`;
+  const url = `http://127.0.0.1:${port}/connect/${setupNonce}`;
   openBrowser(url);
   return console.log(JSON.stringify(toolText(id,
     `A secure Genudo connect page was opened in the user's browser (${url} — local only). ` +

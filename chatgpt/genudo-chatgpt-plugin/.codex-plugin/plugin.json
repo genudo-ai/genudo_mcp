@@ -1,6 +1,6 @@
 {
   "name": "genudo",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Genudo \u2014 the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integration capabilities and company-knowledge access, managed from one platform, one inbox, and one analytics dashboard. This plugin builds, edits, automates, and analyzes them from ChatGPT and Codex with 26 skills and the Genudo connector.",
   "author": {
     "name": "Genudo",
@@ -41,6 +41,7 @@
     ],
     "websiteURL": "https://genudo.ai",
     "privacyPolicyURL": "https://genudo.ai/legal/privacy-policy",
+    "termsOfServiceURL": "https://genudo.ai/legal/terms-of-service",
     "defaultPrompt": [
       "Use Genudo to audit my pipeline and report what to improve.",
       "Use Genudo to build a WhatsApp sales pipeline for my business."

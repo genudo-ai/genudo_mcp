@@ -25,16 +25,20 @@ platform, one inbox, and one analytics dashboard.
 Codex CLI instead: `codex plugin marketplace add genudo-ai/chatgpt-plugin`.
 
 **Manual server (advanced, editable config):** instead of (or besides) the plugin's
-bundled connector, add a standalone server you can edit in Settings → MCPs →
-"+ Add server": Command `npx`, Arguments `-y` and `genudo-mcp-client@2.3.2`, and
-optionally env `GENUDO_TOKEN` = your token (skip it and the "Connect Genudo" flow
-takes over). Plugin-bundled servers appear under "From plugins" and are not
-editable — that's the app's design, not a Genudo limitation. Don't run both
-copies enabled at once (duplicate tools).
+bundled connector, add a standalone server in Settings → MCPs → "+ Add server",
+Type STDIO. Either Command `npx` with Arguments `-y`, `genudo-mcp-client@2.3.2`
+(needs working npm), or Command `node` with one Argument = the full path to this
+plugin's `connector/index.js` (no npm needed). Env `GENUDO_TOKEN` is optional —
+skip it and the "Connect Genudo" flow takes over. Plugin-bundled servers appear
+under "From plugins" and are not editable — that's the app's design. Don't run
+both copies enabled at once (duplicate tools).
 
-The connector runs `npx -y genudo-mcp-client` (Node 18+ required) and talks to
-`https://api.genudo.ai`. A `GENUDO_TOKEN` env var still takes precedence over the
-saved token; `GENUDO_BASE_URL` points at a self-hosted instance.
+The connector is **vendored inside the plugin** (`connector/index.js`, built from
+`genudo-mcp-client` — rebuild with `scripts/build-chatgpt-connector.sh` in the
+source repo). Only Node 18+ is required at runtime; no npm download, so machines
+with proxied/broken npm TLS work. It talks to `https://api.genudo.ai`; a
+`GENUDO_TOKEN` env var takes precedence over the saved token; `GENUDO_BASE_URL`
+points at a self-hosted instance.
 
 ## What's inside
 

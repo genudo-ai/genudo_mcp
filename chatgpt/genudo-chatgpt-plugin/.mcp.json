@@ -1,9 +1,8 @@
 {
   "genudo": {
-    "command": "npx",
+    "command": "node",
     "args": [
-      "-y",
-      "genudo-mcp-client@2.3.2"
+      "${PLUGIN_ROOT}/connector/index.js"
     ]
   }
 }

@@ -11,9 +11,9 @@ platform, one inbox, and one analytics dashboard.
 
 ## Install (ChatGPT desktop / ChatGPT Work)
 
-1. Plugins → Create ▾ → **Add marketplace**:
-   - Source: `genudo-ai/genudo_mcp`, Sparse paths: `chatgpt`
-   - (or a local checkout: point Source at the `genudo_mcp/chatgpt` folder)
+1. Plugins → Create ▾ → **Add marketplace** → Source: `genudo-ai/chatgpt-plugin`
+   (dev testing from the monorepo instead: Source `genudo-ai/genudo_mcp` + Sparse
+   paths `chatgpt`, or point Source at a local `genudo_mcp/chatgpt` folder)
 2. Install **genudo** from the plugin list.
 3. Wire the token: Settings → MCP servers → genudo (gear icon) →
    Environment variables → set **`GENUDO_TOKEN`** to your token (literal value).
@@ -21,7 +21,7 @@ platform, one inbox, and one analytics dashboard.
    `mcp:use` scope (shown only once — copy it at creation).
 4. Save, toggle the server on, then try: "Use Genudo to list my pipelines."
 
-Codex CLI instead: `codex plugin marketplace add genudo-ai/genudo_mcp --sparse chatgpt`.
+Codex CLI instead: `codex plugin marketplace add genudo-ai/chatgpt-plugin`.
 
 The connector runs `npx -y genudo-mcp-client` (Node 18+ required) and talks to
 `https://api.genudo.ai`. For a self-hosted instance add a `GENUDO_BASE_URL` env var

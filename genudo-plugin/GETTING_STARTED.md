@@ -2,15 +2,26 @@
 
 Build, edit, and analyze your Genudo AI sales/support agents from Claude.
 
-## Install (5 steps)
+## 1. Get your token
 
-1. **Get your token** — Genudo → **Settings → API Keys**.
-2. **Open Claude Desktop** (or Cowork). *Web and mobile aren't supported yet.*
-3. **Install** — Customize → Personal plugins → **+** → **Upload plugin** → drop
-   `genudo-plugin.zip` → **Upload** → **Continue**.
-4. **Paste your token** when prompted.
-5. **Check it connected** — Customize → Genudo → **Connectors → genudo** should show
-   `-y genudo-mcp-client@2.2.1`.
+1. Log in at [app.genudo.ai](https://app.genudo.ai).
+2. Sidebar → **Developer** → **API Keys & Tokens** → **Create token**.
+3. Name it (e.g. `claude-mcp`), scroll **Scopes** and check **`mcp:use`**, pick an
+   **Expiry** (30/90 days, 1 year, or No Expiry).
+4. **Create token** and copy it right away — **it's shown only once**.
+
+## 2. Install (Claude Desktop app)
+
+The Desktop app's plugin upload doesn't ask for a token, so install two pieces:
+
+1. **Skills + agents** — Settings → **Plugins** → **Add** → **Upload plugin** → drop
+   `genudo-plugin-desktop.zip`.
+2. **Connector** — Settings → **Extensions** → install `genudo.mcpb` → paste your token
+   when prompted.
+
+*(On claude.ai / Cowork, upload `genudo-plugin.zip` instead — Customize → Personal plugins →
+**+** → **Upload plugin** — and paste your token when prompted. Web and mobile tool access
+aren't supported yet.)*
 
 ## Use it
 

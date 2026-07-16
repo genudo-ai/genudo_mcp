@@ -1,0 +1,20 @@
+{
+  "name": "genudo-chatgpt",
+  "interface": {
+    "displayName": "Genudo Plugins (ChatGPT)"
+  },
+  "plugins": [
+    {
+      "name": "genudo",
+      "source": {
+        "source": "local",
+        "path": "./genudo-chatgpt-plugin"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

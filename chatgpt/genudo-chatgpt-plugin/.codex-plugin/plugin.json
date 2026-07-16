@@ -1,0 +1,51 @@
+{
+  "name": "genudo",
+  "version": "1.1.1",
+  "description": "Genudo \u2014 the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integration capabilities and company-knowledge access, managed from one platform, one inbox, and one analytics dashboard. This plugin builds, edits, automates, and analyzes them from ChatGPT and Codex with 26 skills and the Genudo connector.",
+  "author": {
+    "name": "Genudo",
+    "email": "help@genudo.ai",
+    "url": "https://genudo.ai"
+  },
+  "homepage": "https://genudo.ai",
+  "repository": "https://github.com/genudo-ai/genudo_mcp",
+  "license": "MIT",
+  "keywords": [
+    "genudo",
+    "sales",
+    "pipelines",
+    "ai-agents",
+    "automation",
+    "crm",
+    "whatsapp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": {
+    "genudo": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "genudo-mcp-client@2.3.1"
+      ]
+    }
+  },
+  "interface": {
+    "displayName": "Genudo - AI Workforce",
+    "shortDescription": "Build and manage pipeline-aware AI sales/support agents",
+    "longDescription": "Genudo is the platform to build AI agents for any communication or sequence-based channel \u2014 WhatsApp, Messenger, Instagram, LinkedIn, email, and more. Build pipeline-aware agents with integration capabilities (webhooks to your CRM, Zapier, Make, or n8n) and company-knowledge access, all managed from one platform, one inbox, and one analytics dashboard. This plugin lets ChatGPT and Codex create, edit, automate, and analyze those agents end to end: 29 connector tools plus 26 skills covering discovery, authoring, provisioning, automation wiring, knowledge-base curation, diagnosis, and reporting.",
+    "developerName": "Genudo",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://genudo.ai",
+    "privacyPolicyURL": "https://genudo.ai/legal/privacy-policy",
+    "defaultPrompt": [
+      "Use Genudo to audit my pipeline and report what to improve.",
+      "Use Genudo to build a WhatsApp sales pipeline for my business."
+    ],
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png"
+  }
+}

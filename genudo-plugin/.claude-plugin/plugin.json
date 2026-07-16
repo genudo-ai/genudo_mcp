@@ -24,7 +24,7 @@
     "token": {
       "type": "string",
       "title": "Genudo Token",
-      "description": "From your Genudo account: Settings → API Keys.",
+      "description": "From your Genudo account: API Keys & Tokens → Create token, with the mcp:use scope. Shown only once — copy it at creation.",
       "sensitive": true,
       "required": true
     },

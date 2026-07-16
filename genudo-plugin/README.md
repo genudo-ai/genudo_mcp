@@ -20,9 +20,16 @@ agents, and the Genudo connector to build, run, and improve them from Claude.
 **Upload (claude.ai):** Customize → Personal plugins → **+** → **Upload plugin** → drop the
 zipped folder → **Upload**. Enter your Genudo token when prompted.
 
+**Claude Desktop app:** the desktop plugin upload doesn't prompt for a token, so install two
+pieces: Settings → **Plugins** → **Add** → **Upload plugin** → `genudo-plugin-desktop.zip`
+(skills + agents), then Settings → **Extensions** → `genudo.mcpb` (the connector — asks for
+your token).
+
 **Claude Code:** add this repo as a marketplace, then `/plugin install genudo`.
 
-Get your token from Genudo → **Settings → API Keys**.
+Get your token from Genudo → **API Keys & Tokens** (sidebar, under *Developer*) →
+**Create token** → check the **`mcp:use`** scope → pick an expiry → copy the token
+(shown only once).
 
 ## Where each part runs
 

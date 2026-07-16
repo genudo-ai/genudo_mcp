@@ -1,0 +1,9 @@
+{
+  "genudo": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "genudo-mcp-client@2.3.1"
+    ]
+  }
+}

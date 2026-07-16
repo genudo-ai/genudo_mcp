@@ -4,13 +4,45 @@ const EventSource = require('eventsource');
 const fetch = require('node-fetch');
 const readline = require('readline');
 const https = require('https');
+const http = require('http');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const { spawn } = require('child_process');
+const crypto = require('crypto');
 const guides = require('./guides');
+const pkg = require('./package.json');
 
 // Configuration from environment variables
 const BASE_URL = process.env.GENUDO_BASE_URL || 'https://api.genudo.ai';
 const SSE_URL = `${BASE_URL}/api/user/mcp/sse`;
-const TOKEN = process.env.GENUDO_TOKEN;
 const ALLOW_INSECURE_SSL = process.env.GENUDO_ALLOW_INSECURE_SSL === 'true';
+
+// Token sources, in order: env var, then the token saved by the genudo_connect
+// browser flow. Plugin hosts (ChatGPT desktop) pass env templates through
+// unresolved — a value still containing "${" means "not configured", not a token.
+const TOKEN_FILE = path.join(os.homedir(), '.config', 'genudo', 'token');
+function isUsableToken(t) {
+  return typeof t === 'string' && t.trim() !== '' && !t.includes('${');
+}
+function readSavedToken() {
+  try {
+    const t = fs.readFileSync(TOKEN_FILE, 'utf8').trim();
+    return t || null;
+  } catch (e) {
+    return null;
+  }
+}
+function saveToken(t) {
+  fs.mkdirSync(path.dirname(TOKEN_FILE), { recursive: true, mode: 0o700 });
+  fs.writeFileSync(TOKEN_FILE, t.trim() + '\n', { mode: 0o600 });
+}
+function deleteSavedToken() {
+  try { fs.unlinkSync(TOKEN_FILE); } catch (e) { /* not saved */ }
+}
+let TOKEN = isUsableToken(process.env.GENUDO_TOKEN)
+  ? process.env.GENUDO_TOKEN.trim()
+  : readSavedToken();
 
 // The Genudo backend can be slow to answer the first request after connecting
 // (cold start — observed 1s to 30s+). Rather than let one slow attempt hang the
@@ -48,7 +80,7 @@ const SERVER_INSTRUCTIONS = [
   '- Add an integration: list_pipelines -> list_pipeline_stages -> list_actions (avoid duplicates) -> list_variables -> create_variable -> create_action; tune existing ones with update_action.',
   '- Knowledge base: list_knowledge_tables -> create_knowledge_table (columns = the schema) -> upsert_knowledge_points (rows) -> search_knowledge_table (verify retrieval) -> delete_knowledge_points (remove rows). The pipeline agent searches these tables at runtime.',
   '- Follow-ups: get_stage_followup FIRST (one follow-up per stage) -> create_followup (new) or update_followup (existing).',
-  '- Edit agent instructions: get_instruction_guides -> read current text (list_pipelines gives persona+instructions; list_pipeline_stages gives stage instructions+enter_condition+ai_persona) -> edit only what must change -> show DIFF + expected impact -> confirm -> update_pipeline / update_stage.',
+  '- Edit agent instructions: get_instruction_guides -> read current text with verbose:true (list_pipelines gives persona+instructions; list_pipeline_stages gives stage instructions+enter_condition+ai_persona; both truncate long texts unless verbose:true) -> edit only what must change -> show DIFF + expected impact -> confirm -> update_pipeline / update_stage.',
   '- Report activity: get_account_summary -> get_ai_performance -> list_opportunities -> get_messaging_stats',
   '',
   'RULES THAT PREVENT FAILURES:',
@@ -71,11 +103,27 @@ const httpsAgent = new https.Agent({
   rejectUnauthorized: !ALLOW_INSECURE_SSL
 });
 
-// Validate configuration
-if (!TOKEN) {
-  console.error('ERROR: GENUDO_TOKEN environment variable is required');
-  process.exit(1);
-}
+// No token is NOT fatal: the bridge starts in setup mode, exposing only the
+// genudo_connect tool, which captures the token via a local browser page —
+// plugin hosts (ChatGPT desktop) give users no UI to edit a bundled server's env.
+
+// Instructions served while no account is connected.
+const SETUP_INSTRUCTIONS = [
+  'Genudo account NOT connected yet. Only one tool is available: genudo_connect.',
+  'Call genudo_connect to open a secure local browser page where the user pastes their',
+  'Genudo token (Genudo account -> API Keys & Tokens -> Create token, scope mcp:use).',
+  'NEVER ask the user to paste the token into the chat.',
+  'After connecting, the full Genudo toolset may only appear in a NEW task/chat',
+  '(hosts often snapshot tool lists at task start). Do not work around missing tools',
+  'with shell commands or by driving the connector manually — just tell the user to',
+  'start a new task.'
+].join('\n');
+
+const CONNECT_TOOL = {
+  name: 'genudo_connect',
+  description: 'Connect the Genudo account. Opens a secure page in the user\'s local browser where they paste their Genudo API token (Genudo -> API Keys & Tokens -> Create token with the mcp:use scope). Call when Genudo tools are missing or not connected, or after the user says they saved the token. Never ask for the token in chat.',
+  inputSchema: { type: 'object', properties: {}, required: [] }
+};
 
 // Global state
 let messageEndpoint = null;
@@ -106,7 +154,8 @@ function debug(...args) {
 /**
  * Connect to SSE endpoint to get the message endpoint URL
  */
-function connectSSE() {
+function connectSSE(options) {
+  const exitOnAuthError = !options || options.exitOnAuthError !== false;
   return new Promise((resolve, reject) => {
     debug('Connecting to SSE endpoint:', SSE_URL);
 
@@ -133,8 +182,15 @@ function connectSSE() {
     eventSource.onerror = (error) => {
       const status = error && error.status;
       // Wrong/expired token: reconnecting can NEVER succeed and just hammers the
-      // backend. This is the retry storm — stop it dead.
+      // backend. This is the retry storm — stop it dead. In lazy/setup mode we
+      // reject instead of exiting so the host session survives a bad saved token.
       if (isAuthError(status)) {
+        if (!exitOnAuthError) {
+          try { eventSource.close(); } catch (e) { /* already closed */ }
+          const err = new Error(`SSE auth failed (HTTP ${status})`);
+          err.authError = true;
+          return reject(err);
+        }
         return fatalExit(`SSE auth failed (HTTP ${status}) — check GENUDO_TOKEN. Not retrying a bad token.`);
       }
       // Transient error: the lib will auto-reconnect (~1s). Bound it so a down
@@ -156,12 +212,32 @@ function connectSSE() {
   });
 }
 
+// Single-flight lazy connect — used when the token arrived after startup
+// (saved via genudo_connect) rather than via env at launch.
+let connecting = null;
+function lazyConnect() {
+  if (isInitialized && messageEndpoint) return Promise.resolve(messageEndpoint);
+  if (!connecting) {
+    connecting = connectSSE({ exitOnAuthError: false }).finally(() => { connecting = null; });
+  }
+  return connecting;
+}
+
+/** Emit a server-initiated MCP notification on stdout. */
+function notify(method) {
+  console.log(JSON.stringify({ jsonrpc: '2.0', method }));
+}
+
 /**
  * Forward JSON-RPC request to the Laravel MCP server
  */
 async function forwardRequest(jsonRpcRequest) {
   if (!messageEndpoint) {
-    throw new Error('Message endpoint not initialized');
+    if (TOKEN) {
+      await lazyConnect();
+    } else {
+      throw new Error('Genudo account not connected — call the genudo_connect tool first.');
+    }
   }
 
   debug('Forwarding request:', jsonRpcRequest.method, 'id:', jsonRpcRequest.id);
@@ -215,6 +291,215 @@ async function forwardRequest(jsonRpcRequest) {
   throw lastError;
 }
 
+// ---------------------------------------------------------------------------
+// genudo_connect: local browser page for token entry (no terminal, no token in
+// chat). Tool call opens http://127.0.0.1:<port>/ ; the form POST saves the
+// token to TOKEN_FILE, then the bridge connects and announces tools/list_changed.
+// ---------------------------------------------------------------------------
+let setupServer = null;
+let setupPort = null;
+// Random single-use path segment: a page in the user's regular browser can't
+// guess it, so drive-by CSRF/DNS-rebinding POSTs to the setup server miss.
+let setupNonce = null;
+
+const SETUP_PAGE = (msg, ok, action) => `<!doctype html>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Connect Genudo</title>
+<style>
+  body{font:16px/1.5 system-ui;margin:0;display:grid;place-items:center;min-height:100vh;background:#f6f7fb;color:#1a1d27}
+  .card{background:#fff;border-radius:16px;padding:36px;max-width:420px;box-shadow:0 8px 30px rgba(20,24,40,.08)}
+  h1{font-size:20px;margin:0 0 6px} p{color:#5a6072;margin:8px 0 20px;font-size:14px}
+  input{width:100%;box-sizing:border-box;padding:12px;border:1px solid #d6d9e4;border-radius:10px;font-size:14px}
+  button{margin-top:14px;width:100%;padding:12px;border:0;border-radius:10px;background:#2f3bd9;color:#fff;font-size:15px;cursor:pointer}
+  .ok{color:#0a7d38}.err{color:#b3261e}
+</style>
+<div class="card">
+  <h1>Connect Genudo</h1>
+  ${msg ? `<p class="${ok ? 'ok' : 'err'}">${msg}</p>` : ''}
+  ${ok ? '<p>You can close this tab and go back to your chat.</p>' : `
+  <p>Paste your Genudo API token. Get it from your Genudo account:
+     <b>API Keys &amp; Tokens → Create token</b> with the <b>mcp:use</b> scope
+     (shown only once — copy it at creation).</p>
+  <form method="POST" action="${action}">
+    <input type="password" name="token" placeholder="Genudo token" autofocus required>
+    <button type="submit">Save &amp; connect</button>
+  </form>`}
+</div>`;
+
+/** Cheap remote check: only reject tokens the backend explicitly refuses. */
+async function verifyTokenRemote(tok) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  try {
+    const resp = await fetch(SSE_URL, {
+      headers: { 'Authorization': `Bearer ${tok}`, 'Accept': 'text/event-stream' },
+      agent: httpsAgent,
+      signal: controller.signal
+    });
+    const ok = !isAuthError(resp.status);
+    controller.abort();
+    return ok;
+  } catch (e) {
+    return true; // network trouble ≠ bad token; the real connect will decide
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function startSetupServer() {
+  if (setupServer) return Promise.resolve(setupPort);
+  setupNonce = crypto.randomBytes(16).toString('hex');
+  return new Promise((resolve, reject) => {
+    const srv = http.createServer((req, res) => {
+      // Anti-CSRF / anti-DNS-rebinding: only same-origin browser traffic for
+      // exactly this host:port, and only on the unguessable nonce path.
+      const host = req.headers.host || '';
+      if (host !== `127.0.0.1:${setupPort}` && host !== `localhost:${setupPort}`) {
+        res.writeHead(403); return res.end();
+      }
+      const origin = req.headers.origin;
+      if (origin && origin !== `http://127.0.0.1:${setupPort}` && origin !== `http://localhost:${setupPort}`) {
+        res.writeHead(403); return res.end();
+      }
+      if (req.headers['sec-fetch-site'] === 'cross-site') {
+        res.writeHead(403); return res.end();
+      }
+      const saveAction = `/save/${setupNonce}`;
+      if (req.method === 'GET' && req.url === `/connect/${setupNonce}`) {
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        return res.end(SETUP_PAGE('', false, saveAction));
+      }
+      if (req.method === 'POST' && req.url === saveAction) {
+        if (!(req.headers['content-type'] || '').startsWith('application/x-www-form-urlencoded')) {
+          res.writeHead(403); return res.end();
+        }
+        let body = '';
+        req.on('data', (c) => { body += c; if (body.length > 65536) req.destroy(); });
+        req.on('end', async () => {
+          const tok = decodeURIComponent((body.match(/(?:^|&)token=([^&]*)/) || [])[1] || '')
+            .replace(/\+/g, ' ').trim();
+          if (!isUsableToken(tok)) {
+            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+            return res.end(SETUP_PAGE('That does not look like a token — try again.', false, saveAction));
+          }
+          if (!(await verifyTokenRemote(tok))) {
+            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+            return res.end(SETUP_PAGE('Genudo rejected this token. Check it has the mcp:use scope and try again.', false, saveAction));
+          }
+          saveToken(tok);
+          TOKEN = tok;
+          res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+          res.end(SETUP_PAGE('Token saved — Genudo is connecting.', true, saveAction));
+          debug('Token saved via setup page; connecting...');
+          lazyConnect()
+            .then(() => notify('notifications/tools/list_changed'))
+            .catch((e) => debug('Connect after token save failed:', e.message));
+        });
+        return;
+      }
+      res.writeHead(404); res.end();
+    });
+    srv.on('error', reject);
+    srv.listen(0, '127.0.0.1', () => {
+      setupServer = srv;
+      setupPort = srv.address().port;
+      // Don't hold the process open for the setup page alone.
+      srv.unref();
+      resolve(setupPort);
+    });
+  });
+}
+
+function openBrowser(url) {
+  if (process.env.GENUDO_NO_BROWSER) return;
+  try {
+    if (process.platform === 'win32') {
+      spawn('cmd', ['/c', 'start', '', url], { detached: true, stdio: 'ignore' }).unref();
+    } else {
+      spawn(process.platform === 'darwin' ? 'open' : 'xdg-open', [url],
+        { detached: true, stdio: 'ignore' }).unref();
+    }
+  } catch (e) {
+    debug('Could not open browser:', e.message);
+  }
+}
+
+function toolText(id, text) {
+  return { jsonrpc: '2.0', id, result: { content: [{ type: 'text', text }] } };
+}
+
+async function handleConnectCall(id) {
+  // Token may have arrived since startup (env at launch, or saved via the page).
+  if (!TOKEN) {
+    TOKEN = readSavedToken();
+  }
+  if (TOKEN) {
+    try {
+      await lazyConnect();
+      notify('notifications/tools/list_changed');
+      return console.log(JSON.stringify(toolText(id,
+        'Genudo is connected and the token is saved. NOTE: some hosts (ChatGPT desktop/Codex) only load a server\'s tool list when a task starts, so the full Genudo toolset may not be visible in THIS task. If the Genudo tools (list_pipelines etc.) are not available to you right now, do NOT try to work around it — just tell the user: "Connected! Start a new task/chat and ask me again — the Genudo tools load there." In hosts that refresh tools live, simply retry the user\'s original request.')));
+    } catch (e) {
+      if (e.authError) {
+        deleteSavedToken();
+        TOKEN = null;
+        // fall through to reopen the setup page below
+      } else {
+        return console.log(JSON.stringify(toolText(id,
+          `Genudo backend unreachable right now (${e.message}). Token looks saved — try again in a moment.`)));
+      }
+    }
+  }
+  const port = await startSetupServer();
+  const url = `http://127.0.0.1:${port}/connect/${setupNonce}`;
+  openBrowser(url);
+  return console.log(JSON.stringify(toolText(id,
+    `A secure Genudo connect page was opened in the user's browser (${url} — local only). ` +
+    'Tell the user: paste your Genudo token there (Genudo account -> API Keys & Tokens -> Create token, scope mcp:use) and click Save. ' +
+    'After they confirm saving, call genudo_connect again to finish. Never ask for the token in chat.')));
+}
+
+// ---------------------------------------------------------------------------
+// Response slimming: list_* backend responses embed FULL agent instructions and
+// personas (thousands of chars per pipeline/stage). Hosts' models drown in it
+// and start improvising (ID scans, log spelunking). Truncate long prompt-text
+// fields by default; verbose:true (handled here, stripped before forwarding)
+// returns full text — required before editing instructions.
+// ---------------------------------------------------------------------------
+const SLIMMED_TOOLS = new Set(['list_pipelines', 'list_pipeline_stages']);
+const LONG_TEXT_FIELDS = new Set(['instructions', 'persona', 'ai_persona', 'enter_condition']);
+const TRUNCATE_AT = 400;
+const VERBOSE_HINT = ' Long instructions/persona texts are truncated by default for readability; pass verbose:true when you need the FULL text (required before editing instructions).';
+
+function truncateLongFields(node) {
+  if (Array.isArray(node)) { node.forEach(truncateLongFields); return; }
+  if (!node || typeof node !== 'object') return;
+  for (const [k, v] of Object.entries(node)) {
+    if (typeof v === 'string' && LONG_TEXT_FIELDS.has(k) && v.length > TRUNCATE_AT) {
+      node[k] = v.slice(0, TRUNCATE_AT) + ` …[truncated ${v.length - TRUNCATE_AT} chars — re-call with verbose:true for the full text]`;
+    } else {
+      truncateLongFields(v);
+    }
+  }
+}
+
+function slimToolResponse(response) {
+  try {
+    const content = response && response.result && response.result.content;
+    if (!Array.isArray(content)) return;
+    for (const item of content) {
+      if (item && item.type === 'text' && typeof item.text === 'string') {
+        const parsed = JSON.parse(item.text);
+        truncateLongFields(parsed);
+        item.text = JSON.stringify(parsed);
+      }
+    }
+    if (response.result.structuredContent) truncateLongFields(response.result.structuredContent);
+  } catch (e) {
+    // Non-JSON payload — leave untouched.
+  }
+}
+
 /**
  * Process a single line of input (JSON-RPC request)
  */
@@ -233,13 +518,15 @@ async function processInput(line) {
         id: request.id,
         result: {
           protocolVersion: (request.params && request.params.protocolVersion) || '2024-11-05',
-          capabilities: { tools: {}, prompts: {} },
-          serverInfo: { name: 'Genudo', version: '2.2.1' },
-          instructions: SERVER_INSTRUCTIONS
+          capabilities: { tools: { listChanged: true }, prompts: {} },
+          serverInfo: { name: 'Genudo', version: pkg.version },
+          instructions: TOKEN ? SERVER_INSTRUCTIONS : SETUP_INSTRUCTIONS
         }
       }));
-      forwardRequest({ jsonrpc: '2.0', id: 'warmup', method: 'tools/list', params: {} })
-        .catch(() => {});
+      if (TOKEN) {
+        forwardRequest({ jsonrpc: '2.0', id: 'warmup', method: 'tools/list', params: {} })
+          .catch(() => {});
+      }
       return;
     }
 
@@ -273,7 +560,16 @@ async function processInput(line) {
     }
 
     // tools/list: proxy the backend tools, then append our local guide tools.
+    // No token yet -> the connect tool is the only thing on offer.
     if (request.method === 'tools/list') {
+      if (!TOKEN) {
+        console.log(JSON.stringify({
+          jsonrpc: '2.0',
+          id: request.id,
+          result: { tools: [CONNECT_TOOL] }
+        }));
+        return;
+      }
       let backendTools = [];
       try {
         const backendResponse = await forwardRequest(request);
@@ -282,11 +578,30 @@ async function processInput(line) {
         // Backend unreachable — still expose the local guide tools (they are static).
         debug('tools/list backend fetch failed, serving local tools only:', error.message);
       }
+      // Advertise the bridge-level verbose escape hatch on slimmed tools.
+      for (const tool of backendTools) {
+        if (SLIMMED_TOOLS.has(tool.name)) {
+          tool.description = (tool.description || '') + VERBOSE_HINT;
+          if (tool.inputSchema && tool.inputSchema.properties) {
+            tool.inputSchema.properties.verbose = {
+              type: 'boolean',
+              description: 'Return full instruction/persona texts instead of truncated previews (default false).'
+            };
+          }
+        }
+      }
       console.log(JSON.stringify({
         jsonrpc: '2.0',
         id: request.id,
         result: { tools: [...backendTools, ...guides.LOCAL_TOOLS] }
       }));
+      return;
+    }
+
+    // genudo_connect: handled entirely locally.
+    if (request.method === 'tools/call'
+        && request.params && request.params.name === CONNECT_TOOL.name) {
+      await handleConnectCall(request.id);
       return;
     }
 
@@ -301,10 +616,23 @@ async function processInput(line) {
       return;
     }
 
+    // Slimmed tools: honor + strip the bridge-level verbose flag before forwarding.
+    let wantsVerbose = false;
+    if (request.method === 'tools/call' && request.params
+        && SLIMMED_TOOLS.has(request.params.name)) {
+      const args = request.params.arguments || {};
+      wantsVerbose = args.verbose === true || args.verbose === 'true';
+      if ('verbose' in args) delete args.verbose;
+    }
+
     const response = await forwardRequest(request);
 
     // Only write response if there is one (notifications don't get responses)
     if (response !== null) {
+      if (request.method === 'tools/call' && request.params
+          && SLIMMED_TOOLS.has(request.params.name) && !wantsVerbose) {
+        slimToolResponse(response);
+      }
       // Write response to stdout for Claude Code to read
       console.log(JSON.stringify(response));
     }
@@ -340,9 +668,13 @@ async function main() {
   try {
     debug('Starting Genudo MCP Bridge...');
 
-    // Connect to SSE and get message endpoint
-    await connectSSE();
-    debug('Bridge initialized successfully');
+    if (TOKEN) {
+      // Connect to SSE and get message endpoint
+      await connectSSE();
+      debug('Bridge initialized successfully');
+    } else {
+      debug('No token configured — starting in setup mode (genudo_connect only).');
+    }
 
     // Set up readline to process stdin line by line
     const rl = readline.createInterface({

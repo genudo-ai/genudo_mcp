@@ -52,7 +52,7 @@ One command — no clone, no manual config:
 claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client
 ```
 
-Replace `YOUR_TOKEN` with your Genudo token (Settings → API Keys). Restart Claude Code and start using Genudo tools!
+Replace `YOUR_TOKEN` with your Genudo token (**API Keys & Tokens** → **Create token** with the `mcp:use` scope — see [Get Your Token](#step-1-get-your-token)). Restart Claude Code and start using Genudo tools!
 
 ## Prerequisites
 
@@ -68,7 +68,7 @@ Replace `YOUR_TOKEN` with your Genudo token (Settings → API Keys). Restart Cla
 claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client
 ```
 
-`npx` fetches and runs the published package — no clone, no local path. Get your token from Settings → API Keys, then restart Claude Code.
+`npx` fetches and runs the published package — no clone, no local path. Get your token from **API Keys & Tokens** (see below), then restart Claude Code.
 
 ### Alternative: from source
 
@@ -86,10 +86,13 @@ Then configure Claude Code manually (see Configuration section below).
 
 ### Step 1: Get Your Token
 
-1. Log in to your [Genudo account](https://genudo.ai)
-2. Navigate to **Settings** → **API Keys**
-3. Click **Generate New Token**
-4. Copy your token (keep it secure!)
+1. Log in to your [Genudo account](https://app.genudo.ai)
+2. In the sidebar, under **Developer**, open **API Keys & Tokens**
+3. Click **Create token**
+4. Name it (e.g. `claude-mcp`)
+5. Under **Scopes**, scroll the list and check **`mcp:use`** (Access MCP server — SSE + JSON-RPC tool calls)
+6. Pick an **Expiry** (30 days, 90 days, 1 year, or No Expiry)
+7. Click **Create token** and copy the token — **it's shown only once**; Genudo keeps only a hashed copy
 
 ### Step 2: Connect your MCP client
 

@@ -22,6 +22,6 @@ within 3 business days.
   it into shared logs, screenshots, or issues.
 - The client transmits the token only to your configured Genudo endpoint over HTTPS,
   in the `Authorization: Bearer` request header.
-- If a token may have been exposed, rotate it immediately in **Settings → API Keys**.
+- If a token may have been exposed, revoke it immediately in **API Keys & Tokens** and create a new one.
 - Keep `GENUDO_ALLOW_INSECURE_SSL` unset (or `false`) outside of local development —
   enabling it disables TLS certificate verification.

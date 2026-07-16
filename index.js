@@ -80,7 +80,7 @@ const SERVER_INSTRUCTIONS = [
   '- Add an integration: list_pipelines -> list_pipeline_stages -> list_actions (avoid duplicates) -> list_variables -> create_variable -> create_action; tune existing ones with update_action.',
   '- Knowledge base: list_knowledge_tables -> create_knowledge_table (columns = the schema) -> upsert_knowledge_points (rows) -> search_knowledge_table (verify retrieval) -> delete_knowledge_points (remove rows). The pipeline agent searches these tables at runtime.',
   '- Follow-ups: get_stage_followup FIRST (one follow-up per stage) -> create_followup (new) or update_followup (existing).',
-  '- Edit agent instructions: get_instruction_guides -> read current text (list_pipelines gives persona+instructions; list_pipeline_stages gives stage instructions+enter_condition+ai_persona) -> edit only what must change -> show DIFF + expected impact -> confirm -> update_pipeline / update_stage.',
+  '- Edit agent instructions: get_instruction_guides -> read current text with verbose:true (list_pipelines gives persona+instructions; list_pipeline_stages gives stage instructions+enter_condition+ai_persona; both truncate long texts unless verbose:true) -> edit only what must change -> show DIFF + expected impact -> confirm -> update_pipeline / update_stage.',
   '- Report activity: get_account_summary -> get_ai_performance -> list_opportunities -> get_messaging_stats',
   '',
   'RULES THAT PREVENT FAILURES:',
@@ -459,6 +459,47 @@ async function handleConnectCall(id) {
     'After they confirm saving, call genudo_connect again to finish. Never ask for the token in chat.')));
 }
 
+// ---------------------------------------------------------------------------
+// Response slimming: list_* backend responses embed FULL agent instructions and
+// personas (thousands of chars per pipeline/stage). Hosts' models drown in it
+// and start improvising (ID scans, log spelunking). Truncate long prompt-text
+// fields by default; verbose:true (handled here, stripped before forwarding)
+// returns full text — required before editing instructions.
+// ---------------------------------------------------------------------------
+const SLIMMED_TOOLS = new Set(['list_pipelines', 'list_pipeline_stages']);
+const LONG_TEXT_FIELDS = new Set(['instructions', 'persona', 'ai_persona', 'enter_condition']);
+const TRUNCATE_AT = 400;
+const VERBOSE_HINT = ' Long instructions/persona texts are truncated by default for readability; pass verbose:true when you need the FULL text (required before editing instructions).';
+
+function truncateLongFields(node) {
+  if (Array.isArray(node)) { node.forEach(truncateLongFields); return; }
+  if (!node || typeof node !== 'object') return;
+  for (const [k, v] of Object.entries(node)) {
+    if (typeof v === 'string' && LONG_TEXT_FIELDS.has(k) && v.length > TRUNCATE_AT) {
+      node[k] = v.slice(0, TRUNCATE_AT) + ` …[truncated ${v.length - TRUNCATE_AT} chars — re-call with verbose:true for the full text]`;
+    } else {
+      truncateLongFields(v);
+    }
+  }
+}
+
+function slimToolResponse(response) {
+  try {
+    const content = response && response.result && response.result.content;
+    if (!Array.isArray(content)) return;
+    for (const item of content) {
+      if (item && item.type === 'text' && typeof item.text === 'string') {
+        const parsed = JSON.parse(item.text);
+        truncateLongFields(parsed);
+        item.text = JSON.stringify(parsed);
+      }
+    }
+    if (response.result.structuredContent) truncateLongFields(response.result.structuredContent);
+  } catch (e) {
+    // Non-JSON payload — leave untouched.
+  }
+}
+
 /**
  * Process a single line of input (JSON-RPC request)
  */
@@ -537,6 +578,18 @@ async function processInput(line) {
         // Backend unreachable — still expose the local guide tools (they are static).
         debug('tools/list backend fetch failed, serving local tools only:', error.message);
       }
+      // Advertise the bridge-level verbose escape hatch on slimmed tools.
+      for (const tool of backendTools) {
+        if (SLIMMED_TOOLS.has(tool.name)) {
+          tool.description = (tool.description || '') + VERBOSE_HINT;
+          if (tool.inputSchema && tool.inputSchema.properties) {
+            tool.inputSchema.properties.verbose = {
+              type: 'boolean',
+              description: 'Return full instruction/persona texts instead of truncated previews (default false).'
+            };
+          }
+        }
+      }
       console.log(JSON.stringify({
         jsonrpc: '2.0',
         id: request.id,
@@ -563,10 +616,23 @@ async function processInput(line) {
       return;
     }
 
+    // Slimmed tools: honor + strip the bridge-level verbose flag before forwarding.
+    let wantsVerbose = false;
+    if (request.method === 'tools/call' && request.params
+        && SLIMMED_TOOLS.has(request.params.name)) {
+      const args = request.params.arguments || {};
+      wantsVerbose = args.verbose === true || args.verbose === 'true';
+      if ('verbose' in args) delete args.verbose;
+    }
+
     const response = await forwardRequest(request);
 
     // Only write response if there is one (notifications don't get responses)
     if (response !== null) {
+      if (request.method === 'tools/call' && request.params
+          && SLIMMED_TOOLS.has(request.params.name) && !wantsVerbose) {
+        slimToolResponse(response);
+      }
       // Write response to stdout for Claude Code to read
       console.log(JSON.stringify(response));
     }

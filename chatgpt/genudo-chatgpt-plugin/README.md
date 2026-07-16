@@ -19,13 +19,14 @@ platform, one inbox, and one analytics dashboard.
    paste your Genudo token there (Genudo account → API Keys & Tokens → Create token
    with the `mcp:use` scope; shown only once) and click Save. The token is stored
    locally (`~/.config/genudo/token`), never in the chat.
-4. Try: "Use Genudo to list my pipelines."
+4. Start a **new task/chat** (the app loads a server's tools at task start) and try:
+   "Use Genudo to list my pipelines."
 
 Codex CLI instead: `codex plugin marketplace add genudo-ai/chatgpt-plugin`.
 
 **Manual server (advanced, editable config):** instead of (or besides) the plugin's
 bundled connector, add a standalone server you can edit in Settings → MCPs →
-"+ Add server": Command `npx`, Arguments `-y` and `genudo-mcp-client@2.3.0`, and
+"+ Add server": Command `npx`, Arguments `-y` and `genudo-mcp-client@2.3.1`, and
 optionally env `GENUDO_TOKEN` = your token (skip it and the "Connect Genudo" flow
 takes over). Plugin-bundled servers appear under "From plugins" and are not
 editable — that's the app's design, not a Genudo limitation. Don't run both

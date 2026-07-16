@@ -112,7 +112,11 @@ const SETUP_INSTRUCTIONS = [
   'Genudo account NOT connected yet. Only one tool is available: genudo_connect.',
   'Call genudo_connect to open a secure local browser page where the user pastes their',
   'Genudo token (Genudo account -> API Keys & Tokens -> Create token, scope mcp:use).',
-  'NEVER ask the user to paste the token into the chat.'
+  'NEVER ask the user to paste the token into the chat.',
+  'After connecting, the full Genudo toolset may only appear in a NEW task/chat',
+  '(hosts often snapshot tool lists at task start). Do not work around missing tools',
+  'with shell commands or by driving the connector manually — just tell the user to',
+  'start a new task.'
 ].join('\n');
 
 const CONNECT_TOOL = {
@@ -434,7 +438,7 @@ async function handleConnectCall(id) {
       await lazyConnect();
       notify('notifications/tools/list_changed');
       return console.log(JSON.stringify(toolText(id,
-        'Genudo is connected. All Genudo tools are now available — retry the user\'s original request.')));
+        'Genudo is connected and the token is saved. NOTE: some hosts (ChatGPT desktop/Codex) only load a server\'s tool list when a task starts, so the full Genudo toolset may not be visible in THIS task. If the Genudo tools (list_pipelines etc.) are not available to you right now, do NOT try to work around it — just tell the user: "Connected! Start a new task/chat and ask me again — the Genudo tools load there." In hosts that refresh tools live, simply retry the user\'s original request.')));
     } catch (e) {
       if (e.authError) {
         deleteSavedToken();

@@ -31,7 +31,7 @@ Then surface **open questions, assumptions, and conflicts** — don't guess busi
 
 ## Output
 
-Write the brief to `./genudo-build/<pipeline-slug>/spec.md` with sections matching the 7 topics
+Write the brief to `<workdir>/genudo-build/<pipeline-slug>/spec.md` with sections matching the 7 topics
 above, plus `open-questions.md`. Slugify the objective into a short pipeline name.
 (No filesystem? Keep the spec inline in the conversation.)
 

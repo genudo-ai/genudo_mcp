@@ -11,7 +11,7 @@ Design each stage as one observable step in the customer journey. Don't repeat g
 ## Before writing
 
 Call `get_instruction_guides` and follow the stage template (the 6-section structure + the
-token budget). Read the spec + the drafted persona/instructions from `./genudo-build/<pipeline-slug>/`.
+token budget). Read the spec + the drafted persona/instructions from `<workdir>/genudo-build/<pipeline-slug>/`.
 
 ## Per stage, write three fields
 
@@ -27,6 +27,6 @@ the **opening message** (see `configure-stage-opening-message`) if the stage sho
 
 ## Output
 
-Stage per-stage files under `./genudo-build/<pipeline-slug>/stages/<order>-<name>/`
+Stage per-stage files under `<workdir>/genudo-build/<pipeline-slug>/stages/<order>-<name>/`
 (`enter_condition.md`, `instructions.md`, optional `ai_persona.md`). Review the full set
 against the QA checklist, get approval, then hand off to `provision-pipeline`. No account writes here.

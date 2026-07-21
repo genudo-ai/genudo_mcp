@@ -1,7 +1,7 @@
 {
   "name": "genudo-desktop",
   "displayName": "Genudo - AI Workforce (Desktop)",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Genudo skills + agents for the Claude Desktop app, without the bundled MCP connector (Desktop's plugin upload can't collect a token). Pair it with the genudo.mcpb extension (Settings → Extensions), which prompts for your token. Also useful in Claude Code to add the connector per project (claude mcp add ... --scope local). 20 skills and 6 agents.",
   "author": {
     "name": "Genudo",

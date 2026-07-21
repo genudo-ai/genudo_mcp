@@ -11,8 +11,10 @@ Edit a live agent's four instruction fields — pipeline `persona`, pipeline `in
 ## Run the shipped playbook
 
 Call `get_editing_playbook` and follow it exactly; call `get_instruction_guides` for the
-authoring rules. The playbook is the source of truth for the load → stage → line-edit →
-diff → confirm → push workflow and the local file paths. Do not restate or diverge from it.
+authoring rules. The playbook is the source of truth for the load → mirror → stage →
+line-edit → diff → confirm → push → record workflow and the local file paths (the
+`pipelines/<slug>/` mirror, its `versions/` snapshots, and the staging root). Do not
+restate or diverge from it.
 
 ## The layer decision (get this right before editing)
 
@@ -29,3 +31,6 @@ diff → confirm → push workflow and the local file paths. Do not restate or d
 - Show a before/after diff **and** the expected business impact.
 - **Never** call `update_pipeline` / `update_stage` without an explicit "yes, push."
 - Pass only the changed fields.
+- After the push returns, record it in the version folder — `CHANGES.md` `**Status:**
+  PUSHED · <timestamp>` and `manifest.json`. A folder that reads the same before and
+  after a push cannot answer "did this ship?", which is the whole point of staging.

@@ -3393,6 +3393,8 @@ var require_lib2 = __commonJS({
 // guides.js
 var require_guides = __commonJS({
   "guides.js"(exports2, module2) {
+    var RAW_WORKDIR = process.env.GENUDO_WORKDIR || "";
+    var ROOT = (RAW_WORKDIR.includes("${") ? "" : RAW_WORKDIR.trim().replace(/\/+$/, "")) || ".";
     var WORKFLOW = `# Genudo Instruction Editing \u2014 Workflow
 
 You are editing the LIVE instructions of a Genudo AI agent. There is no
@@ -3409,10 +3411,19 @@ live agent without explicit user confirmation.
 | stage \`enter_condition\` (entry condition) | \`list_pipeline_stages\` | \`update_stage\` |
 | stage \`ai_persona\` (optional per-stage voice) | \`list_pipeline_stages\` | \`update_stage\` |
 
+## Where files go
+
+Staging root is \`${ROOT}\` \u2014 \`$GENUDO_WORKDIR\` when set, else the current directory.
+Every path below is relative to it.
+
+No local filesystem (Claude Desktop / plain web chat)? Skip every file, keep the
+before/after inline in the chat \u2014 you still owe the user a diff and a confirmation
+before push. Everything else in this workflow still applies.
+
 ## 0. Load the guides (once per session)
-- If a local \`./genudo-guides/\` folder with these guides does NOT exist,
-  call \`get_instruction_guides\` and write each returned guide to
-  \`./genudo-guides/<slug>.md\`. If it already exists, reuse it.
+- If \`${ROOT}/genudo-guides/\` with these guides does NOT exist, call
+  \`get_instruction_guides\` and write each returned guide to
+  \`${ROOT}/genudo-guides/<slug>.md\`. If it already exists, reuse it.
 - ALWAYS read the guides before editing.
 
 ## 1. Load the current instructions
@@ -3421,42 +3432,118 @@ live agent without explicit user confirmation.
 - Call \`list_pipeline_stages(pipeline_id)\`. For each stage it returns \`id\`, \`name\`,
   \`nature\`, \`order\`, \`instructions\`, \`enter_condition\`, and \`ai_persona\`.
 
-## 2. Stage the editable files (versioned + dated)
-- Create \`./instructions-updates/<pipeline-name-slug>_<YYYY-MM-DD>/v<N>/\` (next
-  unused version for that pipeline+date).
-- Write ONE markdown file per field you will touch, with the CURRENT value verbatim
-  first (this is the "before"). Stages have no slug \u2014 slugify the stage \`name\` and
-  prefix with the stage \`id\` so files stay unique:
-  - \`persona.md\`                              (pipeline persona)
-  - \`instructions.md\`                         (pipeline global instructions)
-  - \`stage-<id>-<name-slug>__instructions.md\`
-  - \`stage-<id>-<name-slug>__enter_condition.md\`
-  - \`stage-<id>-<name-slug>__ai_persona.md\`   (only if editing the stage's voice)
-- No local filesystem (Claude Desktop / web)? Skip the files, keep the before/after
-  inline in the chat \u2014 you still owe the user a diff and a confirmation before push.
+## 2. Write the local mirror
+The mirror is a browsable, offline copy of what the pipeline IS \u2014 someone opening the
+folder in Finder or an editor should understand the agent without the platform open.
+Write or refresh it from the data step 1 already returned, plus
+\`list_actions(pipeline_id)\` and \`list_variables(pipeline_id)\`:
 
-## 3. Edit line-by-line
+\`\`\`
+${ROOT}/pipelines/
+  <pipeline-name-slug>/          # named for the pipeline; identity lives INSIDE
+    _persona.md                  # the unit's own fields, "_" prefixed
+    _instructions.md
+    _actions.yaml
+    _variables.yaml
+    pipeline.yaml                # id, model, temperature, language, rag, channel\u2026
+    stages/
+      00_new-lead/               # NN = stage "order", zero-padded, so it sorts right
+        _instructions.md
+        stage.yaml               # id, name, nature, order, enter_condition, ai_persona
+      01_product-consultation/
+        _instructions.md
+        stage.yaml
+    versions/                    # snapshots \u2014 see step 3
+\`\`\`
+
+Rules that make the folder readable \u2014 follow them exactly:
+- **Prose stays prose.** \`persona\`, \`instructions\` and \`ai_persona\` are markdown
+  fields: write them to \`.md\` files verbatim. Never as JSON strings with escaped
+  newlines.
+- **Config stays structured.** Everything non-prose goes to YAML. Multi-line values
+  such as \`enter_condition\` use a block scalar:
+  \`enter_condition: |-\` then the lines indented \u2014 never \`"line one\\nline two"\`.
+- **The \`_\` prefix marks the unit's OWN fields.** \`_persona.md\`, \`_instructions.md\`,
+  \`_actions.yaml\`, \`_variables.yaml\` are the pipeline's content; \`pipeline.yaml\`,
+  \`stages/\` and \`versions/\` are its structure. Same convention at stage level.
+- **Identity lives in the file, not the folder name.** The folder is the pipeline name
+  slug; \`pipeline.yaml\` carries \`id:\`. On every refresh, reconcile BY ID first: if a
+  folder's \`pipeline.yaml\` holds this \`pipeline_id\` but the pipeline has since been
+  renamed, RENAME that folder \u2014 never leave two folders for one id.
+- Refresh the mirror again after a successful push, so it reflects what is live.
+
+## 3. Stage the edit as a version snapshot
+- Create the next unused \`${ROOT}/pipelines/<slug>/versions/v<NN>_<YYYY-MM-DD>/\`
+  (\`v01_2026-07-21\`, \`v02_\u2026\`; NN is a running counter for that pipeline, not per day).
+- Copy the WHOLE unit into it as it stands right now \u2014 \`_persona.md\`,
+  \`_instructions.md\`, \`_actions.yaml\`, \`_variables.yaml\`, \`pipeline.yaml\` and every
+  \`stages/NN_<slug>/\`. A version folder is a complete snapshot, not a delta: it must
+  read as that agent exactly as it behaved at that moment, with nothing to reconstruct.
+- For each field you will touch, write the proposed new text beside its "before" file
+  with \`.after\` inserted before the extension:
+  - \`_persona.md\` -> \`_persona.after.md\`
+  - \`_instructions.md\` -> \`_instructions.after.md\`
+  - \`stages/00_new-lead/_instructions.md\` -> \`stages/00_new-lead/_instructions.after.md\`
+  - \`stages/00_new-lead/stage.yaml\` -> \`stages/00_new-lead/stage.after.yaml\`
+    (for \`enter_condition\` / \`ai_persona\`)
+
+## 4. Edit line-by-line
 - Change ONLY the lines that must change (exact-string edits scoped to those lines).
   Don't rewrite whole files unless the user asked for a full rebuild/migration.
-- Follow the rules + templates in \`./genudo-guides/\` (authoring principles,
+- Follow the rules + templates in \`${ROOT}/genudo-guides/\` (authoring principles,
   persona/global structure, the stage 6-section structure, the QA checklist).
 
-## 4. Validate (before -> after + impact)
-- Produce, per edited field: a unified diff (before vs after) and an "Expected
-  impact" note in plain business language \u2014 what the agent will now do/say
-  differently, and any risk. Write it to \`CHANGES.md\` in the version folder (or
-  inline if there is no filesystem).
+## 5. Validate \u2014 CHANGES.md + manifest.json
+In the version folder write both. \`CHANGES.md\` is what a human reads; \`manifest.json\`
+is the same facts for any script, editor extension or CI that looks at the folder.
 
-## 5. Confirm
+\`CHANGES.md\` STARTS with a status line, so "did this ship?" is answered by opening one
+file rather than by diffing against the account:
+
+\`\`\`markdown
+# <Pipeline name> \u2014 instruction update v1
+**Status:** STAGED
+
+<per edited field: a unified diff (before vs after), then an "Expected impact" note in
+plain business language \u2014 what the agent will now do or say differently, and any risk.>
+\`\`\`
+
+\`manifest.json\` beside it:
+
+\`\`\`json
+{
+  "schema": 1,
+  "pipeline": { "id": 111, "name": "Hazem tech" },
+  "state": "staged",
+  "pushed_at": null,
+  "edits": [
+    { "target": "stage.instructions", "stage_id": 756,
+      "file": "stages/00_new-lead/_instructions.after.md",
+      "state": "staged", "response_ok": null }
+  ]
+}
+\`\`\`
+
+\`target\` is one of \`pipeline.persona\`, \`pipeline.instructions\`,
+\`stage.instructions\`, \`stage.enter_condition\`, \`stage.ai_persona\`.
+
+## 6. Confirm
 - Show the diff summary + expected impact and ASK: "Push these updates to the live
   agent?" Do NOT push without an explicit yes.
 
-## 6. Push (only after confirmation)
+## 7. Push (only after confirmation), then record it
 - Pipeline persona / global instructions \u2014 pass ONLY the fields you changed:
   \`update_pipeline(pipeline_id, { persona, instructions })\`
 - Each edited stage \u2014 pass ONLY the fields you changed:
   \`update_stage(stage_id, { instructions, enter_condition, ai_persona })\`
 - These fields store markdown verbatim, so headings (##) and line breaks are kept.
+- IMMEDIATELY after the calls return, record the outcome \u2014 a version folder that looks
+  identical before and after a push is the bug this prevents:
+  - \`CHANGES.md\`: \`**Status:** PUSHED \xB7 <YYYY-MM-DD HH:MM> UTC\`
+  - \`manifest.json\`: \`state\`, \`pushed_at\`, and each edit's \`state\` + \`response_ok\`
+  - Partial push (some calls failed)? Set per-edit state and mark the folder
+    \`PARTIAL\` \u2014 never one folder-level flag that hides a half-applied change.
+- Refresh the live mirror files (step 2) so the pipeline folder matches the account.
 - Report exactly what was pushed; leave the version folder as the record.`;
     var AUTHORING = `# Genudo Instruction Authoring \u2014 Principles
 
@@ -3596,7 +3683,7 @@ success proof.`;
       },
       {
         name: "get_editing_playbook",
-        description: "Return the step-by-step safe editing workflow for live Genudo agent instructions (load current text with list_pipelines/list_pipeline_stages -> stage versioned files -> line-edit -> diff + expected impact -> confirm -> push with update_pipeline/update_stage). Static, client-side \u2014 no account data.",
+        description: "Return the step-by-step safe editing workflow for live Genudo agent instructions (load current text with list_pipelines/list_pipeline_stages -> write the local pipeline mirror -> stage a version snapshot -> line-edit -> diff + expected impact -> confirm -> push with update_pipeline/update_stage -> record PUSHED status). Also defines the local folder layout (pipelines/<slug>/ with stages/ and versions/, rooted at $GENUDO_WORKDIR). Static, client-side \u2014 no account data.",
         inputSchema: { type: "object", properties: {}, additionalProperties: false }
       }
     ];
@@ -3609,7 +3696,7 @@ success proof.`;
               type: "text",
               text: JSON.stringify(
                 {
-                  note: "Write each guide to ./genudo-guides/<slug>.md (once per session) and read them before editing. Real fields: pipeline persona+instructions (via list_pipelines/update_pipeline); stage instructions+enter_condition+ai_persona (via list_pipeline_stages/update_stage).",
+                  note: `Write each guide to ${ROOT}/genudo-guides/<slug>.md (once per session) and read them before editing. Real fields: pipeline persona+instructions (via list_pipelines/update_pipeline); stage instructions+enter_condition+ai_persona (via list_pipeline_stages/update_stage).`,
                   guides: INSTRUCTION_GUIDES
                 },
                 null,
@@ -3663,10 +3750,11 @@ success proof.`;
 
 1. Call get_instruction_guides and get_editing_playbook, then read them.
 2. Load current text: list_pipelines gives the pipeline persona + instructions; list_pipeline_stages(pipeline_id) gives each stage id, name, instructions, enter_condition, ai_persona.
-3. Stage versioned "before" files (or keep before/after inline if there is no filesystem).
+3. Write the local pipeline mirror, then stage a full version snapshot with the ".after" files (or keep before/after inline if there is no filesystem).
 4. Change only the lines that must change, following the guides.
 5. Show me a before/after diff plus the expected business impact.
 6. Only after I explicitly say yes, push with update_pipeline(pipeline_id, {persona, instructions}) and/or update_stage(stage_id, {instructions, enter_condition, ai_persona}), changed fields only.
+7. Then record the outcome: CHANGES.md **Status:** PUSHED + manifest.json state, and refresh the mirror.
 Never push without my confirmation.`
             )
           ]
@@ -3713,6 +3801,7 @@ Then call get_instruction_guides and grade the persona/instructions/stages again
       return null;
     }
     module2.exports = {
+      ROOT,
       INSTRUCTION_GUIDES,
       EDITING_PLAYBOOK,
       LOCAL_TOOLS,
@@ -3730,7 +3819,7 @@ var require_package = __commonJS({
   "package.json"(exports2, module2) {
     module2.exports = {
       name: "genudo-mcp-client",
-      version: "2.3.2",
+      version: "2.4.0",
       description: "Connect Claude to Genudo \u2014 the platform to build AI agents for any communication or sequence-based channel. Create and manage pipeline-aware agents with integrations and company-knowledge access, from one platform, one inbox, and one analytics dashboard.",
       mcpName: "io.github.genudo-ai/genudo_mcp",
       main: "index.js",
@@ -3840,6 +3929,7 @@ function isRetryableStatus(status) {
 function isAuthError(status) {
   return status === 401 || status === 403;
 }
+var WORKDIR_HINT = guides.ROOT === "." ? "the current working directory (set GENUDO_WORKDIR to pin it to one stable folder)" : `${guides.ROOT} (from GENUDO_WORKDIR)`;
 var SERVER_INSTRUCTIONS = [
   "Genudo MCP: control + analytics for AI sales/support pipelines (pipelines, stages, actions/webhooks, variables, contacts, opportunities, messages, knowledge tables, follow-ups, analytics). 29 tools, read + write.",
   "",
@@ -3858,10 +3948,11 @@ var SERVER_INSTRUCTIONS = [
   "3. create_pipeline: if is_model_routing_enabled=true, model_pool is required with exactly 4 tiers (router, simple, moderate, complex). persona + instructions drive quality \u2014 ask the user for a 1-2 sentence business description, then offer to write them.",
   "4. create_stage nature in {neutral, won, lost}. create_action fixed_trigger in {stage_started, on_any_message, on_user_message, custom}; omit stage_id for a pipeline-wide action.",
   "5. Immutable after create: pipeline agent_type; action fixed_trigger can only change to on_user_message/custom on update; update_opportunities stage moves must stay within the same pipeline; update_variable name change is ignored once actions reference the variable.",
-  "6. Editing instructions is a WRITE to a live agent: before touching any pipeline persona/instructions or stage instructions/enter_condition/ai_persona, call get_instruction_guides (rules+templates) and get_editing_playbook (safe load->edit->diff->confirm->push). Never push update_pipeline/update_stage without showing a before/after diff and getting explicit user confirmation. Prompts (slash-commands): edit_instructions, build_pipeline, audit_pipeline.",
+  "6. Editing instructions is a WRITE to a live agent: before touching any pipeline persona/instructions or stage instructions/enter_condition/ai_persona, call get_instruction_guides (rules+templates) and get_editing_playbook (safe load->mirror->stage->edit->diff->confirm->push->record). Never push update_pipeline/update_stage without showing a before/after diff and getting explicit user confirmation. After a push, record the outcome in the staged version folder (CHANGES.md Status + manifest.json) so staged and shipped stay distinguishable. Prompts (slash-commands): edit_instructions, build_pipeline, audit_pipeline.",
   "7. Knowledge rows: every row needs a stable default_id (upsert matches on it) and a value for EVERY column of the table. There is no table-delete tool \u2014 only delete_knowledge_points for rows.",
   "8. Follow-ups: each stage holds at most ONE followup. update_followup intervals REPLACE the whole schedule \u2014 send the full list, not a delta.",
   "9. Not exposed (do not attempt): deleting pipelines/stages/actions/variables, sending manual messages, reading plan limits.",
+  `10. Local working files (pipeline mirrors, build drafts, version snapshots, cached guides) go under ONE staging root: ${WORKDIR_HINT}. Wherever a skill or guide writes "<workdir>/..." \u2014 e.g. <workdir>/genudo-build/<pipeline>/ or <workdir>/pipelines/<pipeline>/ \u2014 "<workdir>" means that root. Never create a literal "<workdir>" folder, and never scatter these files wherever the session happened to start.`,
   "",
   "Confirm before bulk writes (update_opportunities is bulk) and before delete_knowledge_points. The backend can be slow on the first call \u2014 retries are automatic."
 ].join("\n");

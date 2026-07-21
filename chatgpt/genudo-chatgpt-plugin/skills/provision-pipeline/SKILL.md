@@ -9,7 +9,7 @@ Turn the approved local spec into a live pipeline. This skill writes to the acco
 
 ## Preconditions
 
-The `./genudo-build/<pipeline-slug>/` folder has `spec.md`, `persona.md`, `instructions.md`, and
+The `<workdir>/genudo-build/<pipeline-slug>/` folder has `spec.md`, `persona.md`, `instructions.md`, and
 `stages/…`. If anything is missing, route back to `discover-pipeline-requirements` /
 `author-pipeline-brain` / `author-stages`.
 
@@ -28,5 +28,5 @@ The `./genudo-build/<pipeline-slug>/` folder has `spec.md`, `persona.md`, `instr
 
 ## After
 
-Write `./genudo-build/<pipeline-slug>/build-log.md` with every created object and its ID. Report
+Write `<workdir>/genudo-build/<pipeline-slug>/build-log.md` with every created object and its ID. Report
 what went live. Never claim creation without a confirming tool result; on failure, stop and report.

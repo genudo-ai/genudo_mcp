@@ -3,7 +3,7 @@
   "name": "io.github.genudo-ai/genudo_mcp",
   "title": "Genudo",
   "description": "Build & manage Genudo AI agents for any messaging channel \u2014 pipelines, integrations, knowledge.",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "repository": {
     "url": "https://github.com/genudo-ai/genudo_mcp",
     "source": "github"
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "genudo-mcp-client",
-      "version": "2.3.2",
+      "version": "2.4.0",
       "transport": {
         "type": "stdio"
       },

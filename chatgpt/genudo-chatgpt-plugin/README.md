@@ -26,7 +26,7 @@ Codex CLI instead: `codex plugin marketplace add genudo-ai/chatgpt-plugin`.
 
 **Manual server (advanced, editable config):** instead of (or besides) the plugin's
 bundled connector, add a standalone server in Settings → MCPs → "+ Add server",
-Type STDIO. Either Command `npx` with Arguments `-y`, `genudo-mcp-client@2.3.2`
+Type STDIO. Either Command `npx` with Arguments `-y`, `genudo-mcp-client@2.4.0`
 (needs working npm), or Command `node` with one Argument = the full path to this
 plugin's `connector/index.js` (no npm needed). Env `GENUDO_TOKEN` is optional —
 skip it and the "Connect Genudo" flow takes over. Plugin-bundled servers appear

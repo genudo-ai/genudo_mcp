@@ -11,7 +11,7 @@ token is paid on every message.
 ## Before writing
 
 Call `get_instruction_guides` (authoring principles, the persona/global template, the
-token-aware QA checklist) and follow it. Read the spec from `./genudo-build/<pipeline-slug>/spec.md`.
+token-aware QA checklist) and follow it. Read the spec from `<workdir>/genudo-build/<pipeline-slug>/spec.md`.
 
 ## persona — identity + voice ONLY
 
@@ -30,6 +30,6 @@ succeeded without confirmation; keep secrets (stage names, tools) hidden from th
 
 ## Output
 
-Stage `./genudo-build/<pipeline-slug>/persona.md` and `.../instructions.md` (the "before build"
+Stage `<workdir>/genudo-build/<pipeline-slug>/persona.md` and `.../instructions.md` (the "before build"
 versions). Show both drafts, run the QA checklist, and get approval. Then hand off to
 `author-stages`. Do not push to the account here.

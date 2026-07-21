@@ -72,6 +72,12 @@ function isAuthError(status) {
 // (Claude Code, Codex, Cursor, ...) inject this into the model's context, so it
 // teaches any client how to get value fast and avoid the common failure modes —
 // without the user having to write prompts. Keep it concise and high-signal.
+// Where the agent writes local working files. `guides.ROOT` resolves $GENUDO_WORKDIR.
+const WORKDIR_HINT =
+  guides.ROOT === '.'
+    ? 'the current working directory (set GENUDO_WORKDIR to pin it to one stable folder)'
+    : `${guides.ROOT} (from GENUDO_WORKDIR)`;
+
 const SERVER_INSTRUCTIONS = [
   'Genudo MCP: control + analytics for AI sales/support pipelines (pipelines, stages, actions/webhooks, variables, contacts, opportunities, messages, knowledge tables, follow-ups, analytics). 29 tools, read + write.',
   '',
@@ -90,10 +96,11 @@ const SERVER_INSTRUCTIONS = [
   '3. create_pipeline: if is_model_routing_enabled=true, model_pool is required with exactly 4 tiers (router, simple, moderate, complex). persona + instructions drive quality — ask the user for a 1-2 sentence business description, then offer to write them.',
   '4. create_stage nature in {neutral, won, lost}. create_action fixed_trigger in {stage_started, on_any_message, on_user_message, custom}; omit stage_id for a pipeline-wide action.',
   '5. Immutable after create: pipeline agent_type; action fixed_trigger can only change to on_user_message/custom on update; update_opportunities stage moves must stay within the same pipeline; update_variable name change is ignored once actions reference the variable.',
-  '6. Editing instructions is a WRITE to a live agent: before touching any pipeline persona/instructions or stage instructions/enter_condition/ai_persona, call get_instruction_guides (rules+templates) and get_editing_playbook (safe load->edit->diff->confirm->push). Never push update_pipeline/update_stage without showing a before/after diff and getting explicit user confirmation. Prompts (slash-commands): edit_instructions, build_pipeline, audit_pipeline.',
+  '6. Editing instructions is a WRITE to a live agent: before touching any pipeline persona/instructions or stage instructions/enter_condition/ai_persona, call get_instruction_guides (rules+templates) and get_editing_playbook (safe load->mirror->stage->edit->diff->confirm->push->record). Never push update_pipeline/update_stage without showing a before/after diff and getting explicit user confirmation. After a push, record the outcome in the staged version folder (CHANGES.md Status + manifest.json) so staged and shipped stay distinguishable. Prompts (slash-commands): edit_instructions, build_pipeline, audit_pipeline.',
   '7. Knowledge rows: every row needs a stable default_id (upsert matches on it) and a value for EVERY column of the table. There is no table-delete tool — only delete_knowledge_points for rows.',
   '8. Follow-ups: each stage holds at most ONE followup. update_followup intervals REPLACE the whole schedule — send the full list, not a delta.',
   '9. Not exposed (do not attempt): deleting pipelines/stages/actions/variables, sending manual messages, reading plan limits.',
+  `10. Local working files (pipeline mirrors, build drafts, version snapshots, cached guides) go under ONE staging root: ${WORKDIR_HINT}. Wherever a skill or guide writes "<workdir>/..." — e.g. <workdir>/genudo-build/<pipeline>/ or <workdir>/pipelines/<pipeline>/ — "<workdir>" means that root. Never create a literal "<workdir>" folder, and never scatter these files wherever the session happened to start.`,
   '',
   'Confirm before bulk writes (update_opportunities is bulk) and before delete_knowledge_points. The backend can be slow on the first call — retries are automatic.'
 ].join('\n');

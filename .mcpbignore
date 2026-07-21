@@ -15,6 +15,9 @@ mcp-publisher/**
 server.json
 package-lock.json
 test_retry.js
+test_workdir.js
+scripts
+scripts/**
 CHANGELOG.md
 CONTRIBUTING.md
 CODE_OF_CONDUCT.md

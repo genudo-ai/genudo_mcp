@@ -37,4 +37,4 @@ exists, you will `update_followup` (it returns the `followup_id`); if not, `crea
 
 Show the user the sequence (timing, drafting angle, assets, after-move) as a table and get an
 explicit yes before pushing. Save the design to
-`./genudo-build/<pipeline>/followups/<stage>/sequence.md` when working in a filesystem.
+`<workdir>/genudo-build/<pipeline>/followups/<stage>/sequence.md` when working in a filesystem.

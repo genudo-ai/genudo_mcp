@@ -86,6 +86,37 @@ Code**; the bundled connector runs on Desktop/Code — web/mobile need option �
 **Coming:** the same plugin, publicly searchable in Claude's **Browse plugins** directory
 (submitted, pending review).
 
+### Plugin global, connector per project — agencies & multi-account users
+
+Working across several Genudo accounts from one machine? You want the **skills and agents
+everywhere**, but a **different token in each client's project**. The bundled connector in ①
+is one global server with one token — the opposite. Install the **`genudo-desktop`** plugin
+instead: identical 20 skills and 6 agents, **no bundled connector**, nothing to strip out.
+
+**1. Plugin — global, once:**
+```
+/plugin marketplace add genudo-ai/genudo_mcp
+/plugin install genudo-desktop@genudo-ai
+```
+No token prompt — it has no connector to authenticate.
+
+**2. Connector — from inside each client's project directory:**
+```
+claude mcp add --scope local --env GENUDO_TOKEN=CLIENT_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.4.0
+```
+`--scope local` keeps the server private to you and to that directory, and the token never
+touches the repo. Use `--scope project` instead to write a shared `.mcp.json` for that client's
+team — pass `--env GENUDO_TOKEN=${GENUDO_TOKEN}` so the literal token stays out of git and each
+teammate supplies their own.
+
+Verify from inside the project: `claude mcp list`. The server name `genudo` is free —
+`genudo-desktop` registers no MCP server, so there's no collision with the per-project one.
+
+| | Scope | Token |
+|---|---|---|
+| Skills + agents (`genudo-desktop`) | user / global — every project | none |
+| Connector (`genudo`) | local — that project only | that client's |
+
 ---
 
 ## ② Connector (MCP) — tools + guidance, you steer ★★★☆☆
@@ -95,7 +126,7 @@ The published `genudo-mcp-client` bridge: **29 tools** + a guidance preamble + t
 
 **Claude Code — one command:**
 ```
-claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.2.1
+claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.4.0
 ```
 
 **Any MCP client — JSON config:**
@@ -104,7 +135,7 @@ claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y 
   "mcpServers": {
     "genudo": {
       "command": "npx",
-      "args": ["-y", "genudo-mcp-client@2.2.1"],
+      "args": ["-y", "genudo-mcp-client@2.4.0"],
       "env": { "GENUDO_TOKEN": "your_token_here" }
     }
   }
@@ -182,10 +213,11 @@ sequences, knowledge base) — no reinstall needed.
 | Full experience (Code) | `/plugin marketplace add genudo-ai/genudo_mcp` → `/plugin install genudo@genudo-ai` |
 | Full experience (claude.ai) | Add marketplace `genudo-ai/genudo_mcp` → Browse plugins → Install |
 | Full experience (offline file) | Upload `genudo-plugin.zip` |
-| Tools only (Code) | `claude mcp add --env GENUDO_TOKEN=TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.2.1` |
+| Tools only (Code) | `claude mcp add --env GENUDO_TOKEN=TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.4.0` |
 | Tools only (Desktop, one-click) | Install `genudo.mcpb` |
 | Tools only (other client) | Add the JSON block from option ② |
 | Desktop app (full experience) | Upload `genudo-plugin-desktop.zip` (Plugins) + install `genudo.mcpb` (Extensions) |
+| Global skills, token per client project | `/plugin install genudo-desktop@genudo-ai`, then `claude mcp add --scope local ...` in each project |
 | Get a token | See [Get a token](#get-a-token) |
 
 ---

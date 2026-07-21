@@ -5,6 +5,38 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2026-07-21
+
+### Added
+- **Local pipeline mirror.** The editing playbook now has the agent write a browsable
+  offline copy of each pipeline — `pipelines/<slug>/` with `_persona.md`,
+  `_instructions.md`, `_actions.yaml`, `_variables.yaml`, `pipeline.yaml` and
+  `stages/NN_<slug>/` — refreshed after every push. Prose fields stay markdown; config
+  stays YAML with block scalars instead of escaped-newline strings. A pipeline folder is
+  readable in Finder or any editor without the platform open.
+- **Complete version snapshots.** `versions/vNN_<date>/` now holds the whole unit as it
+  stood, not only the edited fields, so any version reads on its own.
+- **Push state visible in the folder.** `CHANGES.md` opens with `**Status:** STAGED`,
+  flipped to `PUSHED · <timestamp>` (or `PARTIAL`, with per-edit state) the moment the
+  update calls return. Previously a version folder looked identical before and after a
+  push, so "did this ship?" could only be answered by re-reading the account.
+- **`manifest.json`** beside `CHANGES.md` — the same facts machine-readable
+  (`schema`, `pipeline`, `state`, `pushed_at`, per-edit `target`/`file`/`state`/`response_ok`)
+  for scripts, editor extensions and CI.
+- **`GENUDO_WORKDIR`** — anchors every local path (mirrors, build drafts, version
+  snapshots, cached guides) to one stable folder instead of wherever the agent started.
+  Falls back to the current directory. Exposed as a `Working folder` option in the
+  Claude Desktop extension.
+- **`<field>.after.md` / `<field>.after.yaml`** specified for proposed text, so agents
+  stop inventing their own after-file names.
+
+### Changed
+- Pipeline folders are named for the pipeline; identity lives in `pipeline.yaml` (`id`).
+  On refresh the agent reconciles by id and renames a stale folder rather than leaving
+  two folders for one pipeline.
+- Plugin READMEs point at `get_editing_playbook` instead of restating the staging paths,
+  which had already drifted from it.
+
 ## [2.2.1] - 2026-07-09
 
 ### Fixed

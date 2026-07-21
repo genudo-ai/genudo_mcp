@@ -30,5 +30,5 @@ composes three skills into one coherent change.
 
 ## Output
 
-Write `./genudo-build/<pipeline>/automation-map.md` (or inline) recording the trigger, the
+Write `<workdir>/genudo-build/<pipeline>/automation-map.md` (or inline) recording the trigger, the
 variables, the action, and the success/failure messaging.

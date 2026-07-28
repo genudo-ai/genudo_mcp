@@ -1,51 +1,45 @@
-# Getting Started — Genudo Plugin (Desktop / per-project build)
+# Getting Started — Genudo Plugin (no-connector build)
 
 Build, edit, and analyze your Genudo AI sales/support agents from Claude.
 
-This build carries the skills and agents only — you add the connector yourself, in step 2.
+This build carries the skills and agents only — you connect Genudo yourself, in step 2.
+There is **no token to create**: the Genudo connector uses OAuth, so you approve access
+in your browser.
 
-## 1. Get your token
+## 1. Install the skills
 
-1. Log in at [app.genudo.ai](https://app.genudo.ai).
-2. Sidebar → **Developer** → **API Keys & Tokens** → **Create token**.
-3. Name it (e.g. `claude-mcp`), scroll **Scopes** and check **`mcp:use`**, pick an
-   **Expiry** (30/90 days, 1 year, or No Expiry).
-4. **Create token** and copy it right away — **it's shown only once**.
+**Claude Desktop / claude.ai:** Settings → **Plugins** → **Add** → **Upload plugin** →
+drop `genudo-plugin-no-connector.zip`.
 
-Running several Genudo accounts? Create one token per account and keep them apart —
-step 2's Claude Code path gives each project its own.
-
-## 2. Install — pick your surface
-
-### Claude Desktop app
-
-The Desktop app's plugin upload doesn't ask for a token, so install two pieces:
-
-1. **Skills + agents** — Settings → **Plugins** → **Add** → **Upload plugin** → drop
-   `genudo-plugin-desktop.zip`.
-2. **Connector** — Settings → **Extensions** → install `genudo.mcpb` → paste your token
-   when prompted.
-
-### Claude Code — global skills, connector per project
+**Claude Code:**
 
 ```
 /plugin marketplace add genudo-ai/genudo_mcp
-/plugin install genudo-desktop@genudo-ai
+/plugin install genudo-no-connector@genudo-ai
 ```
 
-Then, inside each client's project directory:
+## 2. Connect Genudo — pick your surface
+
+### Claude Desktop / claude.ai
+
+Settings → **Connectors** → *Add custom connector* → URL `https://api.genudo.ai/mcp`,
+then sign in when prompted. (The `genudo.mcpb` extension still works if you prefer it.)
+
+### Claude Code — global skills, connector per project
+
+Inside each client's project directory:
 
 ```
-claude mcp add --scope local --env GENUDO_TOKEN=CLIENT_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.4.0
+claude mcp add --transport http genudo https://api.genudo.ai/mcp --scope project
 ```
 
-`--scope local` keeps the server and its token private to you and to that directory, so
-opening a different client's project reaches a different Genudo account. Check with
-`claude mcp list`.
+Each directory signs in separately, so opening a different client's project reaches a
+different Genudo account — no tokens to keep apart. `--scope project` writes it to that
+directory's `.mcp.json` (shared with the team); `--scope local` keeps it private to you.
+Check with `claude mcp list`.
 
-*(One account only? Install the main `genudo` plugin instead — connector bundled, prompts for
-your token. On claude.ai / Cowork, upload `genudo-plugin.zip`. Web and mobile tool access
-aren't supported yet.)*
+*(Want the connector bundled instead? Install the main `genudo` plugin. On claude.ai /
+Cowork, upload `genudo-plugin.zip`.)*
 
 ## Use it
 
@@ -69,12 +63,13 @@ run in **Cowork** for hands-off, multi-step work.
 
 ## Trouble?
 
-- **Skills run but nothing reads your account** → no connector attached. Desktop: install
-  `genudo.mcpb`. Code: run the `claude mcp add` above from inside the project.
-- **"tool not found" / stale behaviour** → re-upload the latest zip (Replace); if it
-  persists, clear the npx cache: `rm -rf ~/.npm/_npx`.
-- **401 / not connected** → your token is wrong or expired. Desktop: reinstall the extension
-  with a fresh token. Code: `claude mcp remove genudo` in that project, then re-add.
+- **Skills run but nothing reads your account** → no connector attached. Desktop: add the
+  custom connector. Code: run the `claude mcp add` above from inside the project.
+- **"tool not found" / stale behaviour** → re-upload the latest zip (Replace), then start a
+  new chat (hosts load a server's tool list when a chat starts).
+- **401 / not connected** → your sign-in expired or was revoked. Reconnect the Genudo server
+  to run the browser sign-in again; in Code, `claude mcp remove genudo` in that project then
+  re-add.
 - **Wrong client's data** → you're in the wrong directory, or the connector was added with
   `--scope user`. `claude mcp list` shows which is in play.
 

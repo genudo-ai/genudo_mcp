@@ -1,7 +1,7 @@
 {
   "name": "genudo",
-  "version": "1.3.0",
-  "description": "Genudo \u2014 the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integration capabilities and company-knowledge access, managed from one platform, one inbox, and one analytics dashboard. This plugin builds, edits, automates, and analyzes them from ChatGPT and Codex with 26 skills and the Genudo connector.",
+  "version": "2.0.0",
+  "description": "Genudo \u2014 the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integration capabilities and company-knowledge access, managed from one platform, one inbox, and one analytics dashboard. This plugin builds, edits, automates, and analyzes them from ChatGPT and Codex with 28 skills and the Genudo connector.",
   "author": {
     "name": "Genudo",
     "email": "help@genudo.ai",
@@ -22,16 +22,14 @@
   "skills": "./skills/",
   "mcpServers": {
     "genudo": {
-      "command": "node",
-      "args": [
-        "${PLUGIN_ROOT}/connector/index.js"
-      ]
+      "url": "https://api.genudo.ai/mcp",
+      "auth": "oauth"
     }
   },
   "interface": {
     "displayName": "Genudo - AI Workforce",
     "shortDescription": "Build and manage pipeline-aware AI sales/support agents",
-    "longDescription": "Genudo is the platform to build AI agents for any communication or sequence-based channel \u2014 WhatsApp, Messenger, Instagram, LinkedIn, email, and more. Build pipeline-aware agents with integration capabilities (webhooks to your CRM, Zapier, Make, or n8n) and company-knowledge access, all managed from one platform, one inbox, and one analytics dashboard. This plugin lets ChatGPT and Codex create, edit, automate, and analyze those agents end to end: 29 connector tools plus 26 skills covering discovery, authoring, provisioning, automation wiring, knowledge-base curation, diagnosis, and reporting.",
+    "longDescription": "Genudo is the platform to build AI agents for any communication or sequence-based channel \u2014 WhatsApp, Messenger, Instagram, LinkedIn, email, and more. Build pipeline-aware agents with integration capabilities (webhooks to your CRM, Zapier, Make, or n8n) and company-knowledge access, all managed from one platform, one inbox, and one analytics dashboard. This plugin lets ChatGPT and Codex create, edit, automate, and analyze those agents end to end: 29 connector tools plus 28 skills covering discovery, authoring, provisioning, automation wiring, knowledge-base curation, diagnosis, and reporting.",
     "developerName": "Genudo",
     "category": "Productivity",
     "capabilities": [

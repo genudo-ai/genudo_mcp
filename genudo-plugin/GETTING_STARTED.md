@@ -2,26 +2,18 @@
 
 Build, edit, and analyze your Genudo AI sales/support agents from Claude.
 
-## 1. Get your token
+## 1. Install
 
-1. Log in at [app.genudo.ai](https://app.genudo.ai).
-2. Sidebar → **Developer** → **API Keys & Tokens** → **Create token**.
-3. Name it (e.g. `claude-mcp`), scroll **Scopes** and check **`mcp:use`**, pick an
-   **Expiry** (30/90 days, 1 year, or No Expiry).
-4. **Create token** and copy it right away — **it's shown only once**.
+Settings → **Plugins** → **Add** → **Upload plugin** → drop `genudo-plugin.zip`.
 
-## 2. Install (Claude Desktop app)
+*(On claude.ai / Cowork: Customize → Personal plugins → **+** → **Upload plugin**.
+In Claude Code: add this repo as a marketplace, then `/plugin install genudo`.)*
 
-The Desktop app's plugin upload doesn't ask for a token, so install two pieces:
+## 2. Sign in
 
-1. **Skills + agents** — Settings → **Plugins** → **Add** → **Upload plugin** → drop
-   `genudo-plugin-desktop.zip`.
-2. **Connector** — Settings → **Extensions** → install `genudo.mcpb` → paste your token
-   when prompted.
-
-*(On claude.ai / Cowork, upload `genudo-plugin.zip` instead — Customize → Personal plugins →
-**+** → **Upload plugin** — and paste your token when prompted. Web and mobile tool access
-aren't supported yet.)*
+There is **no token to create**. The first time a Genudo tool is used, Claude opens
+your browser and asks you to approve access to your Genudo account. Approve it once
+and you're connected — the plugin ships the connector, so nothing else to install.
 
 ## Use it
 
@@ -45,9 +37,9 @@ run in **Cowork** for hands-off, multi-step work.
 
 ## Trouble?
 
-- **"tool not found" / stale behaviour** → re-upload the latest zip (Replace); if it
-  persists, clear the npx cache: `rm -rf ~/.npm/_npx`.
-- **401 / not connected** → your token is wrong or expired; remove the plugin fully,
-  re-upload, and enter a fresh token.
+- **"tool not found" / stale behaviour** → re-upload the latest zip (Replace), then
+  start a new chat (hosts load a server's tool list when a chat starts).
+- **401 / not connected** → your sign-in expired or was revoked. Reconnect the Genudo
+  server from the connector/MCP settings to run the browser sign-in again.
 
 Help: help@genudo.ai

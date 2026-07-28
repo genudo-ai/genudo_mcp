@@ -13,7 +13,7 @@ Operating procedure:
    channel, products/services, conversation flow, stages, per-stage data, and automations.
    Do not assume business facts; surface open questions.
 2. **Author the brain** — run `author-pipeline-brain`: draft the persona (identity + voice) and
-   the global instructions (cross-stage behaviour). Call `get_instruction_guides` and follow it.
+   the global instructions (cross-stage behaviour). Run the `instruction-guides` skill and follow it.
 3. **Author stages** — run `author-stages`: per stage, write the entry condition, the in-stage
    flow, required data, opening message, and nature. Short, use-case-relevant names.
 4. **Automations** — where a stage needs to push data out, run `wire-stage-automation`

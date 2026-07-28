@@ -6,12 +6,12 @@ description: Translate a captured legacy pipeline spec into the current Genudo a
 # Migrate: Map Legacy to New Approach
 
 Re-author the legacy spec against the current templates. The current approach IS the spec:
-`get_instruction_guides` (templates + rules) plus the `author-pipeline-brain` and
+the `instruction-guides` skill (templates + rules) plus the `author-pipeline-brain` and
 `author-stages` rubrics. Never paste legacy text into new fields unchanged.
 
 ## Steps
 
-1. Call `get_instruction_guides`; load `./genudo-migrate/<pipeline-slug>/legacy-spec.md`.
+1. Run the `instruction-guides` skill; load `./genudo-migrate/<pipeline-slug>/legacy-spec.md`.
 2. **Persona + global instructions** — re-author per `author-pipeline-brain`: identity and
    voice into the persona; cross-stage behaviour, grounding, style, and escalation into the
    global instructions. Old stage-level text that is really global (repeated safety lines,

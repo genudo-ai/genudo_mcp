@@ -5,6 +5,49 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2026-07-28
+
+### Changed
+- **Streamable HTTP transport.** The bridge now POSTs every JSON-RPC message straight to
+  `{BASE_URL}/mcp`. The old two-step SSE flow (`GET /api/user/mcp/sse` → `endpoint` event →
+  POST to the returned URL) is gone; the backend retired that route and it now returns 404
+  on both production and staging, so **2.4.0 and earlier can no longer reach Genudo** —
+  upgrading is mandatory, not optional.
+- Backend handshake is a single `initialize` POST. An `Mcp-Session-Id` returned by the
+  server is echoed on later requests; the current backend is stateless and returns none.
+- Replies are read as either JSON or a single SSE-framed message, whichever the server
+  sends.
+- `.env.example` now states the required token scope as `mcp:use` (was `mcp:access`) and
+  names the endpoint the token is sent to.
+
+### Removed
+- The `eventsource` dependency, and with it the SSE reconnect-storm guard and its
+  `GENUDO_MAX_RECONNECTS` setting — a request/response transport has no connection to
+  storm on. `node-fetch` is now the only runtime dependency.
+
+### Plugins (all trees → 2.0.0)
+
+- **The connector is now the hosted server**, declared as `{"type": "http", "url":
+  "https://api.genudo.ai/mcp"}` for Claude and `{"url": ..., "auth": "oauth"}` for
+  ChatGPT/Codex. Users sign in through the browser — **no token to create or paste**, no
+  Node, no local process, and it works in Claude web chat, which a local bridge never could.
+  `userConfig.token` / `userConfig.base_url` are gone from the Claude plugin.
+- **Two new skills, `instruction-guides` and `editing-playbook`**, carrying the same text the
+  bridge's `get_instruction_guides` / `get_editing_playbook` tools return. The 4 skills and
+  2 agents that used to call those tools now run these skills, so the plugins no longer
+  depend on the stdio bridge being the connector. 20 skills → 22 (ChatGPT: 26 → 28).
+- **`genudo-plugin-desktop` → `genudo-plugin-no-connector`, plugin id `genudo-desktop` →
+  `genudo-no-connector`.** Its original reason to exist (Desktop's plugin upload can't collect
+  a token) disappeared with OAuth; it is now simply the no-connector build, for when you
+  connect Genudo yourself — e.g. a different account per project via
+  `claude mcp add --transport http genudo https://api.genudo.ai/mcp --scope project`.
+  **Breaking:** the old id no longer resolves. Existing users run
+  `/plugin uninstall genudo-desktop@genudo-ai` then `/plugin install genudo-no-connector@genudo-ai`.
+  The distributed zip is renamed to `genudo-plugin-no-connector.zip`.
+- **The vendored ChatGPT connector bundle is gone** (`chatgpt/genudo-chatgpt-plugin/
+  connector/index.js`, 440K of bundled Node) along with the rule to rebuild it after every
+  bridge change. Regenerate with `scripts/build-chatgpt-connector.sh` if ever needed.
+
 ## [2.4.0] - 2026-07-21
 
 ### Added

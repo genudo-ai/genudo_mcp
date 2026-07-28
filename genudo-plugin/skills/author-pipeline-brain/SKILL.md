@@ -10,7 +10,7 @@ token is paid on every message.
 
 ## Before writing
 
-Call `get_instruction_guides` (authoring principles, the persona/global template, the
+Run the `instruction-guides` skill (authoring principles, the persona/global template, the
 token-aware QA checklist) and follow it. Read the spec from `<workdir>/genudo-build/<pipeline-slug>/spec.md`.
 
 ## persona — identity + voice ONLY

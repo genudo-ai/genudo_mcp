@@ -1,22 +1,21 @@
-# Genudo Plugin for Claude — Desktop / per-project build
+# Genudo Plugin for Claude — no-connector build
 
 Genudo is the platform to build AI agents for any communication or sequence-based channel —
 pipeline-aware agents with integration capabilities and company-knowledge access, all managed
 from one platform, one inbox, and one analytics dashboard. This plugin brings the skills and
 agents to build, run, and improve them from Claude.
 
-**This build ships no connector.** Same 20 skills and 6 agents as the main `genudo` plugin,
-minus the bundled MCP server — you add the connector separately. Two reasons that's what you
-want:
+**This build ships no connector.** Same 22 skills and 6 agents as the main `genudo` plugin,
+minus the bundled MCP server — you connect Genudo yourself. That's what you want when:
 
-- **Claude Desktop app** — its plugin upload can't prompt for a token, so a bundled connector
-  could never authenticate there. Pair this with the `genudo.mcpb` extension, which does prompt.
-- **Multiple Genudo accounts** — install this globally for the skills, then add the connector
-  per project with that client's own token.
+- **You manage several Genudo accounts** — install this globally for the skills, then point
+  each project at the account it belongs to.
+- **You already connect Genudo another way** — a custom connector in Claude's settings, a
+  server in your project's `.mcp.json`, or the `genudo.mcpb` extension.
 
 ## What's inside
 
-- **20 skills** — real playbooks for the actual work: creating a pipeline through a guided
+- **22 skills** — real playbooks for the actual work: creating a pipeline through a guided
   interview, editing a live agent safely, wiring webhook automations, analyzing conversations
   for drift, managing the funnel, and reporting.
 - **6 agents** (Cowork & Code) — specialists that orchestrate the skills end to end.
@@ -25,33 +24,32 @@ No connector. Without one, the skills can plan and draft but can't read or write
 
 ## Install
 
-**Claude Desktop app — two pieces:**
-
-1. Settings → **Plugins** → **Add** → **Upload plugin** → drop `genudo-plugin-desktop.zip`.
-2. Settings → **Extensions** → install `genudo.mcpb` → paste your token when prompted.
+**Claude Desktop / claude.ai:** Settings → **Plugins** → **Add** → **Upload plugin** → drop
+`genudo-plugin-no-connector.zip`. Then connect Genudo once: Settings → **Connectors** → *Add
+custom connector* → `https://api.genudo.ai/mcp` (or install the `genudo.mcpb` extension).
 
 **Claude Code — plugin global, connector per project:**
 
 ```
 /plugin marketplace add genudo-ai/genudo_mcp
-/plugin install genudo-desktop@genudo-ai
+/plugin install genudo-no-connector@genudo-ai
 ```
 
 Then from inside each client's project directory:
 
 ```
-claude mcp add --scope local --env GENUDO_TOKEN=CLIENT_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.4.0
+claude mcp add --transport http genudo https://api.genudo.ai/mcp --scope project
 ```
 
-`--scope local` keeps that server and token private to you and to that directory. Repeat per
-client with that client's token; `claude mcp list` confirms which one is active.
+`--scope project` writes the server into that directory's `.mcp.json`, so it travels with the
+project; use `--scope local` to keep it private to you. Each directory signs in to its own
+Genudo account through the browser — no tokens to juggle. `claude mcp list` confirms which
+one is active.
 
-*(Want one account and one global connector instead? Install the main `genudo` plugin — it
-bundles the connector and prompts for your token.)*
+*(Want the connector bundled instead? Install the main `genudo` plugin.)*
 
-Get your token from Genudo → **API Keys & Tokens** (sidebar, under *Developer*) →
-**Create token** → check the **`mcp:use`** scope → pick an expiry → copy the token
-(shown only once).
+There is **no token to create** — the connector uses OAuth. For a self-hosted Genudo, use
+`https://<your-instance>/mcp`.
 
 ## Where each part runs
 
@@ -79,7 +77,7 @@ genudo-guides/            # cached authoring guides
 Everything lands under `$GENUDO_WORKDIR` when that env var is set, else the current
 directory — set it to keep all client work in one stable folder.
 
-The connector's `get_editing_playbook` is the source of truth for this layout, the version
+The `editing-playbook` skill is the source of truth for this layout, the version
 snapshots and the `**Status:** STAGED / PUSHED` record. This README only summarizes it.
 
 No filesystem (plain web chat)? Skills keep the before/after inline and still gate on your

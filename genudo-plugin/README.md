@@ -7,10 +7,12 @@ agents, and the Genudo connector to build, run, and improve them from Claude.
 
 ## What's inside
 
-- **Connector** — the Genudo MCP server (`genudo-mcp-client`), exposing all workspace tools
-  (pipelines, stages, actions, variables, opportunities, messages, analytics). The tool list
-  grows automatically as the backend adds capabilities.
-- **20 skills** — real playbooks for the actual work: creating a pipeline through a guided
+- **Connector** — the Genudo MCP server at `https://api.genudo.ai/mcp`, exposing all
+  workspace tools (pipelines, stages, actions, variables, opportunities, messages,
+  analytics). It is a **remote** server: nothing runs locally, and you sign in through
+  your browser instead of pasting a token. The tool list grows automatically as the
+  backend adds capabilities.
+- **22 skills** — real playbooks for the actual work: creating a pipeline through a guided
   interview, editing a live agent safely, wiring webhook automations, analyzing conversations
   for drift, managing the funnel, and reporting.
 - **6 agents** (Cowork & Code) — specialists that orchestrate the skills end to end.
@@ -18,18 +20,21 @@ agents, and the Genudo connector to build, run, and improve them from Claude.
 ## Install
 
 **Upload (claude.ai):** Customize → Personal plugins → **+** → **Upload plugin** → drop the
-zipped folder → **Upload**. Enter your Genudo token when prompted.
+zipped folder → **Upload**. Approve the Genudo sign-in when prompted.
 
-**Claude Desktop app:** the desktop plugin upload doesn't prompt for a token, so install two
-pieces: Settings → **Plugins** → **Add** → **Upload plugin** → `genudo-plugin-desktop.zip`
-(skills + agents), then Settings → **Extensions** → `genudo.mcpb` (the connector — asks for
-your token).
+**Claude Desktop app:** Settings → **Plugins** → **Add** → **Upload plugin** →
+`genudo-plugin.zip`. The connector comes with it — no separate extension, no token.
 
 **Claude Code:** add this repo as a marketplace, then `/plugin install genudo`.
 
-Get your token from Genudo → **API Keys & Tokens** (sidebar, under *Developer*) →
-**Create token** → check the **`mcp:use`** scope → pick an expiry → copy the token
-(shown only once).
+There is **no token to create**. The connector authenticates with OAuth: Claude opens
+your browser, you approve access to your Genudo account, and that's it. To connect
+Genudo without this plugin, add the URL directly — Settings → **Connectors** → *Add
+custom connector* → `https://api.genudo.ai/mcp`, or in Claude Code:
+
+```bash
+claude mcp add --transport http genudo https://api.genudo.ai/mcp
+```
 
 ## Where each part runs
 
@@ -37,9 +42,11 @@ Get your token from Genudo → **API Keys & Tokens** (sidebar, under *Developer*
 |---|---|---|---|---|---|
 | Skills | ✅ | limited | ✅ | ✅ | ✅ |
 | Agents | — | — | — | ✅ | ✅ |
-| Connector (local) | — | — | ✅ | local | ✅ |
+| Connector (remote) | ✅ | limited | ✅ | ✅ | ✅ |
 
-For web + mobile tool access, pair with the remote OAuth connector (backend roadmap).
+Because the connector is remote, web chat now gets tool access too — that used to
+require a locally running bridge. Adding custom connectors is a paid-plan feature on
+claude.ai.
 
 ## Working files
 
@@ -57,7 +64,7 @@ genudo-guides/            # cached authoring guides
 Everything lands under `$GENUDO_WORKDIR` when that env var is set, else the current
 directory — set it to keep all client work in one stable folder.
 
-The connector's `get_editing_playbook` is the source of truth for this layout, the version
+The `editing-playbook` skill is the source of truth for this layout, the version
 snapshots and the `**Status:** STAGED / PUSHED` record. This README only summarizes it.
 
 No filesystem (plain web chat)? Skills keep the before/after inline and still gate on your

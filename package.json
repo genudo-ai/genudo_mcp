@@ -1,6 +1,6 @@
 {
   "name": "genudo-mcp-client",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "Connect Claude to Genudo \u2014 the platform to build AI agents for any communication or sequence-based channel. Create and manage pipeline-aware agents with integrations and company-knowledge access, from one platform, one inbox, and one analytics dashboard.",
   "mcpName": "io.github.genudo-ai/genudo_mcp",
   "main": "index.js",
@@ -21,7 +21,7 @@
     "automation",
     "bridge",
     "stdio",
-    "sse",
+    "streamable-http",
     "http"
   ],
   "author": {
@@ -40,7 +40,6 @@
   },
   "homepage": "https://github.com/genudo-ai/genudo_mcp#readme",
   "dependencies": {
-    "eventsource": "^2.0.2",
     "node-fetch": "^2.7.0"
   },
   "engines": {

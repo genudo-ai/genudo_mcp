@@ -1,8 +1,8 @@
 {
   "name": "genudo",
   "displayName": "Genudo - AI Workforce",
-  "version": "1.2.0",
-  "description": "Genudo — the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integration capabilities and company-knowledge access, managed from one platform, one inbox, and one analytics dashboard. This plugin builds, edits, automates, and analyzes them from Claude with 20 skills and 6 agents.",
+  "version": "2.0.0",
+  "description": "Genudo — the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integration capabilities and company-knowledge access, managed from one platform, one inbox, and one analytics dashboard. This plugin builds, edits, automates, and analyzes them from Claude with 22 skills, 6 agents and the bundled Genudo connector — sign in through your browser, no token to paste.",
   "author": {
     "name": "Genudo",
     "email": "help@genudo.ai",
@@ -20,33 +20,10 @@
     "crm",
     "whatsapp"
   ],
-  "userConfig": {
-    "token": {
-      "type": "string",
-      "title": "Genudo Token",
-      "description": "From your Genudo account: API Keys & Tokens → Create token, with the mcp:use scope. Shown only once — copy it at creation.",
-      "sensitive": true,
-      "required": true
-    },
-    "base_url": {
-      "type": "string",
-      "title": "Base URL (advanced)",
-      "description": "Only change for a self-hosted Genudo instance.",
-      "required": false,
-      "default": "https://api.genudo.ai"
-    }
-  },
   "mcpServers": {
     "genudo": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "genudo-mcp-client@2.4.0"
-      ],
-      "env": {
-        "GENUDO_TOKEN": "${user_config.token}",
-        "GENUDO_BASE_URL": "${user_config.base_url}"
-      }
+      "type": "http",
+      "url": "https://api.genudo.ai/mcp"
     }
   }
 }

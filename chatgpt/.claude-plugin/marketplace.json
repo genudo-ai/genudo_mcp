@@ -10,7 +10,7 @@
     {
       "name": "genudo",
       "source": "./genudo-chatgpt-plugin",
-      "description": "Genudo — the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integrations and company-knowledge access, from one platform, one inbox, and one dashboard. 26 skills and the Genudo connector, packaged for ChatGPT Work and Codex."
+      "description": "Genudo — the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integrations and company-knowledge access, from one platform, one inbox, and one dashboard. 28 skills and the Genudo connector, packaged for ChatGPT Work and Codex."
     }
   ]
 }

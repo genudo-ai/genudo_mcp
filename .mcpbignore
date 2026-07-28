@@ -37,7 +37,7 @@ docs
 docs/**
 genudo-plugin
 genudo-plugin/**
-genudo-plugin-desktop
-genudo-plugin-desktop/**
+genudo-plugin-no-connector
+genudo-plugin-no-connector/**
 chatgpt
 chatgpt/**

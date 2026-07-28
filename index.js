@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-const EventSource = require('eventsource');
 const fetch = require('node-fetch');
 const readline = require('readline');
 const https = require('https');
@@ -15,7 +14,10 @@ const pkg = require('./package.json');
 
 // Configuration from environment variables
 const BASE_URL = process.env.GENUDO_BASE_URL || 'https://api.genudo.ai';
-const SSE_URL = `${BASE_URL}/api/user/mcp/sse`;
+// Streamable HTTP: one endpoint, every JSON-RPC message is a POST to it. The old
+// two-step SSE flow (GET /api/user/mcp/sse -> endpoint event -> POST there) was
+// retired backend-side and now 404s on both prod and staging.
+const MCP_URL = `${BASE_URL}/mcp`;
 const ALLOW_INSECURE_SSL = process.env.GENUDO_ALLOW_INSECURE_SSL === 'true';
 
 // Token sources, in order: env var, then the token saved by the genudo_connect
@@ -50,12 +52,6 @@ let TOKEN = TOKEN_FROM_ENV
 // whole MCP handshake, we time out each attempt fast and retry.
 const REQUEST_TIMEOUT = parseInt(process.env.GENUDO_REQUEST_TIMEOUT || '8000', 10);
 const REQUEST_RETRIES = parseInt(process.env.GENUDO_REQUEST_RETRIES || '4', 10);
-
-// The `eventsource` lib auto-reconnects every ~1s forever on a dropped/failed
-// SSE connection. With a bad token or a down backend that becomes a retry storm
-// (many clients x 1/sec). Cap it, and treat auth failures as fatal — a wrong
-// token can NEVER succeed by retrying.
-const MAX_RECONNECTS = parseInt(process.env.GENUDO_MAX_RECONNECTS || '5', 10);
 
 // A request is worth retrying only if it might succeed next time: transient
 // network/timeout errors (no HTTP status) or 5xx. Any 4xx — 401/403 bad token,
@@ -143,21 +139,15 @@ const CONNECT_TOOL = {
 };
 
 // Global state
-let messageEndpoint = null;
+let sessionId = null;
 let isInitialized = false;
-let eventSource = null;
-let reconnectCount = 0;
 
 /**
- * Stop the SSE connection and exit. Used when retrying can't help (bad token) or
- * we've hit the reconnect cap — exiting is far lighter on the backend than an
- * unbounded in-process reconnect loop.
+ * Exit. Used when retrying can't help (bad token) — dying is far lighter on the
+ * backend than an in-process loop that can never succeed.
  */
 function fatalExit(message) {
   debug(message);
-  if (eventSource) {
-    try { eventSource.close(); } catch (e) { /* already closed */ }
-  }
   process.exit(1);
 }
 
@@ -168,74 +158,109 @@ function debug(...args) {
   console.error('[Genudo MCP Bridge]', ...args);
 }
 
-/**
- * Connect to SSE endpoint to get the message endpoint URL
- */
-function connectSSE(options) {
-  const exitOnAuthError = !options || options.exitOnAuthError !== false;
-  return new Promise((resolve, reject) => {
-    debug('Connecting to SSE endpoint:', SSE_URL);
-
-    eventSource = new EventSource(SSE_URL, {
-      headers: {
-        'Authorization': `Bearer ${TOKEN}`
-      },
-      https: { rejectUnauthorized: !ALLOW_INSECURE_SSL }
-    });
-
-    // A successful (re)connection means the storm guard can reset.
-    eventSource.addEventListener('open', () => {
-      reconnectCount = 0;
-    });
-
-    eventSource.addEventListener('endpoint', (event) => {
-      messageEndpoint = event.data;
-      reconnectCount = 0;
-      debug('Received message endpoint:', messageEndpoint);
-      isInitialized = true;
-      resolve(messageEndpoint);
-    });
-
-    eventSource.onerror = (error) => {
-      const status = error && error.status;
-      // Wrong/expired token: reconnecting can NEVER succeed and just hammers the
-      // backend. This is the retry storm — stop it dead. In lazy/setup mode we
-      // reject instead of exiting so the host session survives a bad saved token.
-      if (isAuthError(status)) {
-        if (!exitOnAuthError) {
-          try { eventSource.close(); } catch (e) { /* already closed */ }
-          const err = new Error(`SSE auth failed (HTTP ${status})`);
-          err.authError = true;
-          return reject(err);
-        }
-        return fatalExit(`SSE auth failed (HTTP ${status}) — check GENUDO_TOKEN. Not retrying a bad token.`);
-      }
-      // Transient error: the lib will auto-reconnect (~1s). Bound it so a down
-      // backend can't turn into an unbounded reconnect loop.
-      reconnectCount++;
-      debug(`SSE connection error${status ? ` (HTTP ${status})` : ''} — reconnect ${reconnectCount}/${MAX_RECONNECTS}`);
-      if (reconnectCount >= MAX_RECONNECTS) {
-        return fatalExit(`Giving up after ${MAX_RECONNECTS} SSE reconnect attempts.`);
-      }
-    };
-
-    // Timeout if no endpoint received within 10 seconds
-    setTimeout(() => {
-      if (!isInitialized) {
-        eventSource.close();
-        reject(new Error('Timeout waiting for endpoint from SSE'));
-      }
-    }, 10000);
+/** POST one JSON-RPC message to the Streamable HTTP endpoint. */
+function postMcp(body, signal) {
+  return fetch(MCP_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      // Streamable HTTP servers may answer either way; the spec requires the
+      // client to accept both.
+      'Accept': 'application/json, text/event-stream',
+      'Authorization': `Bearer ${TOKEN}`,
+      ...(sessionId ? { 'Mcp-Session-Id': sessionId } : {})
+    },
+    body: JSON.stringify(body),
+    agent: httpsAgent,
+    signal
   });
+}
+
+/**
+ * Read a JSON-RPC reply that may arrive as plain JSON or as a single SSE frame
+ * ("event: message\ndata: {...}"). One POSTed request yields one reply, so
+ * concatenating the data lines is enough — we never multiplex on this channel.
+ */
+async function readJsonRpc(response) {
+  if (response.status === 204) return null;
+  const text = await response.text();
+  if (!text.trim()) return null;
+  if ((response.headers.get('content-type') || '').includes('text/event-stream')) {
+    const data = text
+      .split('\n')
+      .filter((l) => l.startsWith('data:'))
+      .map((l) => l.slice(5).trim())
+      .join('');
+    return data ? JSON.parse(data) : null;
+  }
+  return JSON.parse(text);
+}
+
+/**
+ * Perform the MCP handshake against the backend and remember the session.
+ *
+ * The bridge answers the host's `initialize` locally (fast startup), so this is
+ * the only place the backend handshake happens. A stateful server hands back an
+ * `Mcp-Session-Id` that every later POST must echo; a stateless one returns no
+ * header and this just costs one round trip.
+ */
+async function handshake(options) {
+  const exitOnAuthError = !options || options.exitOnAuthError !== false;
+  debug('Connecting to MCP endpoint:', MCP_URL);
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+  let response;
+  try {
+    response = await postMcp({
+      jsonrpc: '2.0',
+      id: 'init',
+      method: 'initialize',
+      params: {
+        protocolVersion: '2025-06-18',
+        capabilities: {},
+        clientInfo: { name: 'genudo-mcp-client', version: pkg.version }
+      }
+    }, controller.signal);
+  } finally {
+    clearTimeout(timer);
+  }
+
+  if (isAuthError(response.status)) {
+    // Wrong/expired token can NEVER succeed by retrying. In lazy/setup mode we
+    // reject instead of exiting so the host session survives a bad saved token.
+    if (!exitOnAuthError) {
+      const err = new Error(`MCP auth failed (HTTP ${response.status})`);
+      err.authError = true;
+      throw err;
+    }
+    return fatalExit(`MCP auth failed (HTTP ${response.status}) — check GENUDO_TOKEN. Not retrying a bad token.`);
+  }
+  if (!response.ok) {
+    throw new Error(`MCP handshake failed: HTTP ${response.status} ${response.statusText}`);
+  }
+
+  sessionId = response.headers.get('mcp-session-id') || null;
+  await readJsonRpc(response);
+  isInitialized = true;
+  debug('Backend handshake OK', sessionId ? `(session ${sessionId})` : '(stateless)');
+
+  // Best-effort: a stateful server wants this before it will serve requests.
+  try {
+    await postMcp({ jsonrpc: '2.0', method: 'notifications/initialized' });
+  } catch (e) {
+    debug('notifications/initialized failed (continuing):', e.message);
+  }
+  return sessionId;
 }
 
 // Single-flight lazy connect — used when the token arrived after startup
 // (saved via genudo_connect) rather than via env at launch.
 let connecting = null;
 function lazyConnect() {
-  if (isInitialized && messageEndpoint) return Promise.resolve(messageEndpoint);
+  if (isInitialized) return Promise.resolve(sessionId);
   if (!connecting) {
-    connecting = connectSSE({ exitOnAuthError: false }).finally(() => { connecting = null; });
+    connecting = handshake({ exitOnAuthError: false }).finally(() => { connecting = null; });
   }
   return connecting;
 }
@@ -249,7 +274,7 @@ function notify(method) {
  * Forward JSON-RPC request to the Laravel MCP server
  */
 async function forwardRequest(jsonRpcRequest) {
-  if (!messageEndpoint) {
+  if (!isInitialized) {
     if (TOKEN) {
       await lazyConnect();
     } else {
@@ -264,16 +289,7 @@ async function forwardRequest(jsonRpcRequest) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
     try {
-      const response = await fetch(messageEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${TOKEN}`
-        },
-        body: JSON.stringify(jsonRpcRequest),
-        agent: httpsAgent,
-        signal: controller.signal
-      });
+      const response = await postMcp(jsonRpcRequest, controller.signal);
       clearTimeout(timer);
 
       if (!response.ok) {
@@ -282,12 +298,7 @@ async function forwardRequest(jsonRpcRequest) {
         throw err;
       }
 
-      // Handle 204 No Content (for notifications)
-      if (response.status === 204) {
-        return null;
-      }
-
-      return await response.json();
+      return await readJsonRpc(response);
     } catch (error) {
       clearTimeout(timer);
       lastError = error;
@@ -348,14 +359,18 @@ async function verifyTokenRemote(tok) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 8000);
   try {
-    const resp = await fetch(SSE_URL, {
-      headers: { 'Authorization': `Bearer ${tok}`, 'Accept': 'text/event-stream' },
+    const resp = await fetch(MCP_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json, text/event-stream',
+        'Authorization': `Bearer ${tok}`
+      },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 'verify', method: 'tools/list', params: {} }),
       agent: httpsAgent,
       signal: controller.signal
     });
-    const ok = !isAuthError(resp.status);
-    controller.abort();
-    return ok;
+    return !isAuthError(resp.status);
   } catch (e) {
     return true; // network trouble ≠ bad token; the real connect will decide
   } finally {
@@ -456,8 +471,7 @@ async function handleConnectCall(id, args) {
     deleteSavedToken();
     TOKEN = null;
     isInitialized = false;
-    messageEndpoint = null;
-    if (eventSource) { try { eventSource.close(); } catch (e) { /* already closed */ } }
+    sessionId = null;
   }
   // Token may have arrived since startup (env at launch, or saved via the page).
   if (!TOKEN) {
@@ -701,13 +715,13 @@ async function main() {
     if (TOKEN && TOKEN_FROM_ENV) {
       // Env-configured token: fail fast like always — the operator set it and
       // should see the process die on a bad token.
-      await connectSSE();
+      await handshake();
       debug('Bridge initialized successfully');
     } else if (TOKEN) {
       // Saved (genudo_connect) token: a revoked token must NOT kill the server —
       // clear it and fall back to setup mode so the connect page can reopen.
       try {
-        await connectSSE({ exitOnAuthError: false });
+        await handshake({ exitOnAuthError: false });
         debug('Bridge initialized successfully');
       } catch (e) {
         if (e.authError) {

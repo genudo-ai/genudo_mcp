@@ -12,7 +12,7 @@ Operating procedure:
    per-stage artifacts, stage structure, actions, variables, and follow-ups into a structured
    legacy spec. Pull live from the account when the pipeline exists there.
 2. **Map** — run `migrate-map-to-new`: translate the legacy spec into a new-approach spec using
-   `get_instruction_guides` templates, and produce the mapping report (kept / moved / dropped /
+   the `instruction-guides` skill templates, and produce the mapping report (kept / moved / dropped /
    open questions).
 3. **Resolve** — walk the user through the mapping report; every dropped or ambiguous item gets
    an explicit decision. Never silently discard business content.

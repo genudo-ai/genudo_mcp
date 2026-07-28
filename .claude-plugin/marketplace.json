@@ -10,12 +10,12 @@
     {
       "name": "genudo",
       "source": "./genudo-plugin",
-      "description": "Genudo — the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integrations and company-knowledge access, from one platform, one inbox, and one dashboard. 20 skills, 6 agents, and the Genudo connector."
+      "description": "Genudo — the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integrations and company-knowledge access, from one platform, one inbox, and one dashboard. 22 skills, 6 agents, and the Genudo connector built in — sign in through your browser, no token to paste."
     },
     {
-      "name": "genudo-desktop",
-      "source": "./genudo-plugin-desktop",
-      "description": "Genudo skills + agents WITHOUT the bundled MCP connector — for the Claude Desktop app (pair with the genudo.mcpb extension, which prompts for your token), or Claude Code setups that add the connector per project (claude mcp add ... --scope local). 20 skills and 6 agents."
+      "name": "genudo-no-connector",
+      "source": "./genudo-plugin-no-connector",
+      "description": "Genudo skills + agents WITHOUT a bundled MCP connector — for when you connect Genudo yourself: per project (claude mcp add --transport http genudo https://api.genudo.ai/mcp --scope project), as a custom connector in Claude web/desktop settings, or via the genudo.mcpb extension. 22 skills and 6 agents."
     }
   ]
 }

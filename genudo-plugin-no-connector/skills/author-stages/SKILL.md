@@ -10,7 +10,7 @@ Design each stage as one observable step in the customer journey. Don't repeat g
 
 ## Before writing
 
-Call `get_instruction_guides` and follow the stage template (the 6-section structure + the
+Run the `instruction-guides` skill and follow the stage template (the 6-section structure + the
 token budget). Read the spec + the drafted persona/instructions from `<workdir>/genudo-build/<pipeline-slug>/`.
 
 ## Per stage, write three fields

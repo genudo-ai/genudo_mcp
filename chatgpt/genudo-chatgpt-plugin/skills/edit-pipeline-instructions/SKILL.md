@@ -10,7 +10,7 @@ Edit a live agent's four instruction fields — pipeline `persona`, pipeline `in
 
 ## Run the shipped playbook
 
-Call `get_editing_playbook` and follow it exactly; call `get_instruction_guides` for the
+Run the `editing-playbook` skill and follow it exactly; run the `instruction-guides` skill for the
 authoring rules. The playbook is the source of truth for the load → mirror → stage →
 line-edit → diff → confirm → push → record workflow and the local file paths (the
 `pipelines/<slug>/` mirror, its `versions/` snapshots, and the staging root). Do not

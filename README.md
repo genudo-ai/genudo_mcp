@@ -12,7 +12,7 @@ Genudo is the platform to build AI agents for any communication or sequence-base
 
 ## Overview
 
-Genudo MCP Client bridges the communication gap between Claude Code's stdio-based MCP implementation and Genudo's HTTP/SSE-based MCP server. This allows you to leverage Genudo's powerful business automation tools directly within your Claude Code conversations.
+Genudo MCP Client bridges the communication gap between Claude Code's stdio-based MCP implementation and Genudo's Streamable HTTP MCP server. This allows you to leverage Genudo's powerful business automation tools directly within your Claude Code conversations.
 
 ## Features
 
@@ -90,7 +90,7 @@ Then configure Claude Code manually (see Configuration section below).
 2. In the sidebar, under **Developer**, open **API Keys & Tokens**
 3. Click **Create token**
 4. Name it (e.g. `claude-mcp`)
-5. Under **Scopes**, scroll the list and check **`mcp:use`** (Access MCP server — SSE + JSON-RPC tool calls)
+5. Under **Scopes**, scroll the list and check **`mcp:use`** (Access MCP server — Streamable HTTP + JSON-RPC tool calls)
 6. Pick an **Expiry** (30 days, 90 days, 1 year, or No Expiry)
 7. Click **Create token** and copy the token — **it's shown only once**; Genudo keeps only a hashed copy
 
@@ -186,8 +186,9 @@ node index.js
 - Make sure you've set the token in your Claude Code config
 - Verify the token is valid in your Genudo account
 
-### "Timeout waiting for endpoint from SSE"
-- Check that `GENUDO_BASE_URL` is correct (defaults to `https://api.genudo.ai`)
+### "MCP handshake failed" / no response
+- Check that `GENUDO_BASE_URL` is correct (defaults to `https://api.genudo.ai`) — the
+  bridge POSTs to `<base>/mcp`
 - Verify your server is running and accessible
 - Check firewall/network settings
 
@@ -223,10 +224,15 @@ genudo-mcp-client/
 
 ### How It Works
 
-1. Bridge connects to SSE endpoint to get the message POST URL
+1. Bridge performs the MCP handshake against `<base>/mcp` (Streamable HTTP)
 2. Reads JSON-RPC requests from stdin (from Claude Code)
-3. Forwards requests as HTTP POST to the Genudo server
+3. Forwards each one as an HTTP POST to that same endpoint
 4. Returns responses via stdout back to Claude Code
+
+Since v2.5.0 there is no SSE step: Streamable HTTP is a single endpoint that takes
+every message as a POST. If you don't need the bridge's local guide tools, prompts or
+response slimming, you can skip it entirely and point your client at the server:
+`claude mcp add --transport http genudo https://api.genudo.ai/mcp`
 
 ```
 Claude Code → (stdin) → Bridge → (HTTPS) → Genudo MCP Server

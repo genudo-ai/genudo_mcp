@@ -25,7 +25,7 @@ jobs:
           cp .claude-plugin/marketplace.json mirror/.claude-plugin/
           cp -R genudo-plugin mirror/
           cp -R genudo-plugin-no-connector mirror/
-          cp docs/claude-plugin-mirror-README.md mirror/README.md
+          cp .github/claude-plugin-README.md mirror/README.md
 
       - name: Push to genudo-ai/claude-plugin
         env:

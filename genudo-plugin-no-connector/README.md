@@ -31,7 +31,7 @@ custom connector* → `https://api.genudo.ai/mcp` (or install the `genudo.mcpb` 
 **Claude Code — plugin global, connector per project:**
 
 ```
-/plugin marketplace add genudo-ai/genudo_mcp
+/plugin marketplace add genudo-ai/claude-plugin
 /plugin install genudo-no-connector@genudo-ai
 ```
 

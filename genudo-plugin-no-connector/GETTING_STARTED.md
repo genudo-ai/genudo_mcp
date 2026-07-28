@@ -14,7 +14,7 @@ drop `genudo-plugin-no-connector.zip`.
 **Claude Code:**
 
 ```
-/plugin marketplace add genudo-ai/genudo_mcp
+/plugin marketplace add genudo-ai/claude-plugin
 /plugin install genudo-no-connector@genudo-ai
 ```
 

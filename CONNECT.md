@@ -63,12 +63,12 @@ as a diff and confirmed first.
 
 **A. By command — Claude Code** *(recommended; auto-updates)*
 ```
-/plugin marketplace add genudo-ai/genudo_mcp
+/plugin marketplace add genudo-ai/claude-plugin
 /plugin install genudo@genudo-ai
 ```
 
 **B. By marketplace — claude.ai / Desktop / Cowork**
-Customize → Personal plugins → **+** → **Add marketplace** → `genudo-ai/genudo_mcp` → **Add** →
+Customize → Personal plugins → **+** → **Add marketplace** → `genudo-ai/claude-plugin` → **Add** →
 Browse plugins → **Install**.
 
 **C. By file — upload the zip**
@@ -99,7 +99,7 @@ out.
 
 **1. Plugin — global, once:**
 ```
-/plugin marketplace add genudo-ai/genudo_mcp
+/plugin marketplace add genudo-ai/claude-plugin
 /plugin install genudo-no-connector@genudo-ai
 ```
 
@@ -234,8 +234,8 @@ sequences, knowledge base) — no reinstall needed.
 
 | Goal | Command / action |
 |---|---|
-| Full experience (Code) | `/plugin marketplace add genudo-ai/genudo_mcp` → `/plugin install genudo@genudo-ai` |
-| Full experience (claude.ai) | Add marketplace `genudo-ai/genudo_mcp` → Browse plugins → Install |
+| Full experience (Code) | `/plugin marketplace add genudo-ai/claude-plugin` → `/plugin install genudo@genudo-ai` |
+| Full experience (claude.ai) | Add marketplace `genudo-ai/claude-plugin` → Browse plugins → Install |
 | Full experience (offline file) | Upload `genudo-plugin.zip` |
 | **Tools only, no token (Code)** | `claude mcp add --transport http genudo https://api.genudo.ai/mcp` — sign in via browser |
 | **Tools only, no token (web/desktop)** | Settings → **Connectors** → *Add custom connector* → `https://api.genudo.ai/mcp` |

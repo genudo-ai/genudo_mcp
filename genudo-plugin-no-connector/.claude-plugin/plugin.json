@@ -1,7 +1,7 @@
 {
   "name": "genudo-no-connector",
   "displayName": "Genudo - AI Workforce (no connector)",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Genudo skills + agents WITHOUT a bundled MCP connector — for when you connect Genudo yourself: per-project (claude mcp add --transport http genudo https://api.genudo.ai/mcp --scope project), as a custom connector in Claude web/desktop settings, or via the genudo.mcpb extension. Install the `genudo` plugin instead if you want the connector bundled. 22 skills and 6 agents.",
   "author": {
     "name": "Genudo",

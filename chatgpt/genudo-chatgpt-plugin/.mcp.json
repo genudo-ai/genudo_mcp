@@ -1,6 +1,8 @@
 {
-  "genudo": {
-    "url": "https://api.genudo.ai/mcp",
-    "auth": "oauth"
+  "mcpServers": {
+    "genudo": {
+      "type": "http",
+      "url": "https://api.genudo.ai/mcp"
+    }
   }
 }

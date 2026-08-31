@@ -1,7 +1,7 @@
 {
   "name": "genudo",
   "displayName": "Genudo - AI Workforce",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Genudo — the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integration capabilities and company-knowledge access, managed from one platform, one inbox, and one analytics dashboard. This plugin builds, edits, automates, and analyzes them from Claude with 22 skills, 6 agents and the bundled Genudo connector — sign in through your browser, no token to paste.",
   "author": {
     "name": "Genudo",

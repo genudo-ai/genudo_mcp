@@ -1,6 +1,6 @@
 ---
 name: editing-playbook
-description: The step-by-step safe workflow for editing a live Genudo agent's instructions: load the current text, write the local pipeline mirror, stage the edit, show a before/after diff, get explicit confirmation, push, then record the outcome. Use before any update_pipeline or update_stage call that changes persona, instructions, enter_condition or ai_persona — and whenever the edit-pipeline-instructions, author-stages, author-pipeline-brain or migrate-map-to-new skills ask for the playbook.
+description: "The step-by-step safe workflow for editing a live Genudo agent's instructions: load the current text, write the local pipeline mirror, stage the edit, show a before/after diff, get explicit confirmation, push, then record the outcome. Use before any update_pipeline or update_stage call that changes persona, instructions, enter_condition or ai_persona — and whenever the edit-pipeline-instructions, author-stages, author-pipeline-brain or migrate-map-to-new skills ask for the playbook."
 ---
 
 # Genudo Instruction Editing — Workflow

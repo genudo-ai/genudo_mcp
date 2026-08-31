@@ -1,6 +1,6 @@
 ---
 name: instruction-guides
-description: The Genudo instruction-authoring rules: authoring principles, the pipeline persona + global instructions template, the stage instructions template, and the token-aware quality checklist. Use before writing or rewriting any pipeline persona, pipeline instructions, stage instructions, entry condition or stage ai_persona — and whenever another Genudo skill asks for the instruction guides.
+description: "The Genudo instruction-authoring rules: authoring principles, the pipeline persona + global instructions template, the stage instructions template, and the token-aware quality checklist. Use before writing or rewriting any pipeline persona, pipeline instructions, stage instructions, entry condition or stage ai_persona — and whenever another Genudo skill asks for the instruction guides."
 ---
 
 # Genudo Instruction Authoring Guides

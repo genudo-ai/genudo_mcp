@@ -5,6 +5,27 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Plugins (all trees → 2.0.1)
+
+- **ChatGPT chat could not see the Genudo connector.** The ChatGPT/Codex plugin declared
+  the hosted server as `{"url": ..., "auth": "oauth"}` — `auth` is not a field in OpenAI's
+  plugin format, and the entry lacked `"type": "http"`. Codex's parser ignores unknown keys
+  and infers the transport from `url`, so Codex connected (32 tools); ChatGPT's hosted plugin
+  ingestion did not, so a chat with the plugin tagged had skills but no tools ("isn't
+  currently exposed to me"). The plugin now uses the documented shape:
+  `plugin.json` → `"mcpServers": "./.mcp.json"`, `.mcp.json` →
+  `{"mcpServers": {"genudo": {"type": "http", "url": "https://api.genudo.ai/mcp"}}}`.
+  OAuth is discovered from the server's 401 + RFC 9728 metadata; no `oauth` block needed.
+- **`instruction-guides` and `editing-playbook` frontmatter was invalid YAML** — the
+  `description:` values contain `: `, which OpenAI's plugin validator (the same schema
+  ChatGPT ingests) rejects with "frontmatter must be valid YAML"; Claude Code's parser is
+  lenient, so it went unnoticed. Descriptions are now quoted, in all three trees.
+- Reinstall to pick this up: ChatGPT/Codex — remove and re-add the `genudo-ai/chatgpt-plugin`
+  marketplace, install **genudo**, start a new chat. Claude — `/plugin uninstall
+  genudo@genudo-ai` then `/plugin install genudo@genudo-ai`.
+
 ## [2.5.0] - 2026-07-28
 
 ### Changed

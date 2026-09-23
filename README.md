@@ -102,6 +102,13 @@ Then configure Claude Code manually (see Configuration section below).
 claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client
 ```
 
+**Google Antigravity & Gemini CLI (`agy`):** Install the official plugin from `antigravity/genudo/`:
+```bash
+# Global installation (recommended)
+mkdir -p ~/.gemini/config/plugins/genudo && cp -R antigravity/genudo/* ~/.gemini/config/plugins/genudo/
+```
+Or check it in per-project at `.agents/plugins/genudo/`. See [antigravity/genudo/README.md](antigravity/genudo/README.md) for full instructions.
+
 **Other clients (Codex, Cursor, Windsurf, Claude Desktop):** same package, add this block to the client's MCP config:
 
 ```json

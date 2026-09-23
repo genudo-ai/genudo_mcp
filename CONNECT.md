@@ -191,17 +191,41 @@ Double-click `genudo.mcpb` → enter token → done. No terminal, no Node config
 
 ---
 
-## ⑤ Other MCP clients — Codex, Cursor, Windsurf ★★☆☆☆
+## ⑤ Other MCP clients — Antigravity, Codex, Cursor, Windsurf ★★☆☆☆
 
 Both connectors work in any MCP-compatible client. Point it at
 `https://api.genudo.ai/mcp` (Streamable HTTP + OAuth), or add the stdio JSON block from ③.
 ChatGPT/Codex use `url` + `auth` rather than `type` — Genudo ships a
 [ChatGPT & Codex plugin](chatgpt/README.md) with the connector and 28 skills already wired.
-You get the 29 tools; Claude skills/agents are Claude-specific.
 
-**Best for:** teams standardized on a non-Claude AI client who still want Genudo tool access.
+### Google Antigravity IDE & Gemini CLI (`agy`)
+
+Genudo ships an official **Antigravity & Gemini CLI plugin** (`antigravity/genudo/`) bundling the remote MCP endpoint, workflow skills with progressive disclosure, and agent safety conventions.
+
+**1. Install Globally (all projects):**
+```bash
+mkdir -p ~/.gemini/config/plugins/genudo
+cp -R antigravity/genudo/* ~/.gemini/config/plugins/genudo/
+```
+
+**2. Install Per-Project:**
+```bash
+mkdir -p .agents/plugins/genudo
+cp -R antigravity/genudo/* .agents/plugins/genudo/
+```
+
+**3. Seamless Authentication & Verification:**
+- When prompted or connecting via CLI, open the generated authorization link in your browser.
+- Click **Allow** to approve the connection.
+- Copy the authenticated token from the redirect page and paste it into the CLI prompt (or set `export GENUDO_TOKEN="your_token"`).
+- Validate the plugin:
+```bash
+agy plugin validate antigravity/genudo
+agy mcp list
+```
 
 ---
+
 
 ## Where each option runs
 

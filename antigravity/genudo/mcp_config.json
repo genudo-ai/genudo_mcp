@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "genudo": {
+      "type": "http",
+      "url": "https://api.genudo.ai/mcp",
+      "serverUrl": "https://api.genudo.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${GENUDO_TOKEN}"
+      },
+      "trust": true
+    }
+  }
+}

@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-09-23
+
+### Plugins (all trees → 2.3.0)
+- **New skill: `ai-workforce-marketplace`** across all three plugin trees (`genudo-plugin`, `genudo-plugin-no-connector`, `chatgpt/genudo-chatgpt-plugin`). Introduces the 4 core GenuDo AI Employee archetypes:
+  1. **AI Sales Agent** (social media conversion, WhatsApp/IG, 3s response time, 24/7 lead qualification).
+  2. **AI Customer Support Agent** (ticket management, Knowledge Base resolution, Zoho Desk / Zendesk integration).
+  3. **Rose — Quality Control & Operations Agent** (monitors 10-50+ human staff WhatsApp numbers, records chats, transcribes voice notes, audits response latency, detects lost deals, powers live team dashboards).
+  4. **AI WhatsApp Campaign Sender** (official Meta Cloud API broadcasts + reply conversion co-pilot).
+- **Smart Onboarding & First-Touch Experience:** Automatically runs workspace discovery (`get_account_summary`, `list_pipelines`) and presents a structured AI Workforce menu upon initial connection or greetings.
+- **Proactive "Growth Sealer" Engine:** Updated `revenue-analyst`, `pipeline-architect`, and `workspace-report` to actively audit human bottlenecks (e.g. slow response times) and propose deploying complementary AI agents or external automations (Zoho Desk, Zapier, live Lovable dashboards).
+- **Intelligent Response Footer:** Added standard capability reminder footer (`💡 GenuDo Workforce Tip`) to promote workforce expansion and live custom dashboards.
+- Rebuilt distribution zip packages (`genudo-plugin.zip` and `genudo-plugin-no-connector.zip`).
+
 ## [2.2.0] - 2026-09-23
 
 - **New skill: `genudo-design-system`** across all three plugin trees (`genudo-plugin`, `genudo-plugin-no-connector`, `chatgpt/genudo-chatgpt-plugin`). Codifies the canonical GenuDo look & feel from the official handover spec: `#5B52E8` brand ramp, zero gradients (solid fills only), mandatory `JetBrains Mono` for all numerals, `Inter` for Latin copy, `IBM Plex Sans Arabic` for RTL, card anatomy (16px radius + 1px border + shadow), and the signed-off 7-tier dashboard hierarchy.

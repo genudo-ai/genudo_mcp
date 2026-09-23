@@ -1,8 +1,8 @@
 {
-  "name": "genudo-no-connector",
-  "displayName": "Genudo - AI Workforce (no connector)",
-  "version": "2.2.0",
-  "description": "Genudo skills + agents WITHOUT a bundled MCP connector — for when you connect Genudo yourself: per-project (claude mcp add --transport http genudo https://api.genudo.ai/mcp --scope project), as a custom connector in Claude web/desktop settings, or via the genudo.mcpb extension. Install the `genudo` plugin instead if you want the connector bundled. 24 skills and 6 agents.",
+  "name": "genudo",
+  "displayName": "Genudo - AI Workforce",
+  "version": "2.3.0",
+  "description": "Genudo — the enterprise operating platform for autonomous AI Employees (Sales, Customer Support, Rose Quality Control & Operations, and WhatsApp Campaign Sender) across WhatsApp, Instagram, Messenger, and Web. Integrated with Zoho Desk, Zapier, Webhooks, and live Lovable dashboards. This plugin manages your digital workforce with 26 skills and 6 agents (for environments where the MCP server is configured separately).",
   "author": {
     "name": "Genudo",
     "email": "help@genudo.ai",
@@ -13,11 +13,12 @@
   "license": "MIT",
   "keywords": [
     "genudo",
-    "sales",
-    "pipelines",
-    "ai-agents",
-    "automation",
+    "ai-workforce",
+    "sales-agent",
+    "customer-support",
+    "quality-control",
+    "whatsapp",
     "crm",
-    "whatsapp"
+    "automation"
   ]
 }

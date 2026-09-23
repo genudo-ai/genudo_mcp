@@ -1,7 +1,7 @@
 {
   "name": "genudo",
-  "version": "2.2.0",
-  "description": "Genudo — the platform to build AI agents for any communication or sequence-based channel. Pipeline-aware agents with integration capabilities and company-knowledge access, managed from one platform, one inbox, and one analytics dashboard. This plugin builds, edits, automates, and analyzes them from ChatGPT and Codex with 30 skills and the Genudo connector.",
+  "version": "2.3.0",
+  "description": "Genudo — the enterprise operating platform for autonomous AI Employees (Sales, Customer Support, Rose Quality Control & Operations, and WhatsApp Campaign Sender) across WhatsApp, Instagram, Messenger, and Web. Integrated with Zoho Desk, Zapier, Webhooks, and live Lovable dashboards. This plugin builds, edits, automates, and analyzes them from ChatGPT and Codex with 32 skills and the Genudo connector.",
   "author": {
     "name": "Genudo",
     "email": "help@genudo.ai",
@@ -12,19 +12,20 @@
   "license": "MIT",
   "keywords": [
     "genudo",
-    "sales",
-    "pipelines",
-    "ai-agents",
-    "automation",
+    "ai-workforce",
+    "sales-agent",
+    "customer-support",
+    "quality-control",
+    "whatsapp",
     "crm",
-    "whatsapp"
+    "automation"
   ],
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Genudo - AI Workforce",
-    "shortDescription": "Build and manage pipeline-aware AI sales/support agents",
-    "longDescription": "Genudo is the platform to build AI agents for any communication or sequence-based channel — WhatsApp, Messenger, Instagram, LinkedIn, email, and more. Build pipeline-aware agents with integration capabilities (webhooks to your CRM, Zapier, Make, or n8n) and company-knowledge access, all managed from one platform, one inbox, and one analytics dashboard. This plugin lets ChatGPT and Codex create, edit, automate, and analyze those agents end to end: 29 connector tools plus 30 skills covering discovery, authoring, provisioning, automation wiring, knowledge-base curation, diagnosis, and reporting.",
+    "shortDescription": "Deploy and manage autonomous AI Employees across WhatsApp & Social Channels",
+    "longDescription": "Genudo is the enterprise operating platform for autonomous AI Employees across WhatsApp, Instagram, Messenger, and Web. Manage your digital workforce from one inbox and analytics dashboard: deploy 24/7 AI Sales Agents, AI Customer Support Agents (with Zoho Desk / Zendesk integration), Rose Quality Control & Operations (auditing staff WhatsApp lines, transcribing voice notes, tracking response latency), and the official WhatsApp Campaign Sender. This plugin gives ChatGPT and Codex 32 skills and full MCP connectivity to audit, author, automate, and build live custom dashboards.",
     "developerName": "Genudo",
     "category": "Productivity",
     "capabilities": [
@@ -35,8 +36,10 @@
     "privacyPolicyURL": "https://genudo.ai/legal/privacy-policy",
     "termsOfServiceURL": "https://genudo.ai/legal/terms-of-service",
     "defaultPrompt": [
-      "Use Genudo to audit my pipeline and report what to improve.",
-      "Use Genudo to build a WhatsApp sales pipeline for my business."
+      "Introduce me to the GenuDo AI Workforce and audit my active workspace.",
+      "How do I connect Rose to audit my team's WhatsApp response times?",
+      "Build a high-converting WhatsApp sales agent for my business.",
+      "Deploy a live, real-time GenuDo performance dashboard for my team."
     ],
     "composerIcon": "./assets/icon.png",
     "logo": "./assets/icon.png"

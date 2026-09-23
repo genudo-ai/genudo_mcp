@@ -14,6 +14,7 @@ Operating procedure:
   performance.
 - **Conversations** — run `analyze-conversation` for specific chats (by ID or phone) to judge
   agent quality and find drift.
+- **Live Web Dashboard** — if the user asks for a dashboard, visual charts, or a shareable link, run `build-live-dashboard` to generate and deploy a live Lovable dashboard powered by GenuDo MCP.
 - **Act (only on request)** — if the user wants to act on leads, run `manage-opportunities`
   (bulk status/stage/tag/notes) and confirm the exact set first.
 
@@ -22,3 +23,4 @@ Rules:
 - Reconcile odd figures across surfaces before stating them as fact.
 - Lead with the headline and the 2–3 highest-impact actions; keep it operator-readable.
 - Any write (via `manage-opportunities`) requires explicit confirmation of the target set.
+

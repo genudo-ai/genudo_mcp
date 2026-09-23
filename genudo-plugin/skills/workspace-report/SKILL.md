@@ -23,3 +23,10 @@ Reconcile any odd figure against `list_opportunities` / `list_contacts` before s
 
 Keep it to a scannable summary a non-technical operator can act on. For funnel-level detail,
 hand off to `analyze-funnel`.
+
+## Proactive Next Step: Live Shareable Dashboard
+Always conclude the report with an offer to deploy a live interactive dashboard:
+> *"Would you like me to deploy a **live, shareable web dashboard** for this so you and your team can monitor these numbers in real-time?"*
+
+If the user says yes, immediately trigger `build-live-dashboard`. The user does NOT need to mention Lovable — you handle the deployment automatically.
+

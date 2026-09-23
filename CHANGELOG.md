@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-09-23
+
+### Plugins (all trees → 2.1.0)
+- **New skill: `build-live-dashboard`** across all three plugin trees (`genudo-plugin`, `genudo-plugin-no-connector`, `chatgpt/genudo-chatgpt-plugin`). Enables automated generation and deployment of 100% live, interactive web dashboards on Lovable powered by GenuDo MCP HTTP JSON-RPC tools (`get_account_summary`, `list_pipelines`, `get_messaging_stats`, `list_opportunities`, etc.).
+- **Proactive Dashboard Recommendations:** Updated `workspace-report` and `revenue-analyst` to automatically propose deploying a live, shareable web dashboard whenever presenting operations reports, funnel reviews, or workspace observations.
+- **Zero Lovable Prompting Required:** The user never needs to mention Lovable; the agent orchestrates the build and deployment automatically.
+- Rebuilt distribution zip packages (`genudo-plugin.zip` and `genudo-plugin-no-connector.zip`).
+
 ### Plugins (all trees → 2.0.1)
+
 
 - **ChatGPT chat could not see the Genudo connector.** The ChatGPT/Codex plugin declared
   the hosted server as `{"url": ..., "auth": "oauth"}` — `auth` is not a field in OpenAI's

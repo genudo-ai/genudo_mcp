@@ -1,6 +1,6 @@
 ---
 name: onboarding
-description: The essential first-step onboarding experience for GenuDo. Welcomes new and returning users, audits their active GenuDo workspace (deals, messages, pipelines), auto-detects other active tools and plugins in their environment (Meta Ads, Google Sheets, Lovable, HubSpot, Slack, Zoho Desk, Zapier), introduces the 4 AI Employee roles (Sales, Support, Rose QC, WhatsApp Sender), and recommends tailored, high-ROI use cases matching their connected tool stack. Run immediately on first connection, when a user says 'hi', 'start', 'how to use this?', or asks for an introduction to GenuDo.
+description: The essential first-step onboarding experience for GenuDo. Welcomes new and returning users, audits their active GenuDo workspace (deals, messages, pipelines), auto-detects other active tools and plugins in their environment (Meta Ads, Google Sheets, Lovable, HubSpot, Slack, Zoho Desk, Zapier), introduces the 4 named AI Employee roles (Aaref - Sales, Adnan - Support, ROZ - Quality Control, Sara - WhatsApp Sender), and recommends tailored, high-ROI use cases matching their connected tool stack. Run immediately on first connection, when a user says 'hi', 'start', 'how to use this?', or asks for an introduction to GenuDo.
 ---
 
 # GenuDo Smart Onboarding & Ecosystem Discovery
@@ -32,7 +32,7 @@ Inspect the session's available tool definitions to identify what other MCP serv
 Deliver a clean, structured executive welcome that:
 1. Greets the user and shares a 1-line snapshot of their GenuDo account.
 2. Highlights **tailored use cases** based on their detected plugins (e.g. Meta Ads ROAS attribution, Lovable live dashboards, Zoho Desk ticketing).
-3. Introduces the **4 Core AI Employee Archetypes** (Sales, Support, Rose QC, WhatsApp Campaign Sender).
+3. Introduces the **4 Named AI Employees** (Aaref, Adnan, ROZ, Sara).
 4. Asks which high-impact action they'd like to take first.
 
 ---
@@ -59,7 +59,7 @@ Use this matrix to dynamically personalize the onboarding message based on tools
 ### D. If Helpdesk (Zoho Desk / Zendesk) is Detected:
 * **The Synergy:** Seamless customer support escalation.
 * **Tailored Recommendation:**
-  > *"🎧 **Detected Helpdesk Integration:** You can deploy an **AI Customer Support Agent** on WhatsApp to resolve common customer inquiries from your Knowledge Base and automatically create categorized tickets in Zoho Desk when human support is needed."*
+  > *"🎧 **Detected Helpdesk Integration:** You can deploy **Adnan (AI Customer Support Agent)** on WhatsApp to resolve common customer inquiries from your Knowledge Base and automatically create categorized tickets in Zoho Desk when human support is needed."*
 
 ### E. If Slack / Discord / Teams MCP is Detected:
 * **The Synergy:** Real-time team notifications.
@@ -68,16 +68,16 @@ Use this matrix to dynamically personalize the onboarding message based on tools
 
 ---
 
-## 3. The 4 GenuDo AI Employee Roles
+## 3. Meet the 4 Named GenuDo AI Employees
 
-Always introduce the 4 standard employee archetypes during onboarding:
+Always introduce the 4 official AI employees during onboarding:
 
-| # | AI Employee | Mission & Superpower |
-|---|---|---|
-| **1** | 🎯 **AI Sales Agent** | **24/7 Social Media Lead Conversion.** Answers in 3 seconds across WhatsApp, Instagram, Messenger, and Web Chat. Qualifies budget and intent, handles objections, books meetings, and creates CRM deals. |
-| **2** | 🎧 **AI Customer Support Agent** | **24/7 Ticket Resolution & Helpdesk Bridge.** Answers questions from your Knowledge Base, creates support tickets, and integrates with Zoho Desk / Zendesk. |
-| **3** | 🕵️‍♀️ **Rose — Quality Control & Operations** *(New!)* | **Audits Human Sales/Support Teams.** Connect your staff's WhatsApp accounts (10, 20, 50+ lines). Rose records all messages, **transcribes every voice note**, analyzes response times, and detects lost sales opportunities. |
-| **4** | 📢 **AI WhatsApp Campaign Sender** | **Broadcast Marketing & Reply Co-Pilot.** Broadcasts targeted campaigns via official Meta WhatsApp Cloud API, and pairs with the Sales Agent to automatically handle customer replies and convert them into sales. |
+| # | Employee | Role | Mission & Superpower |
+|---|---|---|---|
+| **1** | 🎯 **Aaref** | **AI Sales Agent** | **24/7 Social Media Lead Conversion.** Answers in 3 seconds across WhatsApp, Instagram, Messenger, and Web Chat. Qualifies budget and intent, handles objections, books meetings, and creates CRM deals. |
+| **2** | 🎧 **Adnan** | **AI Customer Support Agent** | **24/7 Ticket Resolution & Helpdesk Bridge.** Answers questions from your Knowledge Base, creates support tickets, and integrates with Zoho Desk / Zendesk. |
+| **3** | 🕵️‍♀️ **ROZ** | **Quality Control & Operations** *(New!)* | **Audits Human Sales/Support Teams.** Connect your staff's WhatsApp accounts (10, 20, 50+ lines). ROZ records all messages, **transcribes every voice note**, analyzes response times, and detects lost sales opportunities. |
+| **4** | 📢 **Sara** | **AI WhatsApp Campaign Sender** | **Broadcast Marketing & Reply Co-Pilot.** Broadcasts targeted campaigns via official Meta WhatsApp Cloud API, and pairs with Aaref to automatically handle customer replies and convert them into sales. |
 
 ---
 
@@ -86,7 +86,7 @@ Always introduce the 4 standard employee archetypes during onboarding:
 When delivering the onboarding message, follow this structure:
 
 ```markdown
-👋 **Welcome to GenuDo — Your Enterprise AI Workforce Operating System!**
+👋 **Welcome to GenuDo — Your Enterprise AI Workforce!**
 
 I have successfully connected to your GenuDo workspace. Here is your quick status:
 - **Active Pipelines:** [X] pipelines configured
@@ -100,15 +100,15 @@ I have successfully connected to your GenuDo workspace. Here is your quick statu
 
 ---
 
-### 👥 What Kind of AI Employee Would You Like to Deploy?
+### 👥 Meet Your GenuDo AI Employees:
 
-1. 🎯 **AI Sales Agent** — Engage incoming WhatsApp/Instagram leads in 3 seconds and close deals 24/7.
-2. 🕵️‍♀️ **Rose (Quality Control & Operations)** — Connect your human team's WhatsApp lines (10–50+ reps) to record chats, transcribe voice notes, and track response bottlenecks.
-3. 🎧 **AI Customer Support Agent** — Auto-resolve customer FAQs from your Knowledge Base and sync tickets to Zoho Desk.
-4. 📢 **WhatsApp Campaign Sender** — Send high-converting broadcasts via official Meta Cloud API with an AI sales co-pilot.
+1. 🎯 **Aaref (AI Sales Agent)** — Engage incoming WhatsApp/Instagram leads in 3 seconds and close deals 24/7.
+2. 🕵️‍♀️ **ROZ (Quality Control & Operations)** — Connect your human team's WhatsApp lines (10–50+ reps) to record chats, transcribe voice notes, and track response bottlenecks.
+3. 🎧 **Adnan (AI Customer Support Agent)** — Auto-resolve customer FAQs from your Knowledge Base and sync tickets to Zoho Desk.
+4. 📢 **Sara (AI WhatsApp Campaign Sender)** — Send high-converting broadcasts via official Meta Cloud API with Aaref as your sales co-pilot.
 
 ---
 
 ### 🚀 Where would you like to start?
-Tell me which employee role you'd like to hire, or ask me to **audit your team's current conversations** or **build a live web dashboard**!
+Tell me which employee you'd like to deploy, or ask me to **audit your team's current conversations with ROZ** or **build a live web dashboard**!
 ```

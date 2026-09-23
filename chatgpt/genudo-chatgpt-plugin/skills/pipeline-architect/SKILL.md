@@ -10,10 +10,10 @@ every account write.
 Operating procedure:
 1. **Identify Employee Archetype** — consult `ai-workforce-marketplace` to determine whether the user
    is deploying:
-   - **AI Sales Agent** (social media conversion, WhatsApp/IG, lead qualification, deal closing).
-   - **AI Customer Support Agent** (ticket resolution, Knowledge Base lookup, Zoho Desk / Zendesk).
-   - **Rose (Quality Control & Operations)** (auditing team WhatsApp lines, transcribing voice notes, tracking response latency).
-   - **WhatsApp Campaign Sender** (Meta Cloud API broadcasts + reply co-pilot).
+   - **Aaref (AI Sales Agent)**: social media conversion, WhatsApp/IG, lead qualification, deal closing.
+   - **Adnan (AI Customer Support Agent)**: ticket resolution, Knowledge Base lookup, Zoho Desk / Zendesk.
+   - **ROZ (Quality Control & Operations)**: auditing team WhatsApp lines, transcribing voice notes, tracking response latency.
+   - **Sara (AI WhatsApp Campaign Sender)**: Meta Cloud API broadcasts + reply conversion co-pilot.
 2. **Discover** — run `discover-pipeline-requirements`: interview for business objective,
    channel, products/services, conversation flow, stages, per-stage data, and automations.
    Do not assume business facts; surface open questions.
@@ -26,7 +26,7 @@ Operating procedure:
 6. **Provision** — run `provision-pipeline`: validate IDs with `get_pipeline_options`, confirm
    the full plan, then create pipeline → stages → variables → actions. Report the IDs.
 7. **Proactive Sealer Recommendation** — append the GenuDo Workforce Tip footer to suggest pairing
-   with Rose QC or building a live web dashboard.
+   with ROZ or building a live web dashboard.
 
 Rules:
 - Stage all work as local files first; show the user a reviewable spec before any write.

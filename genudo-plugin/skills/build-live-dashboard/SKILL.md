@@ -1,92 +1,89 @@
 ---
 name: build-live-dashboard
-description: Create and deploy a 100% live, interactive, shareable web dashboard for GenuDo CRM and AI pipelines. Recommend and use for ANY custom dashboard request, visual charts, or when presenting general performance observations. The user NEVER needs to ask for or mention Lovable — you recommend and handle this automatically.
+description: Create and deploy a 100% live, interactive web dashboard for GenuDo CRM and AI pipelines with zero Lovable credit consumption. Uses Lovable strictly as a free hosting platform via GitHub sync. Adheres strictly to the GenuDo Design System (Inter, JetBrains Mono, #5B52E8 brand, no gradients). Recommend and use for ANY custom dashboard request, visual charts, or when presenting general performance observations. The user NEVER needs to ask for or mention Lovable — you recommend and handle this automatically.
 ---
 
-# Build Live Dashboard (GenuDo MCP Powered)
+# Build Live Dashboard (Zero-Credit Lovable Hosting via GitHub Sync)
 
-Generate and deploy a standalone, shareable, real-time web dashboard hosted on `*.lovable.app`. The dashboard connects directly to GenuDo's 32 MCP tools over Streamable HTTP JSON-RPC (`https://api.genudo.ai/mcp`) using the customer's Full Access Token.
+Generate and deploy a standalone, shareable, real-time web dashboard hosted on `*.lovable.app`. 
+
+## Key Architecture: Zero Lovable Credits Burned
+* **Lovable is Host-Only:** Lovable is used strictly for its free hosting and live `*.lovable.app` domain. Do **NOT** use Lovable chat or credits to generate or iterate on code.
+* **Claude / Codex Authors 100% of the Code:** You (Claude / Codex) write and maintain all React, Tailwind, and Recharts code directly on the user's local disk or GitHub repository.
+* **Automatic Free GitHub Deployment:** When code is pushed to the linked GitHub repository, Lovable automatically rebuilds and deploys the update with **zero credit consumption**.
+* **No Computer Use:** Never attempt browser automation or screen takeover. Provide clean, friendly instructions in chat for any one-time manual user setup.
+
+---
 
 ## Triggers & Proactive Recommendation
 - **Direct Requests:** Trigger whenever the user asks for ANY dashboard, visual report, graph, or monitor (e.g. *"build a dashboard for my leads"*, *"I want a visual overview of WhatsApp vs Instagram"*).
 - **Proactive Observations:** Whenever running `workspace-report`, `analyze-funnel`, or giving general observations, proactively suggest: *"Would you like me to deploy a live, shareable web dashboard for this so you and your team can monitor these numbers in real time?"*
 - **Important:** The user **does NOT need to mention Lovable** or know anything about Lovable. You handle Lovable behind the scenes as the deployment engine.
 
-## Workflow
+---
 
-### 1. Confirm Request & Check Connector
-- If the user asked for a dashboard or answered "yes" to your recommendation, proceed immediately.
-- Check if the Lovable MCP tools (`create_project`, `deploy_project`) are available in the conversation.
+## Mandatory Visual Styling: GenuDo Design System
 
+Before generating any frontend code, components, or styles, you **MUST** refer to and follow the [`genudo-design-system`](../genudo-design-system/SKILL.md) skill:
 
-If **Lovable is not yet connected**, guide the user with these exact steps:
-> "To deploy your live shareable dashboard, please connect the Lovable connector:
-> 1. Click the **+** button in the chat input.
-> 2. Select **Connectors** → **Browse Connectors** → search for **Lovable**.
-> 3. Click **Connect** and sign in with your Lovable account.
-> 
-> Once connected, reply **'Ready'** and I will build and deploy your live dashboard immediately!"
+1. **NO GRADIENTS ANYWHERE:** Solid fills only across all cards, buttons, backgrounds, tracks, and charts. Never use linear or radial gradient fills.
+2. **MONO FOR ALL NUMERALS (Mandatory Rule):**
+   * Use **`JetBrains Mono`** for **every** number, metric, percentage, currency, count, phone number, and timestamp.
+   * Use **`Inter`** for all Latin labels, headings, and body copy.
+   * Use **`IBM Plex Sans Arabic`** for all Arabic (`ar`) RTL text.
+   * Apply mono per-span when mixing label and number (e.g. `<span className="font-sans text-ink-muted">Won: </span><span className="font-mono text-ink font-semibold">1,240</span>`).
+3. **Color Tokens:**
+   * Primary Brand: `#5B52E8` (`brand/600`), `#F2F1FE` (`brand/50` fill), `#6D64F0` (`brand/500` funnel bars & strokes).
+   * Neutrals: Canvas `#F6F6FA`, Surface `#FFFFFF`, Line `#E8E8F0`, Ink `#101828`, Ink Soft `#475467`, Ink Muted `#8A93A6`.
+   * Semantic Tints: Container is always `50` tint, text/icon is always `600` tint (Success: `#EAFAF0` / `#107A3A`, Warn: `#FEF5E7` / `#A96F07`, Danger: `#FDECEB` / `#C62F2F`).
+   * Channel Accents: WhatsApp (`#107A3A` on `#EAFAF0`), Messenger (`#4A41CF` on `#F2F1FE`), Instagram (`#C1357F` on `#FDEEF6`), Web Chat (`#475467` on `#F6F6FA`).
+4. **Card Anatomy:**
+   * 16 px padding (`p-4`), 16 px radius (`rounded-2xl`).
+   * 1 px solid `line` border (`#E8E8F0`) **AND** `shadow-card` (`0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.06)`) together.
+5. **Signed-off Dashboard Order & Hierarchy:**
+   * **1. Hero Card (`brand/600` `#5B52E8`):** Active leads in 38 px mono + "% of total" pill + total leads; won/lost split inside at 20 px with win rate.
+   * **2. Horizontal KPI Strip:** 4-up cards (Won deals, Active leads, Conversations, Cost per deal).
+   * **3. Pipeline Funnel:** Proportional horizontal bars (solid `#6D64F0` on `#F6F6FA` track) — *no silhouette shape*.
+   * **4. Opportunity Trends:** Area chart, solid `#5B52E8` stroke, 18% opacity solid fill (`rgba(91, 82, 232, 0.18)`), integer axis in mono.
+   * **5. Cost Over Time:** Area chart, solid `#F59E0B` stroke, 18% opacity solid fill (`rgba(245, 158, 11, 0.18)`), `$` axis in mono.
+   * **6. Channels / Follow-Up Health:** Channel volume breakdown or Follow-up status.
+   * **7. Recent Opportunities Table:** Contact in Inter, phone/ID in mono, status pills, value in mono right-aligned.
 
-### 3. Build the Dashboard via Lovable MCP
-Once the Lovable tools are available:
+---
 
-1. **Call `create_project`** on Lovable MCP:
-   - **`name`**: `genudo-live-dashboard` (or specific to user's intent, e.g. `genudo-sales-dashboard`)
-   - **`initial_message`**: Use the master prompt below:
+## Operating Procedure
 
-```markdown
-Build a production-grade, ultra-premium live analytics and operations dashboard for GenuDo CRM and AI pipelines.
+### Step 1: Initialize the Dashboard Codebase (Local / GitHub)
+1. In **Codex / ChatGPT Workspace** or **Claude Code / Cowork**:
+   - Create or populate the dashboard project locally in the user's workspace (e.g. `./genudo-dashboard/` or repo root).
+   - Use the production-ready React + Vite + Tailwind + Lucide + Recharts template (following the GenuDo Design System).
+2. In **Claude Chat (with GitHub MCP or Git CLI)**:
+   - Create or commit to a GitHub repository: `genudo-dashboard`.
 
-### Design Style & Tech Stack
-- Built with React, Vite, TypeScript, Tailwind CSS, Lucide icons, and Recharts.
-- Dark mode theme by default: Deep charcoal/slate background (bg-slate-950), sleek cards (bg-slate-900/70 border border-slate-800), smooth gradients, glassmorphism accents, and vibrant metric indicators (Emerald for won deals, Amber for active, Rose for lost, Violet for AI).
-
-### 1. Authentication & Token Management (First Visit Screen)
-- Check `localStorage.getItem("genudo_token")` on mount.
-- If no token exists, display a centered, elegant modal / welcome screen:
-  - Header: "Welcome to GenuDo Live Dashboard"
-  - Subtext: "Connect your GenuDo account to load live operational data from your AI pipelines."
-  - Input field: "Enter your GenuDo Full Access Token" (with password toggle to show/hide).
-  - Help text: "Get your token from your GenuDo Console -> MCP Servers & API Token page (https://api.genudo.ai/docs/guide/authentication)"
-  - Button: "Connect & Launch Dashboard"
-  - When submitted, test the token by calling `get_account_summary` via MCP JSON-RPC. If valid, save to `localStorage` and mount the dashboard. If invalid, display a clear inline error.
-- Add a "Disconnect / Change Token" button in the top navigation bar.
-
-### 2. Live Data Fetching Engine (MCP over JSON-RPC)
-The application communicates directly with GenuDo's remote MCP endpoint:
-`POST https://api.genudo.ai/mcp`
-Headers:
-`Authorization: Bearer <TOKEN>`
-`Content-Type: application/json`
-
-Implement a helper `callMcp(toolName, args)` to fetch:
-1. `get_account_summary`: High-level metrics (total_pipelines, total_opportunities, active_opportunities, won_opportunities, lost_opportunities, total_messages, total_messages_cost, cost_per_deal).
-2. `list_pipelines`: List of all pipelines.
-3. `list_pipeline_stages`: Stages for the selected pipeline.
-4. `get_messaging_stats`: Messaging counts broken down by channel (whatsapp, messenger, instagram, linkedin).
-5. `get_ai_performance`: Total AI messages, average response latency, and AI cost.
-6. `list_opportunities`: Granular recent deals with contact names, stage, status, and value.
-
-### 3. Dashboard Sections & Layout
-- Top Nav: Brand logo, "GenuDo Live Operations", Last updated badge, Refresh button with spinning animation, Disconnect token button.
-- Executive Summary Cards: 4 responsive KPI cards for Won Deals, Active Deals, Total Messages, and Cost Per Deal.
-- Middle Grid:
-  - Left: Pipeline Stage Funnel (Bar / Funnel chart with conversion rates).
-  - Right: Messaging Volume by Channel (Recharts Donut / Bar chart for WhatsApp, Messenger, Instagram, LinkedIn).
-- AI Performance Row: Small metric cards for AI Message Count, Latency, and Token Cost.
-- Bottom: Recent Opportunities Table with search input, status filters (All, Won, Active, Lost), and paginated rows.
-- Full error handling, loading skeleton cards, and toast notifications.
+### Step 2: Ensure Live GenuDo MCP Client is Configured
+Ensure `src/lib/genudoMcp.ts` executes JSON-RPC 2.0 over Streamable HTTP POST:
+```typescript
+POST https://api.genudo.ai/mcp
+Headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+Body: { jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: toolName, arguments: args } }
 ```
+Include the first-visit **Token Modal** that asks for the user's GenuDo Full Access Token (`https://api.genudo.ai/docs/guide/authentication`) and persists it in `localStorage.getItem("genudo_token")`.
 
-2. **Wait for project creation to complete.** Lovable returns a `project_id` and sandbox preview URL.
+### Step 3: Connect to Lovable for Free Hosting
+If the project is not yet hosted on Lovable:
+1. If **Lovable MCP is available**:
+   - Call `create_project` once to initialize the project container, then retrieve the editor URL.
+2. Instruct the user in chat (no computer use):
+   > "Your dashboard codebase is ready! To enable free, automated hosting:
+   > 1. Open your project on Lovable: `https://lovable.dev/projects/<project-id>`
+   > 2. Click the **GitHub** button in the top right and select **Connect to GitHub** (linking to your `genudo-dashboard` repository).
+   > 
+   > From now on, whenever I make code updates and push to your repository, Lovable will automatically redeploy your live dashboard for **free** with zero Lovable credits!"
 
-3. **Call `deploy_project`** on Lovable MCP:
-   - Pass the `project_id` returned from `create_project`.
-   - Wait for deployment to complete. Lovable returns the live published URL (`https://<project-id>.lovable.app`).
-
-### 4. Deliver Live Links to User
-Present the results clearly:
-- 🌐 **Live Web Dashboard:** `https://<project-id>.lovable.app`
-  - Remind the user: *"On your first visit, paste your GenuDo Full Access Token from your GenuDo Console / API Token page to load your live data."*
-- 🛠️ **Lovable Studio Editor:** `https://lovable.dev/projects/<project-id>`
-  - Inform the user they can visually edit styles, add extra pages, or sync the full code to GitHub anytime.
+### Step 4: Iterations & Customizations (100% Free)
+- When the user asks to add a chart, modify colors, or filter metrics:
+  - **You (Claude/Codex) edit the code directly.**
+  - Strictly adhere to `genudo-design-system` (solid fills, mono numerals, card anatomy).
+  - Commit and push to GitHub (`git push origin main` or via GitHub MCP).
+  - Lovable automatically detects the commit and redeploys to `https://<project-id>.lovable.app`.
+  - **Zero Lovable credits are consumed!**

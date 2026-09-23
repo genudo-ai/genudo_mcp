@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.1.0] - 2026-09-23
+## [2.2.0] - 2026-09-23
+
+- **New skill: `genudo-design-system`** across all three plugin trees (`genudo-plugin`, `genudo-plugin-no-connector`, `chatgpt/genudo-chatgpt-plugin`). Codifies the canonical GenuDo look & feel from the official handover spec: `#5B52E8` brand ramp, zero gradients (solid fills only), mandatory `JetBrains Mono` for all numerals, `Inter` for Latin copy, `IBM Plex Sans Arabic` for RTL, card anatomy (16px radius + 1px border + shadow), and the signed-off 7-tier dashboard hierarchy.
+- **New skill: `genudo-api-reference`** across all three plugin trees (`genudo-plugin`, `genudo-plugin-no-connector`, `chatgpt/genudo-chatgpt-plugin`). Comprehensive directory of all public GenuDo REST API endpoints (`/api/v1/...`) and remote Streamable HTTP MCP tools (`https://api.genudo.ai/mcp`).
+- **Zero-Credit Lovable Hosting via GitHub Sync:** Updated `build-live-dashboard` to mandate `genudo-design-system` and use Lovable strictly as a free hosting platform. Claude / Codex authors 100% of the code locally or via GitHub commits, pushing to a GitHub repository that Lovable auto-deploys for free with zero Lovable AI credits burned.
+- **Standalone Dashboard Template:** Added production-ready `apps/genudo-dashboard-template/` (Vite + React + Tailwind + Recharts) fully styled with the GenuDo Design System, live MCP JSON-RPC integration, and token modal.
+- Rebuilt distribution zip packages (`genudo-plugin.zip` and `genudo-plugin-no-connector.zip`).
+
 
 ### Plugins (all trees → 2.1.0)
 - **New skill: `build-live-dashboard`** across all three plugin trees (`genudo-plugin`, `genudo-plugin-no-connector`, `chatgpt/genudo-chatgpt-plugin`). Enables automated generation and deployment of 100% live, interactive web dashboards on Lovable powered by GenuDo MCP HTTP JSON-RPC tools (`get_account_summary`, `list_pipelines`, `get_messaging_stats`, `list_opportunities`, etc.).

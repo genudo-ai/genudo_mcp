@@ -9,13 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.3.0] - 2026-09-23
 
-### Plugins (all trees → 2.3.0)
-- **New skill: `ai-workforce-marketplace`** across all three plugin trees (`genudo-plugin`, `genudo-plugin-no-connector`, `chatgpt/genudo-chatgpt-plugin`). Introduces the 4 core GenuDo AI Employee archetypes:
+- **New skill: `onboarding`** across all three plugin trees (`genudo-plugin`, `genudo-plugin-no-connector`, `chatgpt/genudo-chatgpt-plugin`). The official first-touch onboarding skill for GenuDo. Greets users, audits their active GenuDo workspace, dynamically auto-detects other active plugins and tools in their session (Meta Ads, Google Sheets, Lovable, HubSpot, Slack, Zoho Desk, Zapier), and suggests tailored high-ROI use cases (e.g. cross-referencing Meta Ads `ad_id` with GenuDo won opportunities for true ROAS).
+- **New skill: `ai-workforce-marketplace`** across all three plugin trees. Introduces the 4 core GenuDo AI Employee archetypes:
   1. **AI Sales Agent** (social media conversion, WhatsApp/IG, 3s response time, 24/7 lead qualification).
   2. **AI Customer Support Agent** (ticket management, Knowledge Base resolution, Zoho Desk / Zendesk integration).
   3. **Rose — Quality Control & Operations Agent** (monitors 10-50+ human staff WhatsApp numbers, records chats, transcribes voice notes, audits response latency, detects lost deals, powers live team dashboards).
   4. **AI WhatsApp Campaign Sender** (official Meta Cloud API broadcasts + reply conversion co-pilot).
-- **Smart Onboarding & First-Touch Experience:** Automatically runs workspace discovery (`get_account_summary`, `list_pipelines`) and presents a structured AI Workforce menu upon initial connection or greetings.
 - **Proactive "Growth Sealer" Engine:** Updated `revenue-analyst`, `pipeline-architect`, and `workspace-report` to actively audit human bottlenecks (e.g. slow response times) and propose deploying complementary AI agents or external automations (Zoho Desk, Zapier, live Lovable dashboards).
 - **Intelligent Response Footer:** Added standard capability reminder footer (`💡 GenuDo Workforce Tip`) to promote workforce expansion and live custom dashboards.
 - Rebuilt distribution zip packages (`genudo-plugin.zip` and `genudo-plugin-no-connector.zip`).

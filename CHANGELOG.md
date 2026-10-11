@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-10-11
+
+- **Agent QA loop: 7 new skills** across all four plugin trees (`genudo-plugin`, `genudo-plugin-no-connector`, `chatgpt/genudo-chatgpt-plugin`, `antigravity/genudo`): `mine-customer-chats`, `generate-test-journeys`, `setup-testing-engine`, `run-agent-tests`, `evaluate-agent-replies`, `remediate-agent-defects`, `plan-qa-sprint`. Mine real buyer chats for intents and knowledge gaps, author multi-turn synthetic-customer suites, run them with the new public [`genudo-agent-testing-engine`](https://github.com/genudo-ai/genudo-agent-testing-engine) (isolated `is_test` leads, `TEST R<n>` tags, quiet-period polling, archive-and-pause cleanup), judge replies with the user's own Claude/ChatGPT subscription (no API keys), fix root causes through the editing playbook, and plan the work as a 2-week sprint backlog (`build_backlog.py`). Generalized from a single-client handover; all client data removed.
+- Corrected stale skill counts in manifests and READMEs (Claude trees 34, ChatGPT 40).
+
 ## [2.3.0] - 2026-09-23
 
 - **New skill: `onboarding`** across all three plugin trees (`genudo-plugin`, `genudo-plugin-no-connector`, `chatgpt/genudo-chatgpt-plugin`). The official first-touch onboarding skill for GenuDo. Greets users, audits their active GenuDo workspace, dynamically auto-detects other active plugins and tools in their session (Meta Ads, Google Sheets, Lovable, HubSpot, Slack, Zoho Desk, Zapier), and suggests tailored high-ROI use cases (e.g. cross-referencing Meta Ads `ad_id` with GenuDo won opportunities for true ROAS).

@@ -5,7 +5,7 @@ pipeline-aware agents with integration capabilities and company-knowledge access
 from one platform, one inbox, and one analytics dashboard. This plugin brings the skills and
 agents to build, run, and improve them from Claude.
 
-**This build ships no connector.** Same 22 skills and 6 agents as the main `genudo` plugin,
+**This build ships no connector.** Same 34 skills and 6 agents as the main `genudo` plugin,
 minus the bundled MCP server — you connect Genudo yourself. That's what you want when:
 
 - **You manage several Genudo accounts** — install this globally for the skills, then point
@@ -15,7 +15,7 @@ minus the bundled MCP server — you connect Genudo yourself. That's what you wa
 
 ## What's inside
 
-- **22 skills** — real playbooks for the actual work: creating a pipeline through a guided
+- **34 skills** — real playbooks for the actual work: creating a pipeline through a guided
   interview, editing a live agent safely, wiring webhook automations, analyzing conversations
   for drift, managing the funnel, and reporting.
 - **6 agents** (Cowork & Code) — specialists that orchestrate the skills end to end.

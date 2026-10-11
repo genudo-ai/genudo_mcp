@@ -3,7 +3,7 @@
 Install Genudo in **ChatGPT Work (desktop)** or **Codex**:
 
 1. Plugins → Create ▾ → **Add marketplace** → Source: `genudo-ai/chatgpt-plugin`
-2. Install **genudo** (28 skills + the Genudo connector).
+2. Install **genudo** (40 skills + the Genudo connector).
 3. Approve the Genudo sign-in when prompted — the connector is a remote server that uses
    OAuth, so a browser page opens and you grant access. **No token to create or paste.**
    In Codex CLI, run `codex mcp login genudo`.

@@ -24,7 +24,7 @@ platform, one inbox, and one analytics dashboard.
 | **`genudo`** | ✅ bundled (`https://api.genudo.ai/mcp`) | Almost always. Everything in one install. |
 | **`genudo-no-connector`** | ❌ none | You connect Genudo yourself — e.g. a different account per project. |
 
-Both carry the same **22 skills** and **6 agents**. For the no-connector build, add the
+Both carry the same **34 skills** and **6 agents**. For the no-connector build, add the
 server where you want it:
 
 ```
@@ -37,7 +37,7 @@ Each project signs in to its own Genudo account, so there are no tokens to keep 
 
 - **Connector** — 29 tools: pipelines, stages, actions, variables, contacts, opportunities,
   messages, knowledge tables, follow-ups, analytics.
-- **22 skills** — playbooks Claude auto-invokes: guided pipeline builds, safe edits to a live
+- **34 skills** — playbooks Claude auto-invokes: guided pipeline builds, safe edits to a live
   agent, webhook automations, conversation diagnosis, funnel reporting.
 - **6 agents** (Cowork & Code) — specialists that run multi-step jobs end to end.
 

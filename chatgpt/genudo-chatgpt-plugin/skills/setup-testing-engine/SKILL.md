@@ -24,6 +24,11 @@ and wait for the user rather than installing silently.
 
 ## 2. Get the engine
 
+Clone it **inside the client's folder** (the folder Claude was opened in). In a client
+folder that already connects Genudo with a token — a `.mcp.json` whose `genudo` server sends
+`Authorization: Bearer …`, as `loredex workspace` creates — the engine reuses that token
+automatically, so each client's runs use that client's account.
+
 ```bash
 git clone https://github.com/genudo-ai/genudo-agent-testing-engine.git
 cd genudo-agent-testing-engine
@@ -34,7 +39,10 @@ If the folder already exists, `git pull` instead.
 
 ## 3. Configure `.env`
 
-- `GENUDO_TOKEN` — a bearer token the engine uses for both the MCP endpoint and the REST calls
+- `GENUDO_TOKEN` — **skip this in a client folder whose `.mcp.json` already carries a
+  token**; the engine prints `[config] Using the GenuDo token from …/.mcp.json` when it
+  reuses it. Only if that token is rejected on a write (401/403 on the first live run), or the
+  folder connects through browser sign-in instead, set one here: a bearer token the engine uses for both the MCP endpoint and the REST calls
   that create test opportunities and send test messages. The user creates it in the Genudo
   console: **Developer → API Keys & Tokens → Create token**, with `mcp:use` plus the
   opportunity, conversation, and message write scopes. It is shown once. The token goes in
@@ -63,6 +71,10 @@ python3 src/engine.py list --suite templates/starter-suite.json
 python3 src/engine.py run --pipeline messenger --dry-run
 python3 tests/test_judge.py         # engine self-check
 ```
+
+If the client folder is inside a git repo, make sure `genudo-agent-testing-engine/` is not
+committed there — its `runs/` hold full customer transcripts (the engine's own `.gitignore`
+already excludes `runs/` and `.env`).
 
 Report what is ready, what is missing, and the next step (`generate-test-journeys` for a real
 suite, then `run-agent-tests`).

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.1] - 2026-10-11
+
+- `setup-testing-engine`: works inside loredex client workspaces with no extra setup. Clone the engine inside the client folder and it reuses that folder's `.mcp.json` Genudo token (engine `0fc586f`), so each client's test runs use that client's account.
+
 ## [2.4.0] - 2026-10-11
 
 - **Agent QA loop: 7 new skills** across all four plugin trees (`genudo-plugin`, `genudo-plugin-no-connector`, `chatgpt/genudo-chatgpt-plugin`, `antigravity/genudo`): `mine-customer-chats`, `generate-test-journeys`, `setup-testing-engine`, `run-agent-tests`, `evaluate-agent-replies`, `remediate-agent-defects`, `plan-qa-sprint`. Mine real buyer chats for intents and knowledge gaps, author multi-turn synthetic-customer suites, run them with the new public [`genudo-agent-testing-engine`](https://github.com/genudo-ai/genudo-agent-testing-engine) (isolated `is_test` leads, `TEST R<n>` tags, quiet-period polling, archive-and-pause cleanup), judge replies with the user's own Claude/ChatGPT subscription (no API keys), fix root causes through the editing playbook, and plan the work as a 2-week sprint backlog (`build_backlog.py`). Generalized from a single-client handover; all client data removed.

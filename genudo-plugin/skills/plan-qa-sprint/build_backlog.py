@@ -71,6 +71,10 @@ def write_xlsx(sprints, capacity, path):
         ws.append([c.replace("_", " ").title() for c in COLUMNS])
         for s in sprint:
             ws.append([s.get(c, "") for c in COLUMNS])
+            for cell in ws[ws.max_row]:
+                # Story text can quote customer messages; never let it become a live formula.
+                if isinstance(cell.value, str) and cell.value[:1] in ("=", "+", "-", "@"):
+                    cell.data_type = "s"
         dv = DataValidation(type="list", formula1='"To Do,In Progress,Verified,Done"')
         ws.add_data_validation(dv)
         dv.add(f"I2:I{max(len(sprint) + 1, 2)}")
@@ -101,6 +105,15 @@ def self_check():
             raise AssertionError("expected ValueError")
         except ValueError:
             pass
+    import os
+    import tempfile
+    from openpyxl import load_workbook
+    with tempfile.TemporaryDirectory() as d:
+        path = os.path.join(d, "b.xlsx")
+        evil = {"id": "e", "priority": "P0", "points": 1, "story": '=HYPERLINK("http://x","y")'}
+        write_xlsx(allocate([evil], 30), 30, path)
+        cell = load_workbook(path)["Sprint 1"]["D2"]
+        assert cell.data_type == "s" and cell.value.startswith("="), (cell.data_type, cell.value)
     print("self-check ok")
 
 

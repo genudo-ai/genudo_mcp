@@ -1,7 +1,7 @@
 # Genudo Plugin for ChatGPT & Codex
 
 The Genudo workforce for OpenAI surfaces: the Genudo MCP connector (29 tools) plus
-28 skills — the 22 task playbooks from the Claude plugin and 6 role playbooks
+40 skills — the 34 task playbooks from the Claude plugin and 6 role playbooks
 (architect, doctor, automation-engineer, analyst, kb-librarian, migrator) converted
 from the Claude agents.
 
@@ -37,7 +37,7 @@ OAuth. For a self-hosted instance, point the manual server at
 ## What's inside
 
 - `.mcp.json` — the Genudo connector (remote Streamable HTTP server, OAuth).
-- `skills/` — 28 skills, auto-invoked by task match or explicitly via `@`/`$` mention:
+- `skills/` — 40 skills, auto-invoked by task match or explicitly via `@`/`$` mention:
   discovery, pipeline authoring, provisioning, follow-ups, webhook automations,
   knowledge-base curation, conversation diagnosis, funnel analytics, migration, and
   the 6 role playbooks.
@@ -48,7 +48,7 @@ into the skills and the connector's server instructions.
 ## Notes
 
 - Do NOT add the repo ROOT as a ChatGPT marketplace: the app then reads the root
-  `.claude-plugin/marketplace.json` and installs the Claude plugin trees (22 skills,
+  `.claude-plugin/marketplace.json` and installs the Claude plugin trees (34 skills,
   Claude-oriented descriptions). The ChatGPT marketplace lives in `chatgpt/` on purpose.
 - Skills under `skills/` (except the 6 role playbooks) are kept byte-identical to
   `../../genudo-plugin/skills/` — edit there and copy here. The 6 role playbooks are

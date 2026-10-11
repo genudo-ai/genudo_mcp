@@ -48,14 +48,14 @@ Genudo's Claude integration is layered. Each layer adds capability on top of the
 > three prompts, response slimming, and two guide tools (`get_instruction_guides`,
 > `get_editing_playbook`); use it for self-hosted instances or token-based setups. The plugin
 > ships that same guidance as the `instruction-guides` and `editing-playbook` skills, so it
-> does not depend on which connector you use. The Plugin is what adds the 22 skills and
+> does not depend on which connector you use. The Plugin is what adds the 34 skills and
 > 6 agents.
 
 ---
 
 ## ① Plugin — everything in one install ★★★★★
 
-The complete Genudo workforce: connector + 22 skills + 6 agents + prompts. Claude auto-invokes
+The complete Genudo workforce: connector + 34 skills + 6 agents + prompts. Claude auto-invokes
 the right skill, agents handle heavy multi-step work, and every write to your account is shown
 as a diff and confirmed first.
 
@@ -94,7 +94,7 @@ in Cowork & Code**; the connector, being remote, works everywhere — including 
 Working across several Genudo accounts from one machine? You want the **skills and agents
 everywhere**, but a **different Genudo account in each client's project**. The bundled
 connector in ① is one global server — the opposite. Install the **`genudo-no-connector`**
-plugin instead: identical 22 skills and 6 agents, **no bundled connector**, nothing to strip
+plugin instead: identical 34 skills and 6 agents, **no bundled connector**, nothing to strip
 out.
 
 **1. Plugin — global, once:**
@@ -196,7 +196,7 @@ Double-click `genudo.mcpb` → enter token → done. No terminal, no Node config
 Both connectors work in any MCP-compatible client. Point it at
 `https://api.genudo.ai/mcp` (Streamable HTTP + OAuth), or add the stdio JSON block from ③.
 ChatGPT/Codex use `url` + `auth` rather than `type` — Genudo ships a
-[ChatGPT & Codex plugin](chatgpt/README.md) with the connector and 28 skills already wired.
+[ChatGPT & Codex plugin](chatgpt/README.md) with the connector and 40 skills already wired.
 
 ### Google Antigravity IDE & Gemini CLI (`agy`)
 

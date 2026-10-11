@@ -25,8 +25,16 @@ genudo/
     │   └── SKILL.md          # Vector grounding, table schemas, and points curation
     ├── messaging-operations/
     │   └── SKILL.md          # Multi-channel analytics, transcript audit, CRM sync
-    └── stage-followups/
-        └── SKILL.md          # Per-stage timed re-engagement sequence runbook
+    ├── stage-followups/
+    │   └── SKILL.md          # Per-stage timed re-engagement sequence runbook
+    │   # Agent QA loop (engine: github.com/genudo-ai/genudo-agent-testing-engine)
+    ├── mine-customer-chats/       # Real buyer intents + knowledge gaps from live chats
+    ├── generate-test-journeys/    # Multi-turn synthetic-customer test suites
+    ├── setup-testing-engine/      # Install + verify the testing engine
+    ├── run-agent-tests/           # Run suites against a live agent, archive test leads
+    ├── evaluate-agent-replies/    # Deterministic checks + assistant-as-judge
+    ├── remediate-agent-defects/   # Root cause + surgical instruction/KB fixes
+    └── plan-qa-sprint/            # 2-week sprint backlog in Excel
 ```
 
 ---
@@ -98,7 +106,7 @@ agy plugin validate antigravity/genudo
 Expected output:
 ```text
   [ok]    antigravity/genudo
-          ✔ skills      : 4 processed
+          ✔ skills      : 11 processed
           - agents      : skipped (not found)
           - commands    : skipped (not found)
           ✔ mcpServers  : 1 processed

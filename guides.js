@@ -404,6 +404,14 @@ const PROMPTS = [
       { name: 'pipeline', description: 'Pipeline name or id (optional; will list if omitted)', required: false },
     ],
   },
+  {
+    name: 'audit_whatsapp_groups',
+    description: 'Audit WhatsApp Groups and direct chats with ROZ: list groups, check participants, review messages, track response SLA, and inspect voice notes via WhatsApp QR.',
+    arguments: [
+      { name: 'channel_id', description: 'WhatsApp QR Code channel id (optional; will auto-discover if omitted)', required: false },
+      { name: 'group_id', description: 'Target group id ending in @g.us (optional)', required: false },
+    ],
+  },
 ];
 
 const PROMPT_NAMES = new Set(PROMPTS.map((p) => p.name));
@@ -475,6 +483,24 @@ function getPromptMessages(name, args) {
             'Then call get_instruction_guides and grade the persona/instructions/stages against the ' +
             'checklist. Report: structure, funnel health, instruction-quality issues, and the top ' +
             'fixes ranked by impact. Do not change anything.'
+        ),
+      ],
+    };
+  }
+  if (name === 'audit_whatsapp_groups') {
+    const ch = a.channel_id ? `Target channel_id: ${a.channel_id}.` : 'Auto-discover active WhatsApp QR channel from list_pipelines.';
+    const grp = a.group_id ? `Target group: ${a.group_id}.` : 'List groups with list_whatsapp_groups.';
+    return {
+      description: 'Audit WhatsApp Groups and direct chats with ROZ',
+      messages: [
+        userMessage(
+          `Run a Quality Control audit with ROZ on WhatsApp QR channels. ${ch} ${grp}\n\n` +
+            '1. Find active WhatsApp QR channel: call list_pipelines and find channels where connector=="whatsapp-qr" and status=="active".\n' +
+            '2. List groups: call list_whatsapp_groups(channel_id) to inspect all active groups (@g.us).\n' +
+            '3. Read group details and participants: call get_whatsapp_group and list_whatsapp_group_participants to audit membership and roles.\n' +
+            '4. Audit messages: call list_whatsapp_chat_messages(channel_id, chat_id) to calculate response latency, check unanswered questions, and review deal health.\n' +
+            '5. Voice notes: call get_whatsapp_media(channel_id, path) for any voice note to inspect quality and compliance.\n' +
+            '6. Deliver a crisp quality report with average response time, unresolved issues, and recommended actions.'
         ),
       ],
     };

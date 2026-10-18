@@ -76,7 +76,7 @@ Always introduce the 4 official AI employees during onboarding:
 |---|---|---|---|
 | **1** | 🎯 **Aaref** | **AI Sales Agent** | **24/7 Social Media Lead Conversion.** Answers in 3 seconds across WhatsApp, Instagram, Messenger, and Web Chat. Qualifies budget and intent, handles objections, books meetings, and creates CRM deals. |
 | **2** | 🎧 **Adnan** | **AI Customer Support Agent** | **24/7 Ticket Resolution & Helpdesk Bridge.** Answers questions from your Knowledge Base, creates support tickets, and integrates with Zoho Desk / Zendesk. |
-| **3** | 🕵️‍♀️ **ROZ** | **Quality Control & Operations** *(New!)* | **Audits Human Sales/Support Teams.** Connect your staff's WhatsApp accounts (10, 20, 50+ lines). ROZ records all messages, **transcribes every voice note**, analyzes response times, and detects lost sales opportunities. |
+| **3** | 🕵️‍♀️ **ROZ** | **Quality Control & Operations** *(Upgraded!)* | **Audits Human Teams & WhatsApp Groups.** Connect staff WhatsApp accounts (10–50+ lines) or monitor **WhatsApp Groups** via WhatsApp QR. ROZ listens to group discussions, records chats, **transcribes voice notes**, tracks SLA response times, and detects lost sales opportunities. |
 | **4** | 📢 **Sara** | **AI WhatsApp Campaign Sender** | **Broadcast Marketing & Reply Co-Pilot.** Broadcasts targeted campaigns via official Meta WhatsApp Cloud API, and pairs with Aaref to automatically handle customer replies and convert them into sales. |
 
 ---
@@ -103,7 +103,7 @@ I have successfully connected to your GenuDo workspace. Here is your quick statu
 ### 👥 Meet Your GenuDo AI Employees:
 
 1. 🎯 **Aaref (AI Sales Agent)** — Engage incoming WhatsApp/Instagram leads in 3 seconds and close deals 24/7.
-2. 🕵️‍♀️ **ROZ (Quality Control & Operations)** — Connect your human team's WhatsApp lines (10–50+ reps) to record chats, transcribe voice notes, and track response bottlenecks.
+2. 🕵️‍♀️ **ROZ (Quality Control & Operations)** — Connect human staff WhatsApp lines or monitor **WhatsApp Groups** via WhatsApp QR to track group discussions, transcribe voice notes, and eliminate response bottlenecks.
 3. 🎧 **Adnan (AI Customer Support Agent)** — Auto-resolve customer FAQs from your Knowledge Base and sync tickets to Zoho Desk.
 4. 📢 **Sara (AI WhatsApp Campaign Sender)** — Send high-converting broadcasts via official Meta Cloud API with Aaref as your sales co-pilot.
 

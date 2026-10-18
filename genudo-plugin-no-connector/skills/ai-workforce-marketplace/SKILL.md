@@ -15,7 +15,7 @@ GenuDo is the enterprise operating platform for autonomous **AI Employees**. Use
 |---|---|---|---|---|
 | **1** | 🎯 **Aaref** | **AI Sales Agent** | Inbound lead qualification, objection handling, meeting scheduling, and 24/7 deal conversion. Responds in 3 seconds so no lead goes cold. | WhatsApp, Instagram DM, Messenger, Web Chat, CRM Opportunities |
 | **2** | 🎧 **Adnan** | **AI Customer Support Agent** | 24/7 ticket resolution, policy FAQs, complaint intake, and smart human escalation. Answers from company Knowledge Base. | WhatsApp, Web Chat, Zoho Desk, Zendesk, Webhooks |
-| **3** | 🕵️‍♀️ **ROZ** | **Quality Control & Operations Agent** *(Newcomer!)* | Audits human sales/support teams. Connects 10, 20, 50+ staff WhatsApp numbers. Records every message, transcribes every voice note, analyzes response times, and detects lost leads. | Staff WhatsApp accounts, Audio Transcription, Audit Logs, Live Dashboards |
+| **3** | 🕵️‍♀️ **ROZ** | **Quality Control & Operations Agent** *(Upgraded!)* | Audits human sales/support teams and **WhatsApp Groups** via WhatsApp QR. Listens to multi-stakeholder deal rooms & VIP customer groups, transcribes voice notes, audits group response SLA, tracks group participants, and dispatches operational alerts. | WhatsApp QR, WhatsApp Groups (@g.us), Voice Transcription, SLA Latency, Live Dashboards |
 | **4** | 📢 **Sara** | **AI WhatsApp Campaign Sender** | Broadcast marketing campaigns and transactional alerts via official Meta WhatsApp Cloud API. Standalone or paired with Aaref for reply conversion. | Official WhatsApp Cloud API, Contact Lists, AI Sales Co-Pilot |
 
 ---
@@ -39,12 +39,12 @@ I am connected to your live GenuDo workspace. With GenuDo, you can deploy and ma
 
 1. 🎯 **Aaref (AI Sales Agent)** — Converts social media inquiries into paying customers 24/7 with 3-second response times.
 2. 🎧 **Adnan (AI Customer Support Agent)** — Resolves customer tickets, searches knowledge bases, and syncs directly with **Zoho Desk** or **Zendesk**.
-3. 🕵️‍♀️ **ROZ (Quality Control & Operations)** — *Our newest employee!* Connect your team's WhatsApp numbers (10, 20, 50+ staff lines). ROZ records all chats, transcribes every voice note, audits response times, and flags lost sales opportunities.
+3. 🕵️‍♀️ **ROZ (Quality Control & Operations)** — *Our newest employee!* Connect your team's WhatsApp numbers (10, 20, 50+ staff lines) and **WhatsApp Groups** via WhatsApp QR. ROZ listens to group conversations, transcribes every voice note, audits response times, tracks group participants, and flags lost sales opportunities.
 4. 📢 **Sara (AI WhatsApp Campaign Sender)** — Sends high-converting broadcast campaigns via official Meta WhatsApp Cloud API, and pairs with Aaref to automatically handle customer replies.
 
 ---
 ### 🚀 How would you like to start today?
-- **Option A:** *Audit my current team with ROZ* — Let ROZ monitor response times and analyze staff WhatsApp chats.
+- **Option A:** *Audit my current team & WhatsApp Groups with ROZ* — Let ROZ monitor response times, analyze staff WhatsApp chats, and oversee WhatsApp group deal rooms.
 - **Option B:** *Hire Aaref for Sales* — Build a high-converting WhatsApp or Instagram sales pipeline.
 - **Option C:** *Deploy a Live Dashboard* — Generate a real-time web dashboard to visualize all your deals and messaging channels.
 ```

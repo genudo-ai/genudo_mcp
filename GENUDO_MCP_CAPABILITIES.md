@@ -675,6 +675,46 @@ Required: `pipeline_id`. Optional: `stage_id` (filter to one stage; omit for all
 including pipeline-level ones). Returns id, name, trigger, method, url, is_active, order,
 stage_id, max_fires, retries per action.
 
+### 11. WhatsApp QR Code & Group Operations (ROZ Quality Control)
+
+Real-time device and WhatsApp Group inspection for quality control, response latency tracking, voice note auditing, and operational interventions. Enabled on channels with `connector: "whatsapp-qr"` and `status: "active"`.
+
+#### `list_whatsapp_groups`
+
+Required: `channel_id`. Optional: `limit` (default 50, max 100), `offset`.
+Discovers all WhatsApp groups the connected phone belongs to, sorted by subject. Returns group IDs ending in `@g.us` for message retrieval, participant auditing, and notifications.
+
+#### `get_whatsapp_group`
+
+Required: `channel_id`, `group_id` (`...@g.us`).
+Retrieves group subject, description, creation date, owner JID, and group settings (announcements, admin permissions).
+
+#### `list_whatsapp_group_participants`
+
+Required: `channel_id`, `group_id` (`...@g.us`).
+Lists group members, their JIDs, and role status: `participant`, `admin`, `superadmin`, or `left` (critical churn signal when key stakeholders exit deal rooms).
+
+#### `list_whatsapp_chats`
+
+Required: `channel_id`. Optional: `limit` (max 100), `offset`.
+Lists active conversations (personal and groups), ordered newest first, with recipient name, picture, unread count, and last message snippet.
+
+#### `list_whatsapp_chat_messages`
+
+Required: `channel_id`, `chat_id` (phone digits, `@c.us`, or `@g.us` for groups). Optional: `limit` (max 50), `offset`, `before` (unix timestamp in seconds).
+Reads raw WhatsApp message streams directly from the device, capturing both human team replies and customer messages. Each media message includes `media.url` for direct downloading.
+
+#### `get_whatsapp_media`
+
+Required: `channel_id`, `path` (`media.url` from `list_whatsapp_chat_messages`).
+Downloads voice notes (`.ogg`/opus), images, PDFs, and videos directly over MCP, returning filename, MIME type, byte size, and base64-encoded data.
+
+#### `send_whatsapp_message`
+
+Required: `channel_id`, `chat_id` (`@c.us` or `@g.us`), `type` (`text` | `image` | `file` | `voice` | `video`).
+Optional: `text` (for text messages), `url` (public https link for media), `caption`, `filename`.
+Delivers messages immediately to personal contacts or WhatsApp groups for operational alerts, escalation notices, or supervisor interventions.
+
 ## What This MCP Can Already Do Well
 
 ### Full Pipeline Administration
@@ -739,7 +779,7 @@ Based on the live tool inventory, the MCP does not currently expose dedicated to
 - deleting pipelines directly
 - deleting variables directly (`delete_variable` was removed)
 - deleting whole knowledge tables (only rows, via `delete_knowledge_points`)
-- sending a manual message directly
+- sending manual messages on Meta Cloud API channels (available on WhatsApp QR channels via `send_whatsapp_message`)
 - reading subscription tier or plan limits directly
 - reading remaining pipeline capacity directly
 

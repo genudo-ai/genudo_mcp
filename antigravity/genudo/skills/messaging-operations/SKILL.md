@@ -19,6 +19,11 @@ Operational runbook for monitoring multi-channel messaging traffic, auditing con
 | Contacts | `list_contacts` | Look up contacts by phone number, name, or metadata |
 | Opportunities | `list_opportunities` / `update_opportunities` | Inspect and update pipeline deal status (active, won, lost) |
 | Journey Automation | `start_pipeline_journey` | Enroll a contact into an automated pipeline flow |
+| WhatsApp QR Groups | `list_whatsapp_groups` / `get_whatsapp_group` | Discover and inspect WhatsApp groups the number belongs to |
+| Group Participants | `list_whatsapp_group_participants` | Inspect group roster, admins, and members who left |
+| Direct & Group Chats | `list_whatsapp_chats` / `list_whatsapp_chat_messages` | Read live WhatsApp message history directly from device/group |
+| WhatsApp Media | `get_whatsapp_media` | Download voice notes, images, videos, documents over MCP |
+| Send WhatsApp | `send_whatsapp_message` | Send message or media to personal chat (`@c.us`) or group (`@g.us`) |
 
 ---
 
@@ -54,3 +59,16 @@ When diagnosing customer conversations or agent mistakes:
 To trigger automated outreach or sequence onboarding:
 - Call `start_pipeline_journey` with the target `pipeline_id` and `contact_id` (or contact details).
 - Verify enrollment and monitor initial messages via `list_messages`.
+
+### 6. WhatsApp QR Code & Group Operations (ROZ Oversight)
+When auditing human sales lines or monitoring WhatsApp Groups:
+1. Identify the active channel: inspect `channels` in `list_pipelines` where `connector == "whatsapp-qr"`.
+2. **Monitor Groups**:
+   - Call `list_whatsapp_groups(channel_id)` to list all groups (`@g.us`).
+   - Call `list_whatsapp_chat_messages(channel_id, chat_id)` to read messages inside any group or direct chat.
+   - Call `list_whatsapp_group_participants(channel_id, group_id)` to audit who joined, left, or is admin.
+3. **Audit Media & Voice Notes**:
+   - When a message contains `media.url`, call `get_whatsapp_media(channel_id, path)` to download voice notes (`.ogg`/opus) or documents for quality and compliance inspection.
+4. **Send Interventions or Alerts**:
+   - Use `send_whatsapp_message` to post supervisor alerts or operational summaries to management groups or direct chats.
+

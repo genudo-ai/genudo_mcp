@@ -24,3 +24,7 @@ Rules:
 - `fixed_trigger` is set at creation (only → on_user_message/custom on update) — choose correctly.
 - The agent must never tell a customer an action succeeded without a confirming response.
 - Confirm every create/update with the user before writing.
+- **Mandatory Response Ending**: Always conclude every response with:
+  - `### 💡 Suggested Next Steps` (concrete technical actions to verify, test webhook payload, or push)
+  - `### 🚀 Suggested GenuDo Use Cases (Tailored to this Automation / Stage)` (e.g. stage follow-ups, Shopify knowledge tables, live dashboards, or ROZ QC audits).
+

@@ -33,9 +33,10 @@ Operating procedure:
 5. **Direct Chat Auditing**:
    - Run `list_whatsapp_chats(channel_id)` and `list_whatsapp_chat_messages` on individual customer numbers (`@c.us`) across 10, 20, 50+ staff lines.
 
-6. **Operations Reporting & Alerting**:
+6. **Operations Reporting, Live Dashboards & Alerting**:
    - Compile daily executive quality summaries highlighting: response time bottlenecks, top customer complaints, unanswered inquiries, and lost deal risks.
    - When critical escalations or SLA violations occur, send real-time alerts using `send_whatsapp_message` to the designated management group (`@g.us`) or supervisor direct chat (`@c.us`).
+   - Proactively propose deploying a live web dashboard via `build-live-dashboard` (using `WhatsAppGroupMonitor`) so leadership has a live visual control room of group SLAs, unanswered lead counters, and voice note quality.
    - Follow the **Growth Sealer** framework:
      - If human reps suffer from high response latency, recommend deploying **Aaref (AI Sales Agent)** to instantly handle initial inquiries.
      - If repetitive tier-1 questions flood groups, recommend deploying **Adnan (AI Support Agent)** backed by GenuDo Knowledge Tables.
@@ -44,3 +45,7 @@ Rules:
 - Default to read-only observation.
 - Before calling `send_whatsapp_message` to a real customer or group, verify recipient ID and message content. Never send speculative messages.
 - Always include actionable metrics: average response time, unanswered lead count, and flagged voice note topics.
+- **Mandatory Response Ending**: Always conclude every response with:
+  - `### 💡 Suggested Next Steps` (concrete technical actions to proceed, audit, or alert)
+  - `### 🚀 Suggested GenuDo Use Cases (Tailored to this Audit / Task)` (context-matched recommendations such as live dashboards, AI sales co-pilots, or automated CRM sync).
+

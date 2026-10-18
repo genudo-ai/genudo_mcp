@@ -47,7 +47,8 @@ Before generating any frontend code, components, or styles, you **MUST** refer t
    * **4. Opportunity Trends:** Area chart, solid `#5B52E8` stroke, 18% opacity solid fill (`rgba(91, 82, 232, 0.18)`), integer axis in mono.
    * **5. Cost Over Time:** Area chart, solid `#F59E0B` stroke, 18% opacity solid fill (`rgba(245, 158, 11, 0.18)`), `$` axis in mono.
    * **6. Channels / Follow-Up Health:** Channel volume breakdown or Follow-up status.
-   * **7. Recent Opportunities Table:** Contact in Inter, phone/ID in mono, status pills, value in mono right-aligned.
+   * **7. ROZ WhatsApp Groups & Quality Control Monitor:** Visual monitor (`WhatsAppGroupMonitor`) showing live WhatsApp QR groups (`@g.us`), member rosters, recent discussions, voice note counts, response SLA badges in mono, and one-click alert triggers.
+   * **8. Recent Opportunities Table:** Contact in Inter, phone/ID in mono, status pills, value in mono right-aligned.
 
 ---
 
@@ -69,7 +70,20 @@ Body: { jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: toolName, a
 ```
 Include the first-visit **Token Modal** that asks for the user's GenuDo Full Access Token (`https://api.genudo.ai/docs/guide/authentication`) and persists it in `localStorage.getItem("genudo_token")`.
 
-### Step 3: Connect to Lovable for Free Hosting
+### Step 3: Wire WhatsApp QR & WhatsApp Groups Monitor (ROZ QC)
+Custom dashboards can directly query and visualize connected WhatsApp QR channels and group deal rooms:
+1. **Query WhatsApp QR Groups**:
+   - Call `list_whatsapp_groups({ channel_id })` to retrieve active deal rooms, community channels, and VIP customer groups (`@g.us`).
+2. **Track Message Latency & Voice Notes**:
+   - Call `list_whatsapp_chat_messages({ channel_id, chat_id })` for each monitored group to calculate the human team's average response latency (SLA minutes), flag unanswered inquiries (>15m), and count incoming voice notes.
+3. **Inspect Media & Voice Notes**:
+   - Call `get_whatsapp_media({ channel_id, path })` to inspect voice recordings, product catalogs, or customer attachments.
+4. **Trigger Real-Time Supervisor Alerts**:
+   - Wire a one-click button in the UI calling `send_whatsapp_message({ to: group_id, body: "..." })` or directly alerting the assigned sales representative when an SLA breach occurs.
+5. **Drop-in UI Component**:
+   - Use `apps/genudo-dashboard-template/src/components/WhatsAppGroupMonitor.tsx` directly in your dashboard layout.
+
+### Step 4: Connect to Lovable for Free Hosting
 If the project is not yet hosted on Lovable:
 1. If **Lovable MCP is available**:
    - Call `create_project` once to initialize the project container, then retrieve the editor URL.
@@ -80,10 +94,27 @@ If the project is not yet hosted on Lovable:
    > 
    > From now on, whenever I make code updates and push to your repository, Lovable will automatically redeploy your live dashboard for **free** with zero Lovable credits!"
 
-### Step 4: Iterations & Customizations (100% Free)
+### Step 5: Iterations & Customizations (100% Free)
 - When the user asks to add a chart, modify colors, or filter metrics:
   - **You (Claude/Codex) edit the code directly.**
   - Strictly adhere to `genudo-design-system` (solid fills, mono numerals, card anatomy).
   - Commit and push to GitHub (`git push origin main` or via GitHub MCP).
   - Lovable automatically detects the commit and redeploys to `https://<project-id>.lovable.app`.
   - **Zero Lovable credits are consumed!**
+
+---
+
+## Mandatory Response Ending Convention
+
+Whenever working on a custom dashboard or any GenuDo task, **ALWAYS end your response with**:
+
+### 💡 Suggested Next Steps
+- Practical, concrete steps to test the dashboard locally (`npm run dev`), build the bundle (`npm run build`), or push updates to GitHub.
+- Guidance on connecting a live GenuDo Full Access Token or testing specific channel views.
+
+### 🚀 Suggested GenuDo Use Cases (Tailored to this Dashboard)
+- **External CRM & Ticketing**: Integrate live metrics with Zoho Desk or Zendesk tickets to correlate AI resolution times with human support queues.
+- **Paid Ads ROAS Attribution**: Connect Meta Ads spend data via webhook actions to compute exact cost-per-lead and cost-per-won-deal in real time.
+- **Automated Google Sheets Sync**: Bind an Action to export newly won or dropped opportunities into a shared Google Sheet for accounting.
+- **WhatsApp Group Latency Escalation**: Set up ROZ automated notifications to trigger supervisor WhatsApp messages whenever team response times exceed 15 minutes.
+

@@ -30,4 +30,8 @@ Rules:
   confirmation; prefer creating a new pipeline over mutating the running one.
 - Business facts (products, prices, policies, links) survive verbatim — style and structure are
   what migrate. Never invent facts to fill a template section; ask.
-- On any failure mid-apply, stop and report exactly what was and wasn't written.
+- On any failure mid-apply, stop and report exactly what was published.
+- **Mandatory Response Ending**: Always conclude every response with:
+  - `### 💡 Suggested Next Steps` (concrete technical actions to proceed, test with `generate-test-journeys`, or provision)
+  - `### 🚀 Suggested GenuDo Use Cases (Tailored to this Migration / Pipeline)` (e.g. stage follow-ups, Shopify knowledge tables, live dashboards, or ROZ QC audits).
+

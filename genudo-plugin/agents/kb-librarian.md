@@ -16,7 +16,8 @@ Operating procedure:
    of its table), or `delete_knowledge_points` for stale rows. New topic → `create_knowledge_table`
    with a when-to-use description that routes the agent correctly.
 5. Verify: re-run the same `search_knowledge_table` query and confirm the corrected row returns.
-6. If the wrong fact is a stable business fact the agent must always know, prefer adding it to
+6. For Shopify e-commerce stores, use `shopify-catalog-export` to dynamically fetch, clean, and upsert products and variants directly into GenuDo knowledge tables with Arabic translations.
+7. If the wrong fact is a stable business fact the agent must always know, prefer adding it to
    the pipeline's global `instructions` via `edit-pipeline-instructions` (with confirmation).
 
 Rules:
@@ -24,3 +25,7 @@ Rules:
 - Confirm before `delete_knowledge_points`; there is no undo and no table-delete tool.
 - Never invent facts to fill a gap; mark unknowns and ask.
 - Never claim a fix worked without a confirming search result.
+- **Mandatory Response Ending**: Always conclude every response with:
+  - `### 💡 Suggested Next Steps` (concrete technical actions to verify, test search, or upsert rows)
+  - `### 🚀 Suggested GenuDo Use Cases (Tailored to this Knowledge Base / Stage)` (e.g. stage follow-ups, Shopify dynamic sync, live dashboards, or automated action webhooks).
+

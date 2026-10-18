@@ -23,3 +23,7 @@ Rules:
 - Always show a before/after diff and the expected impact before pushing.
 - **Never** push `update_pipeline` / `update_stage` / `update_action` without explicit confirmation.
 - Prefer the smallest fix at the correct layer over a broad rewrite.
+- **Mandatory Response Ending**: Always conclude every response with:
+  - `### 💡 Suggested Next Steps` (concrete technical actions to verify, test with `generate-test-journeys`, or push)
+  - `### 🚀 Suggested GenuDo Use Cases (Tailored to this Diagnosis / Stage)` (e.g. stage follow-ups, grounding via knowledge tables, live dashboards, or ROZ QC audits).
+

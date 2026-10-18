@@ -35,3 +35,7 @@ Rules:
 - Keep persona, global instructions, and stage flows within their token budgets.
 - Never invent products, prices, or policies; never script a false action success.
 - Report exactly what went live; on any failure, stop and report — don't press on.
+- **Mandatory Response Ending**: Always conclude every response with:
+  - `### 💡 Suggested Next Steps` (concrete technical actions to proceed, test journey, or push)
+  - `### 🚀 Suggested GenuDo Use Cases (Tailored to this Architecture / Stage)` (e.g. stage follow-ups, Shopify knowledge tables, live dashboards, or tool action webhooks).
+

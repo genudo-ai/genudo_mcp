@@ -23,6 +23,7 @@ Access Genudo's business automation tools directly from Claude Code. The server 
 - **🚀 Build** — a guided step-by-step builder plus direct creation of pipelines, stages, variables, webhook actions, follow-up sequences, and knowledge tables (`start_pipeline_journey`, `create_pipeline`, `create_stage`, `create_variable`, `create_action`, `create_followup`, `create_knowledge_table`, `upsert_knowledge_points`)
 - **🔧 Update** — tune live pipelines, stages, actions, variables, opportunities (bulk), and follow-ups (`update_pipeline`, `update_stage`, `update_action`, `update_variable`, `update_opportunities`, `update_followup`)
 - **🗑️ Delete** — remove knowledge rows by stable id (`delete_knowledge_points`)
+- **🛍️ Shopify Knowledge Exporter** — dynamically extract products via GraphQL, strip HTML, normalize Arabic & English text, and generate clean CSV with UTF-8 BOM and formatted Excel knowledge bases with auto-translated Arabic titles (`shopify_export_catalog`)
 
 ### Three workflows to start with
 

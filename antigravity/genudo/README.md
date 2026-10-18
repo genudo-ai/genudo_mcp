@@ -27,6 +27,8 @@ genudo/
     │   └── SKILL.md          # Multi-channel analytics, transcript audit, CRM sync
     ├── stage-followups/
     │   └── SKILL.md          # Per-stage timed re-engagement sequence runbook
+    ├── shopify-catalog-export/
+    │   └── SKILL.md          # Shopify product export, clean CSV & formatted Excel KB generator
     │   # Agent QA loop (engine: github.com/genudo-ai/genudo-agent-testing-engine)
     ├── mine-customer-chats/       # Real buyer intents + knowledge gaps from live chats
     ├── generate-test-journeys/    # Multi-turn synthetic-customer test suites

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-10-18
+
+- **New tool: `shopify_export_catalog`** integrated directly into the Genudo MCP server (`index.js`). Extracts products and variants via Shopify GraphQL Admin API, strips HTML, cleans whitespace, decodes entities, normalizes Arabic and English copy, summarizes product options and SKUs, and generates clean CSV (`products_catalog_clean.csv`) with UTF-8 BOM plus formatted active Excel knowledge base (`products_knowledge_base_active.xlsx`) with auto-translated Arabic titles (highlighted in soft yellow `#FEF08A` for review), stock status badges, variant summaries, and clickable Shopify links.
+- **Companion skill: `shopify-catalog-export`** across all four plugin trees (`genudo-plugin`, `genudo-plugin-no-connector`, `chatgpt/genudo-chatgpt-plugin`, `antigravity/genudo`, and `.agents/plugins/genudo`). Guides merchants and agents through automated catalog export, Arabic review, and direct GenuDo Knowledge Table ingestion (`create_knowledge_table` / `upsert_knowledge_points`).
+- **Secure Shopify credential workflow:** Proactively prefills `.env` with store domain, client ID, and client secret template so credentials never leak into chat sessions. Auto-recovers with setup guidance if credentials are missing.
+- Rebuilt distribution zip packages (`genudo-plugin.zip` and `genudo-plugin-no-connector.zip`).
+
 ## [2.4.1] - 2026-10-11
 
 - `setup-testing-engine`: works inside loredex client workspaces with no extra setup. Clone the engine inside the client folder and it reuses that folder's `.mcp.json` Genudo token (engine `0fc586f`), so each client's test runs use that client's account.

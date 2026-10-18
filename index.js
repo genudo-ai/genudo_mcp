@@ -11,6 +11,7 @@ const { spawn } = require('child_process');
 const crypto = require('crypto');
 const guides = require('./guides');
 const pkg = require('./package.json');
+const { exportShopifyCatalog, ensureEnvPrefilled } = require('./lib/shopify-exporter');
 
 // Configuration from environment variables
 const BASE_URL = process.env.GENUDO_BASE_URL || 'https://api.genudo.ai';
@@ -85,6 +86,7 @@ const SERVER_INSTRUCTIONS = [
   '- Follow-ups: get_stage_followup FIRST (one follow-up per stage) -> create_followup (new) or update_followup (existing).',
   '- Edit agent instructions: get_instruction_guides -> read current text with verbose:true (list_pipelines gives persona+instructions; list_pipeline_stages gives stage instructions+enter_condition+ai_persona; both truncate long texts unless verbose:true) -> edit only what must change -> show DIFF + expected impact -> confirm -> update_pipeline / update_stage.',
   '- Report activity: get_account_summary -> get_ai_performance -> list_opportunities -> get_messaging_stats',
+  '- Shopify catalog export: shopify_export_catalog (shop_domain, access_token or client_id/secret) -> generates clean CSV (UTF-8 BOM) + formatted Excel knowledge base with auto-translated Arabic titles -> import into knowledge table for product agent grounding.',
   '',
   'RULES THAT PREVENT FAILURES:',
   '1. Discover IDs before writing: get_pipeline_options (agent_type_id, ai_model_id, language_id, channel_id); list_pipelines (pipeline_id); list_pipeline_stages (stage_id); list_actions (action_id); list_variables (variable_id); list_knowledge_tables (knowledge_table_id); get_stage_followup (followup_id).',
@@ -135,6 +137,46 @@ const CONNECT_TOOL = {
       }
     },
     required: []
+  }
+};
+
+const SHOPIFY_EXPORT_TOOL = {
+  name: 'shopify_export_catalog',
+  description:
+    'Extract and export Shopify product catalog into clean, grounded CSV, JSON, and formatted Excel knowledge bases for AI agents. Strips HTML, normalizes text (Arabic & English), summarizes variant options, and outputs clean CSV with UTF-8 BOM and formatted Excel with auto-translated Arabic titles and human review highlights.',
+  inputSchema: {
+    type: 'object',
+    properties: {
+      shop_domain: {
+        type: 'string',
+        description: 'The Shopify store domain (e.g. your-store.myshopify.com or custom domain).'
+      },
+      access_token: {
+        type: 'string',
+        description: 'Shopify Admin API access token (e.g. Custom App access token with read_products scope). If omitted, falls back to client_id/client_secret or SHOPIFY_ACCESS_TOKEN env var.'
+      },
+      client_id: {
+        type: 'string',
+        description: 'Client ID for Shopify App Client Credentials grant (used if access_token is omitted, or read from SHOPIFY_CLIENT_ID env var).'
+      },
+      client_secret: {
+        type: 'string',
+        description: 'Client Secret for Client Credentials grant (read from SHOPIFY_CLIENT_SECRET env var if omitted).'
+      },
+      active_only: {
+        type: 'boolean',
+        description: 'If true, exports only ACTIVE products; if false, includes DRAFT and ARCHIVED (default: true).'
+      },
+      generate_excel: {
+        type: 'boolean',
+        description: 'Whether to generate the formatted Excel knowledge base with auto-translated Arabic titles and human review highlights (default: true).'
+      },
+      output_dir: {
+        type: 'string',
+        description: 'Destination directory for the generated files (default: ./output).'
+      }
+    },
+    required: ['shop_domain']
   }
 };
 
@@ -503,6 +545,100 @@ async function handleConnectCall(id, args) {
     'After they confirm saving, call genudo_connect again to finish. Never ask for the token in chat.')));
 }
 
+async function handleShopifyExportCall(id, args) {
+  try {
+    const outputDir = (args && args.output_dir) || path.join(guides.ROOT, 'output');
+    const result = await exportShopifyCatalog({
+      ...args,
+      output_dir: outputDir,
+    });
+
+    const deliverables = [
+      {
+        type: 'csv',
+        file: path.basename(result.productsCatalogCsvPath),
+        path: result.productsCatalogCsvPath,
+        description: 'Clean CSV with UTF-8 BOM, formatted for direct GenuDo Knowledge Table import.'
+      }
+    ];
+
+    if (result.productsKnowledgeBaseExcelPath) {
+      deliverables.push({
+        type: 'excel',
+        file: path.basename(result.productsKnowledgeBaseExcelPath),
+        path: result.productsKnowledgeBaseExcelPath,
+        description: 'Formatted Excel knowledge base with auto-translated Arabic titles (highlighted in soft yellow for review), stock badges, variant summaries, and clickable Shopify links.'
+      });
+    }
+
+    deliverables.push(
+      {
+        type: 'json',
+        file: path.basename(result.jsonPath),
+        path: result.jsonPath,
+        description: 'Structured normalized JSON product catalog with full variant and media details.'
+      },
+      {
+        type: 'csv',
+        file: path.basename(result.variantsCsvPath),
+        path: result.variantsCsvPath,
+        description: 'Variant-level breakdown CSV including SKUs, prices, inventory levels, and option maps.'
+      }
+    );
+
+    const payload = {
+      status: 'success',
+      store_name: result.storeName,
+      shop_domain: result.shopDomain,
+      total_products_fetched: result.totalProducts,
+      active_products_count: result.activeProducts,
+      total_variants_count: result.totalVariants,
+      execution_time_seconds: result.durationSeconds,
+      files: {
+        catalog_clean_csv: result.productsCatalogCsvPath,
+        knowledge_base_excel: result.productsKnowledgeBaseExcelPath,
+        raw_products_json: result.jsonPath,
+        variants_clean_csv: result.variantsCsvPath,
+      },
+      deliverables,
+      summary: `Successfully exported ${result.activeProducts} active products (${result.totalVariants} variants) from "${result.storeName}" in ${result.durationSeconds}s.`,
+      next_steps: [
+        '1. Inspect and review auto-translated Arabic titles (highlighted in soft yellow) in the generated Excel sheet.',
+        '2. Use create_knowledge_table to create a table with columns matching the exported catalog.',
+        '3. Use upsert_knowledge_points to populate the table for agent grounding.'
+      ]
+    };
+
+    console.log(JSON.stringify(toolText(id, JSON.stringify(payload, null, 2))));
+  } catch (error) {
+    debug('Error in shopify_export_catalog:', error.message);
+    const prefillTarget = guides.ROOT === '.' ? process.cwd() : guides.ROOT;
+    const prefill = ensureEnvPrefilled(prefillTarget);
+
+    const errPayload = {
+      status: 'credentials_needed',
+      message: error.message,
+      env_file: prefill.envPath,
+      template: [
+        "# In your project's .env file (gitignored)",
+        "SHOPIFY_SHOP=your-store.myshopify.com",
+        "SHOPIFY_CLIENT_ID=your_client_id_here",
+        "SHOPIFY_CLIENT_SECRET=your_client_secret_here"
+      ].join('\n'),
+      guide_for_user: [
+        `1. A .env file has been prefilled at ${prefill.envPath} (and added to .gitignore).`,
+        '2. In Shopify Admin, open Settings -> Apps and sales channels -> Develop apps (or Partners Dashboard -> Apps).',
+        '3. Click "Create an app" (e.g. "GenuDo Integration").',
+        '4. Under Configuration -> Admin API integration, add the "read_products" scope and save.',
+        '5. Under App settings -> Credentials, copy your Client ID and Client Secret.',
+        '6. Open .env, paste the values into SHOPIFY_SHOP, SHOPIFY_CLIENT_ID, and SHOPIFY_CLIENT_SECRET, and save the file.',
+        '7. Tell Claude when saved. Never paste your secrets into the chat.'
+      ]
+    };
+    console.log(JSON.stringify(toolText(id, JSON.stringify(errPayload, null, 2))));
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Response slimming: list_* backend responses embed FULL agent instructions and
 // personas (thousands of chars per pipeline/stage). Hosts' models drown in it
@@ -604,13 +740,13 @@ async function processInput(line) {
     }
 
     // tools/list: proxy the backend tools, then append our local guide tools.
-    // No token yet -> the connect tool is the only thing on offer.
+    // No token yet -> the connect tool and shopify exporter are on offer.
     if (request.method === 'tools/list') {
       if (!TOKEN) {
         console.log(JSON.stringify({
           jsonrpc: '2.0',
           id: request.id,
-          result: { tools: [CONNECT_TOOL] }
+          result: { tools: [CONNECT_TOOL, SHOPIFY_EXPORT_TOOL] }
         }));
         return;
       }
@@ -637,7 +773,7 @@ async function processInput(line) {
       console.log(JSON.stringify({
         jsonrpc: '2.0',
         id: request.id,
-        result: { tools: [...backendTools, ...guides.LOCAL_TOOLS] }
+        result: { tools: [...backendTools, ...guides.LOCAL_TOOLS, SHOPIFY_EXPORT_TOOL] }
       }));
       return;
     }
@@ -646,6 +782,13 @@ async function processInput(line) {
     if (request.method === 'tools/call'
         && request.params && request.params.name === CONNECT_TOOL.name) {
       await handleConnectCall(request.id, request.params.arguments);
+      return;
+    }
+
+    // shopify_export_catalog: handled locally.
+    if (request.method === 'tools/call'
+        && request.params && request.params.name === SHOPIFY_EXPORT_TOOL.name) {
+      await handleShopifyExportCall(request.id, request.params.arguments);
       return;
     }
 

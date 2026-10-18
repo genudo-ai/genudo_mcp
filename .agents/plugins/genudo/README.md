@@ -25,8 +25,10 @@ genudo/
     │   └── SKILL.md          # Vector grounding, table schemas, and points curation
     ├── messaging-operations/
     │   └── SKILL.md          # Multi-channel analytics, transcript audit, CRM sync
-    └── stage-followups/
-        └── SKILL.md          # Per-stage timed re-engagement sequence runbook
+    ├── stage-followups/
+    │   └── SKILL.md          # Per-stage timed re-engagement sequence runbook
+    └── shopify-catalog-export/
+        └── SKILL.md          # Shopify product export, clean CSV & formatted Excel KB generator
 ```
 
 ---

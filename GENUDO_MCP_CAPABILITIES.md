@@ -623,6 +623,23 @@ Required: `knowledge_table_id`, `ids` (array of `default_id` values).
 
 There is no table-delete tool — only rows can be removed. No undo.
 
+#### `shopify_export_catalog`
+
+Client-side tool that extracts products and variants from any Shopify store via GraphQL Admin API, strips HTML, normalizes Arabic and English text, summarizes variant options/SKUs, and generates grounded knowledge base deliverables.
+
+Required: `shop_domain` (e.g. `your-store.myshopify.com` or custom domain).
+Optional:
+- `access_token` (Shopify Admin API token `shpat_...`; falls back to env `SHOPIFY_ACCESS_TOKEN`)
+- `client_id` & `client_secret` (Client Credentials grant; falls back to env)
+- `active_only` (default: `true` — exports only `ACTIVE` status products)
+- `generate_excel` (default: `true` — generates formatted Excel with auto-translated Arabic titles and soft yellow review highlights)
+- `output_dir` (default: `./output`)
+
+Outputs:
+1. `products_catalog_clean.csv` with UTF-8 BOM, ready for direct GenuDo Knowledge Table ingestion.
+2. `products_knowledge_base_active.xlsx` with dark slate headers, wrap-text across all cells, in-stock badges, and clickable Shopify links.
+3. `products_clean.json` and `variants_clean.csv` for technical auditing.
+
 ### 9. Per-Stage Follow-ups
 
 Timed re-engagement messages for opportunities that go quiet in a stage.

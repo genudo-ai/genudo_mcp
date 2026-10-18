@@ -40,7 +40,11 @@
       "env": {
         "GENUDO_TOKEN": "${user_config.token}",
         "GENUDO_BASE_URL": "${user_config.base_url}",
-        "GENUDO_WORKDIR": "${user_config.workdir}"
+        "GENUDO_WORKDIR": "${user_config.workdir}",
+        "SHOPIFY_SHOP": "${user_config.shopify_shop}",
+        "SHOPIFY_ACCESS_TOKEN": "${user_config.shopify_access_token}",
+        "SHOPIFY_CLIENT_ID": "${user_config.shopify_client_id}",
+        "SHOPIFY_CLIENT_SECRET": "${user_config.shopify_client_secret}"
       }
     }
   },
@@ -64,6 +68,32 @@
       "title": "Working folder",
       "description": "Where local pipeline mirrors, version snapshots and cached guides are written. Leave empty to use the current directory.",
       "required": false
+    },
+    "shopify_shop": {
+      "type": "string",
+      "title": "Shopify Store Domain (Optional)",
+      "description": "Permanent Shopify domain (e.g. your-store.myshopify.com) for catalog export.",
+      "required": false
+    },
+    "shopify_access_token": {
+      "type": "string",
+      "title": "Shopify Admin API Token (Optional)",
+      "description": "Custom App Admin API token (shpat_...) with read_products scope.",
+      "required": false,
+      "sensitive": true
+    },
+    "shopify_client_id": {
+      "type": "string",
+      "title": "Shopify Client ID (Optional)",
+      "description": "App Client ID for Client Credentials grant.",
+      "required": false
+    },
+    "shopify_client_secret": {
+      "type": "string",
+      "title": "Shopify Client Secret (Optional)",
+      "description": "App Client Secret for Client Credentials grant.",
+      "required": false,
+      "sensitive": true
     }
   },
   "compatibility": {

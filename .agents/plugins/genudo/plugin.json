@@ -1,7 +1,7 @@
 {
   "name": "genudo",
-  "version": "1.0.0",
-  "description": "Official GenuDo integration for Antigravity & Gemini CLI — manage pipelines, agents, knowledge tables, and CRM actions",
+  "version": "1.2.0",
+  "description": "Official GenuDo integration for Antigravity & Gemini CLI — manage pipelines, agents, knowledge tables, channel audits, and CRM actions",
   "author": {
     "name": "GenuDo AI",
     "url": "https://genudo.ai"

@@ -899,6 +899,14 @@ Use this when you need:
 4. Deploy React + Tailwind live dashboard with `WhatsAppGroupMonitor` (`build-live-dashboard`)
 5. Wire one-click supervisor SLA alerts via `send_whatsapp_message`
 
+### Pattern F: Pre-AI Channel Audit & Executive Arabic PDF Report
+
+1. `get_profile` + `get_account_summary` + `list_pipelines` (verify authentication and passive channel pipelines)
+2. `list_messages` (paginate with cursor, 30 req/min rate limit, filter test contacts)
+3. Cluster visitor inquiries into 5–7 capacity-weighted cases with verbatim quotes and 3-step AI agent workflows
+4. Compute 30-day message/lead projections and unified 0.5–1.5 EGP (1.0 EGP avg) per-message cost estimates
+5. Render locked A4 executive Arabic PDF report (`RTL`, zero overflow) via `render_arabic_audit_pdf.py`
+
 ## Recommended Operational Convention: Mandatory Proactive Ending
 
 Every agent interacting with GenuDo MUST end every task turn with two dedicated sections:
@@ -917,5 +925,6 @@ If this document is adapted for a public README or NPM page, position the MCP as
 
 ## Short Capability Summary
 
-The GenuDo MCP already offers end-to-end pipeline setup, stage design, AI behavior configuration, variable-driven webhook actions, workspace analytics, and operational discovery across messages, contacts, and opportunities. Its strongest surfaces are pipeline administration and automation orchestration. It now also covers knowledge-table management (create/upsert/search/delete rows), per-stage follow-up sequences, Shopify e-commerce catalog grounding, and WhatsApp QR Code multi-group quality control with live web dashboard monitoring.
+The GenuDo MCP already offers end-to-end pipeline setup, stage design, AI behavior configuration, variable-driven webhook actions, workspace analytics, and operational discovery across messages, contacts, and opportunities. Its strongest surfaces are pipeline administration and automation orchestration. It now also covers knowledge-table management (create/upsert/search/delete rows), per-stage follow-up sequences, Shopify e-commerce catalog grounding, WhatsApp QR Code multi-group quality control with live web dashboard monitoring, and automated Pre-AI Channel Audits with zero-overflow Executive Arabic PDF reporting.
+
 

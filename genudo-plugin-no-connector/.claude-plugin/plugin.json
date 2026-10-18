@@ -2,7 +2,7 @@
   "name": "genudo",
   "displayName": "Genudo - AI Workforce",
   "version": "2.5.0",
-  "description": "Genudo — the enterprise operating platform for autonomous AI Employees: Aaref (Sales), Adnan (Customer Support), ROZ (Quality Control & Operations), and Sara (WhatsApp Campaign Sender) across WhatsApp, Instagram, Messenger, and Web. Smart onboarding with connected tool detection (Meta Ads, Google Sheets, Lovable, Zoho Desk, Zapier). This plugin manages your digital workforce with 36 skills and 7 agents (for environments where the MCP server is configured separately).",
+  "description": "Genudo — the enterprise operating platform for autonomous AI Employees: Aaref (Sales), Adnan (Customer Support), ROZ (Quality Control & Operations), and Sara (WhatsApp Campaign Sender) across WhatsApp, Instagram, Messenger, and Web. Smart onboarding with connected tool detection (Meta Ads, Google Sheets, Lovable, Zoho Desk, Zapier). This plugin manages your digital workforce with 37 skills and 7 agents (for environments where the MCP server is configured separately).",
   "author": {
     "name": "Genudo",
     "email": "help@genudo.ai",

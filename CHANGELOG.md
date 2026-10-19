@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.0] - 2026-10-19
+
+- **New skill: `genudo-pre-ai-channel-audit`** across all plugin trees (`genudo-plugin`, `genudo-plugin-no-connector`, `chatgpt/genudo-chatgpt-plugin`, `antigravity/genudo`, `.agents/plugins/genudo`, and global Antigravity skills). Enables comprehensive auditing of newly connected passive messaging channels (Messenger, Instagram, WhatsApp) before launching AI agents:
+  - Discovers pipelines, extracts visitor message histories (with 30 req/min rate limit compliance and test-lead filtering), and groups threads by unique contact.
+  - Clusters conversations into 5–7 capacity-weighted primary customer inquiry cases with 3-bullet issue diagnoses, 3-bullet business impacts, anonymized verbatim Arabic quotes, and 3-step AI agent workflows.
+  - Computes 30-day message and lead volume extrapolations across each channel and combined.
+  - Strictly enforces the single unified per-message cost model (1.0 EGP / message average, 0.5–1.5 EGP range) as a flexible initial estimate dependent on final use cases and store integrations.
+  - Bundles the locked-A4 (210mm × 297mm, overflow=0) Playwright Arabic PDF & HTML generator script (`render_arabic_audit_pdf.py` with dynamic CLI args) and reference schema (`sample_audit_data.json`).
+- **Live WhatsApp Groups & QC Dashboard Integration:** Connected WhatsApp QR endpoints (`list_whatsapp_groups`, `list_whatsapp_chat_messages`, `get_whatsapp_media`, `send_whatsapp_message`) into custom dashboards. Created `WhatsAppGroupMonitor.tsx` and wired it into `apps/genudo-dashboard-template/src/App.tsx` for real-time team response latency SLA tracking, voice note badges, and one-click supervisor alerts.
+- **Mandatory Proactive Response Ending:** Codified convention across all rules, agents, skills, and guides (`WORKFLOW` step 8) requiring agents to conclude every response with `### 💡 Suggested Next Steps` and `### 🚀 Suggested GenuDo Use Cases`.
+- **Updated Plugin Manifests & Counters:** Claude plugins now list 37 skills and 7 agents; ChatGPT plugin lists 43 skills; Antigravity plugin bumped to 1.2.0.
+- **Distribution Packages:** Rebuilt and signed-off `genudo-plugin.zip` and `genudo-plugin-no-connector.zip`.
+
 ## [2.5.0] - 2026-10-18
 
 - **New AI Employee Agent: `roz-qc`** (Quality Control & Operations Specialist). Added dedicated agent definition to `genudo-plugin` and `genudo-plugin-no-connector` (bringing agent count to 7). ROZ monitors human sales reps and support agents across 10–50+ WhatsApp lines and actively listens to **WhatsApp Groups** (`@g.us`).

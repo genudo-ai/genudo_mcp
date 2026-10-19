@@ -1,6 +1,6 @@
 {
   "name": "genudo",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "Genudo — the enterprise operating platform for autonomous AI Employees: Aaref (Sales), Adnan (Customer Support), ROZ (Quality Control & Operations), and Sara (WhatsApp Campaign Sender) across WhatsApp, Instagram, Messenger, and Web. Smart onboarding with connected tool ecosystem detection (Meta Ads, Google Sheets, Lovable, Zoho Desk, Zapier). This plugin builds, edits, automates, and analyzes them from ChatGPT and Codex with 43 skills and the Genudo connector.",
   "author": {
     "name": "Genudo",

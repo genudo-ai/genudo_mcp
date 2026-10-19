@@ -48,14 +48,14 @@ Genudo's Claude integration is layered. Each layer adds capability on top of the
 > three prompts, response slimming, and two guide tools (`get_instruction_guides`,
 > `get_editing_playbook`); use it for self-hosted instances or token-based setups. The plugin
 > ships that same guidance as the `instruction-guides` and `editing-playbook` skills, so it
-> does not depend on which connector you use. The Plugin is what adds the 34 skills and
-> 6 agents.
+> does not depend on which connector you use. The Plugin is what adds the 37 skills and
+> 7 agents.
 
 ---
 
 ## ① Plugin — everything in one install ★★★★★
 
-The complete Genudo workforce: connector + 34 skills + 6 agents + prompts. Claude auto-invokes
+The complete Genudo workforce: connector + 37 skills + 7 agents + prompts. Claude auto-invokes
 the right skill, agents handle heavy multi-step work, and every write to your account is shown
 as a diff and confirmed first.
 
@@ -94,7 +94,7 @@ in Cowork & Code**; the connector, being remote, works everywhere — including 
 Working across several Genudo accounts from one machine? You want the **skills and agents
 everywhere**, but a **different Genudo account in each client's project**. The bundled
 connector in ① is one global server — the opposite. Install the **`genudo-no-connector`**
-plugin instead: identical 34 skills and 6 agents, **no bundled connector**, nothing to strip
+plugin instead: identical 37 skills and 7 agents, **no bundled connector**, nothing to strip
 out.
 
 **1. Plugin — global, once:**
@@ -156,7 +156,7 @@ over stdio and authenticates with a **token** rather than a browser login.
 
 **Claude Code — one command:**
 ```
-claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.5.0
+claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.6.0
 ```
 
 **Any MCP client — JSON config:**
@@ -165,7 +165,7 @@ claude mcp add --env GENUDO_TOKEN=YOUR_TOKEN --transport stdio genudo -- npx -y 
   "mcpServers": {
     "genudo": {
       "command": "npx",
-      "args": ["-y", "genudo-mcp-client@2.5.0"],
+      "args": ["-y", "genudo-mcp-client@2.6.0"],
       "env": { "GENUDO_TOKEN": "your_token_here" }
     }
   }
@@ -196,7 +196,7 @@ Double-click `genudo.mcpb` → enter token → done. No terminal, no Node config
 Both connectors work in any MCP-compatible client. Point it at
 `https://api.genudo.ai/mcp` (Streamable HTTP + OAuth), or add the stdio JSON block from ③.
 ChatGPT/Codex use `url` + `auth` rather than `type` — Genudo ships a
-[ChatGPT & Codex plugin](chatgpt/README.md) with the connector and 40 skills already wired.
+[ChatGPT & Codex plugin](chatgpt/README.md) with the connector and 43 skills already wired.
 
 ### Google Antigravity IDE & Gemini CLI (`agy`)
 
@@ -263,7 +263,7 @@ sequences, knowledge base) — no reinstall needed.
 | Full experience (offline file) | Upload `genudo-plugin.zip` |
 | **Tools only, no token (Code)** | `claude mcp add --transport http genudo https://api.genudo.ai/mcp` — sign in via browser |
 | **Tools only, no token (web/desktop)** | Settings → **Connectors** → *Add custom connector* → `https://api.genudo.ai/mcp` |
-| Tools only, token-based (Code) | `claude mcp add --env GENUDO_TOKEN=TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.5.0` |
+| Tools only, token-based (Code) | `claude mcp add --env GENUDO_TOKEN=TOKEN --transport stdio genudo -- npx -y genudo-mcp-client@2.6.0` |
 | Tools only (Desktop, one-click) | Install `genudo.mcpb` |
 | Tools only (other client) | Point it at `https://api.genudo.ai/mcp`, or add the stdio JSON block from option ③ |
 | Desktop app (full experience) | Upload `genudo-plugin.zip` — the connector comes with it |

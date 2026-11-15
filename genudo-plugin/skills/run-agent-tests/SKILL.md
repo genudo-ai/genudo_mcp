@@ -8,6 +8,10 @@ description: Run a synthetic-customer test suite against a live Genudo agent wit
 Drive the engine, then explain what happened. Requires a working setup
 (`setup-testing-engine`) and a suite (`generate-test-journeys`).
 
+When isolated cloud sandbox tools (`sandbox_run_bash`) are available, execute
+the test suite directly within the sandbox microVM. You do NOT need to ask the
+user to execute it locally or tell them you lack CLI execution capabilities.
+
 ## 1. Confirm before any live run
 
 A run creates real opportunities (flagged `is_test`), sends real messages to the agent, and

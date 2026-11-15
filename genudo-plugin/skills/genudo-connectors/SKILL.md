@@ -1,16 +1,16 @@
 ---
 name: genudo-connectors
-description: Connect and orchestrate external SaaS apps (Gmail, Google Sheets, Calendar, Slack, HubSpot, Notion, GitHub, Shopify, etc.) via GenuDo Connector and custom Streamable HTTP MCP servers with OAuth login cards and deferred schema loading.
+description: Connect and orchestrate external SaaS apps (Gmail, Google Sheets, Calendar, Slack, HubSpot, Notion, GitHub, Shopify, etc.) via external Connectors and custom Streamable HTTP MCP servers with OAuth login cards and deferred schema loading.
 ---
 
-# External MCP & GenuDo Connectors
+# External MCP & Connectors
 
 Connect third-party apps and external MCP servers across every session cleanly, securely,
 and with minimal token overhead.
 
 ## Architecture & Key Rules
 
-- All external connector tools (`GENUDO_CONNECTOR_*` meta-tools and custom `mcp_<slug>_*` tools)
+- All external connector tools (`connector_*` meta-tools and custom `mcp_<slug>_*` tools)
   are **defer-loaded** so unused SaaS schemas never bloat the prompt cache.
 - Load this capability (`genudo-connectors` / `skill_external_connectors`) whenever the user
   asks to read/send emails, sync spreadsheets/calendars/Slack/CRM tickets, or use any
@@ -19,16 +19,16 @@ and with minimal token overhead.
   creating/updating SaaS records, removing connections, or running remote sandbox scripts) pause
   at the workspace-owner approval gate when `require_write_approval` is enabled.
 
-## GenuDo Connector Meta-Tool Workflow (Low-Cost Pattern)
+## Connector Meta-Tool Workflow (Low-Cost Pattern)
 
-1. **Discover relevant actions (`GENUDO_CONNECTOR_SEARCH_TOOLS`)**:
+1. **Discover relevant actions (`connector_search_tools`)**:
    - Pass `queries=[{"use_case": "<normalized English intent>", "known_fields": "..."}]`
      and `session={"generate_id": true}` for new workflows (or `session={"id": "<session_id>"}`
      to continue).
    - Check which toolkit slugs and `tool_slug`s are returned AND check connection status before
      attempting execution.
 
-2. **Connect / Authorize if Needed (`GENUDO_CONNECTOR_MANAGE_CONNECTIONS`)**:
+2. **Connect / Authorize if Needed (`connector_manage_connections`)**:
    - Pass `toolkits=[{"name": "<slug>", "action": "add"}]` to initiate OAuth or
      `toolkits=[{"name": "<slug>", "action": "list"}]` to check active accounts (plus
      `session_id` when present).
@@ -37,14 +37,14 @@ and with minimal token overhead.
      Authorize** on the card above (or format `[Connect <App>](<redirect_url>)` without displaying
      raw middleware URLs) and click **I've Connected — Continue** once done. Never mention
      third-party connector middleware names.
-   - Optionally call `GENUDO_CONNECTOR_WAIT_FOR_CONNECTIONS(toolkits=["<slug>"], session_id=...)`
+   - Optionally call `connector_wait_for_connections(toolkits=["<slug>"], session_id=...)`
      after the user confirms authentication.
 
-3. **Fetch Minimal Argument Schemas (`GENUDO_CONNECTOR_GET_TOOL_SCHEMAS`)**:
+3. **Fetch Minimal Argument Schemas (`connector_get_tool_schemas`)**:
    - Pass `tool_slugs=["<SLUG>"]` (and `session_id`) for tools returned with `schemaRef` to fetch
      exact input parameters only for the specific actions you plan to run.
 
-4. **Execute (`GENUDO_CONNECTOR_MULTI_EXECUTE_TOOL`)**:
+4. **Execute (`connector_multi_execute_tool`)**:
    - Pass `tools=[{"tool_slug": "<SLUG>", "arguments": {...}}]`,
      `sync_response_to_workbench=false` (unless a large response is expected), and `session_id`.
    - Mutating external actions automatically pause at the workspace-owner approval gate when

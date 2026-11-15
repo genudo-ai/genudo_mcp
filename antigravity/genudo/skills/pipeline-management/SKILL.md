@@ -37,6 +37,9 @@ When creating a pipeline (`create_pipeline`):
 - Provide a clear `name` indicating business role (e.g., "Inbound Sales Qualifying - WhatsApp").
 - Define global `instructions` (business hours, company persona, tone, escalation triggers).
 - Configure the default AI model and connected communication channel.
+- **Operational Settings**:
+  - `followup_limit`: Number of follow-ups per hour. MUST be divisible by 6 (giving an integer when divided by 6, e.g. 6, 12, 18, 24, 30, 36, 42, 48, 54, 60). Defaults to 6.
+  - `agent_memory_window`: Number of days remembered (calendar days of historical context retained, e.g. 7, 14, 30 days — in DAYS, NOT message count).
 
 ### 3. Stage Architecture
 When creating stages (`create_stage`):

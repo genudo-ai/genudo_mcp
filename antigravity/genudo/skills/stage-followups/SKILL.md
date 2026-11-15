@@ -58,3 +58,4 @@ Collaborate with the user to establish:
 
 - **Explicit Approval**: Always present the follow-up schedule and drafting angle to the user in a clear table before calling `create_followup` or `update_followup`.
 - **Safe Activation**: When creating draft sequences, set `is_active: false` until the user confirms readiness to go live.
+- **Pipeline Hourly Limit (`followup_limit`)**: Pipeline-level `followup_limit` controls the number of follow-ups per hour and MUST be divisible by 6 (giving an integer when divided by 6, e.g. 6, 12, 18, 24, 30, 36, 42, 48, 54, 60). Never pass numbers like 5, 7, 9, or 10.

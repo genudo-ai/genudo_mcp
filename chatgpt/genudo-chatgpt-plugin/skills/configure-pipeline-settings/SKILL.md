@@ -15,12 +15,17 @@ updated with `update_pipeline`.
 | Name / description | `name`, `description` | Labels |
 | Max cost per conversation | `max_conversation_cost` | Hard spend cap per chat |
 | Max messages per conversation | `max_conversation_messages` | Turn cap per chat |
-| Follow-up limit | `followup_limit` | How many follow-ups may fire |
+| Follow-up limit | `followup_limit` | Number of follow-ups per hour. **MUST be divisible by 6** (e.g. 6, 12, 18, 24, 30, 36...) |
 | KB chunks retrieved | `no_of_relevant_points` | Knowledge passages per answer |
-| Memory window | `agent_memory_window` | How much history the agent holds |
+| Memory window | `agent_memory_window` | Number of **days remembered** (calendar days of history, e.g. 7, 14, 30 — in DAYS, NOT messages) |
 | Context messages | `context_message_count` | Recent turns fed to the model |
 | Temperature | `model_temperature` | Creativity vs consistency |
 | RAG mode | `rag_mode` | Retrieval behaviour |
+
+## Operational Guardrails & Constraints
+
+- **`followup_limit`**: Represents the number of automated follow-ups per hour. The platform strictly enforces that this value **MUST be divisible by 6** (giving an integer when divided by 6, e.g. 6, 12, 18, 24, 30, 36, 42, 48, 54, 60). Arbitrary numbers like 5, 7, 9, or 10 will fail backend validation ("Must be divisible by 6").
+- **`agent_memory_window`**: Specifies the conversation memory retention window in **calendar days remembered** (e.g. 7, 14, 30 days). It is NOT a message count or turn count.
 
 ## Workflow
 

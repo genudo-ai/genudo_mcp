@@ -172,7 +172,8 @@ Key optional controls:
 - `model_temperature`
 - `dialect_id`
 - `no_of_relevant_points`
-- `agent_memory_window`
+- `agent_memory_window` (number of days remembered, e.g. 7, 14, 30 days — in calendar DAYS, NOT message count)
+- `followup_limit` (number of follow-ups per hour; MUST be divisible by 6, e.g. 6, 12, 18, 24, 30, 36...)
 - `max_conversation_cost`
 - `max_conversation_messages`
 - `context_message_count`

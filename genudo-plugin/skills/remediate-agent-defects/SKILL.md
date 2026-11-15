@@ -19,6 +19,7 @@ Classify every failure before touching anything:
 | Opportunity stuck in or jumped to the wrong stage | Vague or overlapping enter condition | Enter condition | `update_stage` |
 | Tone, leak, invented discount, banned phrase | Missing hard rule | Pipeline global instructions | `update_pipeline` |
 | Wrong payload field, bad phone, malformed webhook | Variable or action config | Action / variable | `build-action-webhook`, `manage-pipeline-variables` |
+| Unconfigured Smart Routing, blank tier instructions, or `complex` over-triggering on Q&A | Smart Routing pool & tier instructions | 4-tier model pool (`router`/`simple`/`moderate`/`complex`) | `update_model_pool` (`configure-ai-model`) |
 
 Group failures that share a cause — five failed steps are often one missing sentence.
 

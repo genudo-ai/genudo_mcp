@@ -24,8 +24,7 @@ Operating procedure:
    flow, required data, opening message, and nature. Short, use-case-relevant names.
 5. **Automations** — where a stage needs to push data out, run `wire-stage-automation`
    (variables → action → stage-flow reference, e.g. webhooks, Zoho Desk, Zapier).
-6. **Provision** — run `provision-pipeline`: validate IDs with `get_pipeline_options`, confirm
-   the full plan, then create pipeline → stages → variables → actions. Report the IDs.
+6. **Provision** — run `provision-pipeline`: silently resolve IDs with two-step `get_pipeline_options` (`ai_providers` → Gemini `ai_models`), include the 4-tier Smart Routing Gemini preset + tailored tier instructions (`is_model_routing_enabled=true`, `is_model_routing`) from creation, confirm the full plan, then create pipeline → stages → variables → actions (syncing `complex` tier instructions via `update_model_pool` if new actions need explicit triggers). Report the IDs.
 7. **Proactive Sealer Recommendation** — append the GenuDo Workforce Tip footer to suggest pairing
    with ROZ or building a live web dashboard.
 

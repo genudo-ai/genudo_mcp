@@ -11,15 +11,17 @@ Find the root cause of a behavioural problem and point to the one place that fix
 
 1. **Clarify the symptom** — what did the agent do, in which situation, and what was expected?
    If there's a real conversation, use `analyze-conversation` first for evidence.
-2. **Load the agent** — `list_pipelines` (persona + global instructions) and
-   `list_pipeline_stages` (each stage's `enter_condition` + `instructions`). If an action is
-   involved, `list_variables` and review the action's `instructions`.
+2. **Load the agent** — `list_pipelines` / `get_pipeline_details` (persona + global instructions),
+   `list_pipeline_stages` (each stage's `enter_condition` + `instructions`), and
+   `list_model_pool` + `get_pipeline_options` (Smart Routing tiers, model names, and tier instructions).
+   If an action is involved, `list_variables` and review the action's `instructions`.
 3. **Localize** — map the symptom to exactly one responsible layer:
    - wrong identity/tone → **persona**
    - a rule that should hold everywhere but doesn't → **global instructions**
    - entered/skipped a stage at the wrong time → that stage's **enter_condition**
    - wrong steps or order inside a stage → that stage's **instructions**
    - action fired at the wrong moment or with wrong data → the **action** (instructions/variables)
+   - stalled/failed replies, slow high-cost Q&A turns from `complex` over-triggering, or weak answers on KB/action turns → **Smart Routing model pool / tier instructions** (`configure-ai-model` → `update_model_pool`)
 4. **Propose the fix** — name the field, quote the offending text, and give the corrected intent.
 
 ## Output

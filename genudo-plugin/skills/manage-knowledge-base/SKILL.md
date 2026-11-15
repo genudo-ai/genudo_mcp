@@ -32,9 +32,14 @@ and **rows** the pipeline agent retrieves via semantic search at runtime.
 5. **Prune** — `delete_knowledge_points` by `default_id` values. Confirm with the user first;
    there is no undo, and there is no table-delete tool — only rows can be removed.
 
+## Related Capabilities
+- For websites, help centers, or docs URLs, pair with `website-knowledge-crawler` (`discover_website_pages` → `crawl_website_to_markdown` → `WebsiteCrawlCard` review/edit/diff → `ingest_website_markdown_to_kb`).
+- For Shopify storefronts, pair with `shopify-catalog-export`.
+
 ## Cautions
 
 - A wrong fact in the KB propagates to every conversation — confirm every write.
+- A knowledge table is inert until attached to a pipeline via `update_pipeline(attach_knowledge_table_ids=...)`.
 - For a stable business fact the agent must always know, prefer the pipeline's global
   `instructions` (via `edit-pipeline-instructions`); use the KB for facts that vary by
   product, plan, or row.

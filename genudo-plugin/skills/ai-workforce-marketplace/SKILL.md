@@ -18,6 +18,10 @@ GenuDo is the enterprise operating platform for autonomous **AI Employees**. Use
 | **3** | 🕵️‍♀️ **ROZ** | **Quality Control & Operations Agent** *(Upgraded!)* | Audits human sales/support teams and **WhatsApp Groups** via WhatsApp QR. Listens to multi-stakeholder deal rooms & VIP customer groups, transcribes voice notes, audits group response SLA, tracks group participants, and dispatches operational alerts. | WhatsApp QR, WhatsApp Groups (@g.us), Voice Transcription, SLA Latency, Live Dashboards |
 | **4** | 📢 **Sara** | **AI WhatsApp Campaign Sender** | Broadcast marketing campaigns and transactional alerts via official Meta WhatsApp Cloud API. Standalone or paired with Aaref for reply conversion. | Official WhatsApp Cloud API, Contact Lists, AI Sales Co-Pilot |
 
+### Smart Routing Default for AI Employees
+
+Whenever deploying **Aaref**, **Adnan**, or **Sara**, always provision the pipeline with the GenuDo 4-tier Smart Routing Gemini preset (`Gemini 3.1 Flash-Lite` on `router`/`simple`, `Gemini 3 Flash Preview` on `ai_model_id`/`moderate`/`complex`, resolved silently via two-step `get_pipeline_options`) and employee-tailored `simple`/`moderate`/`complex` tier instructions right from creation (see `configure-ai-model` and `provision-pipeline`). Never prompt for an AI provider by default.
+
 ---
 
 ## 2. Smart Login & Onboarding (First-Touch Experience)

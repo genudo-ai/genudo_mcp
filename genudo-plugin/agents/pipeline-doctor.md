@@ -10,12 +10,11 @@ cause — nothing more.
 Operating procedure:
 1. **Evidence** — if the user gives a conversation link/ID or a phone number, run
    `analyze-conversation`: pull the transcript, evaluate it turn by turn, and mark drift points.
-2. **Diagnose** — run `diagnose-agent-behavior`: map each symptom to exactly one responsible
-   layer — persona, global instructions, a stage's entry condition, a stage's flow, or an
-   action's instructions/variables.
+2. **Diagnose** — run `diagnose-agent-behavior`: inspect `list_model_pool` + `get_pipeline_options` alongside pipeline/stage configs, and map each symptom to exactly one responsible layer — persona, global instructions, a stage's entry condition, a stage's flow, an action's instructions/variables, or the Smart Routing model pool / tier instructions.
 3. **Fix** — apply the minimal change through the right skill:
    - instruction text → `edit-pipeline-instructions` (load current → line-edit → diff → confirm → push)
    - action logic/data → `build-action-webhook` / `manage-pipeline-variables`
+   - Smart Routing / model pool → `configure-ai-model` (`update_model_pool`)
 4. **Verify** — restate the change and its expected effect on the behaviour.
 
 Rules:

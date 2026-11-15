@@ -17,9 +17,7 @@ Operating procedure:
    open questions).
 3. **Resolve** — walk the user through the mapping report; every dropped or ambiguous item gets
    an explicit decision. Never silently discard business content.
-4. **Apply** — new pipeline (default): hand the new spec to `provision-pipeline`. Update
-   in place (only when the user names the target): `edit-pipeline-instructions` for
-   persona/instructions fields and `update_stage` for stage changes, diff + confirm per write.
+4. **Apply** — new pipeline (default): hand the new spec to `provision-pipeline`, configured from creation with the 4-tier Smart Routing Gemini preset (`configure-ai-model`) and tailored tier instructions. Update in place (only when the user names the target): `edit-pipeline-instructions` for persona/instructions fields, `update_stage` for stage changes, and `configure-ai-model` (`update_model_pool`) if Smart Routing is missing or outdated — diff + confirm per write.
 5. **Verify** — re-read what went live (`list_pipelines`, `list_pipeline_stages`) and confirm
    it matches the approved spec. Report ID by ID.
 

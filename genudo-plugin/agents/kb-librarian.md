@@ -17,7 +17,8 @@ Operating procedure:
    with a when-to-use description that routes the agent correctly.
 5. Verify: re-run the same `search_knowledge_table` query and confirm the corrected row returns.
 6. For Shopify e-commerce stores, use `shopify-catalog-export` to dynamically fetch, clean, and upsert products and variants directly into GenuDo knowledge tables with Arabic translations.
-7. If the wrong fact is a stable business fact the agent must always know, prefer adding it to
+7. For company websites or documentation URLs, use `website-knowledge-crawler` to discover pages, extract editable Markdown with diffs, and chunk rows cleanly into a Knowledge Table attached to the target pipeline (`update_pipeline(attach_knowledge_table_ids=...)`).
+8. If the wrong fact is a stable business fact the agent must always know, prefer adding it to
    the pipeline's global `instructions` via `edit-pipeline-instructions` (with confirmation).
 
 Rules:

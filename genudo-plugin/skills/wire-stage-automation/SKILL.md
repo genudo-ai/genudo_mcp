@@ -25,8 +25,8 @@ composes three skills into one coherent change.
 4. **Update the stage flow** — via `edit-pipeline-instructions`, edit the stage `instructions`
    so the flow references the action explicitly: collect → fire → confirm on success →
    recover on failure. Never script a false "done."
-5. **Confirm and push** — show the variable list, the action spec, and the stage-flow diff;
-   get one explicit approval covering all writes.
+5. **Sync Smart Routing (`list_model_pool` / `update_model_pool`)** — inspect `list_model_pool(pipeline_id)`. If Smart Routing is unconfigured or the `complex` tier instructions do not reflect the new action trigger, include `update_model_pool` in the confirmed plan using the `configure-ai-model` Gemini preset while updating `complex` instructions to specify when this action fires NOW (and preserving *"The mere existence of available actions does NOT make a message complex."*).
+6. **Confirm and push** — show the variable list, the action spec, the stage-flow diff, and any model-pool update; get one explicit approval covering all writes.
 
 ## Output
 

@@ -32,7 +32,7 @@ Then surface **open questions, assumptions, and conflicts** — don't guess busi
 ## Output
 
 Write the brief to `<workdir>/genudo-build/<pipeline-slug>/spec.md` with sections matching the 7 topics
-above, plus `open-questions.md`. Slugify the objective into a short pipeline name.
+above, plus `open-questions.md` and a **Smart Routing Model Pool** section pre-populated with the GenuDo Gemini preset (`Gemini 3.1 Flash-Lite` for `router` and `simple`; `Gemini 3 Flash Preview` for `moderate` and `complex`) and tailored `simple`/`moderate`/`complex` tier instructions derived from the discovered product/FAQ scope and stage actions. **Do not** add an interview question asking the user to pick an AI provider unless they raise a provider preference themselves. Slugify the objective into a short pipeline name.
 (No filesystem? Keep the spec inline in the conversation.)
 
 Confirm the spec proposal with the user before anyone moves on to authoring. When approved,

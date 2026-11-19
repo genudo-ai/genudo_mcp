@@ -28,3 +28,16 @@ A pre-stamped file is skipped as already-filed and will never reach the vault.
 frontmatter) — never run bare `loredex route` or `loredex adopt` in this repo (the LLM
 classifier will misfile them); the Stop hook's `route --strict` is the only safe mode.
 <!-- loredex:end -->
+
+## Plugin marketplaces: public vs internal
+
+- **Public** (`genudo-ai/claude-plugin` mirror, Claude directory): ONE plugin, `genudo`.
+  `.github/workflows/sync-claude-plugin.yml` filters the root manifest down to `genudo`
+  with `jq`. Never add `genudo-no-connector` to it or to
+  public docs (README, CONNECT.md, mirror README).
+- **Internal** (team machines, loredex client workspaces): the root
+  `.claude-plugin/marketplace.json` here lists both `genudo` and `genudo-no-connector`
+  under the same marketplace name `genudo-ai`, so `genudo-no-connector@genudo-ai` keys keep
+  working. Point the machine's `genudo-ai` marketplace at this repo:
+  `claude plugin marketplace remove genudo-ai && claude plugin marketplace add genudo-ai/genudo_mcp`.
+- ChatGPT/Codex marketplace (`chatgpt/`) already ships one plugin.

@@ -5,8 +5,8 @@ on:
     branches: [main]
     paths:
       - ".claude-plugin/**"
+      - ".github/claude-plugin-README.md"
       - "genudo-plugin/**"
-      - "genudo-plugin-no-connector/**"
       - ".github/workflows/sync-claude-plugin.yml"
   workflow_dispatch:
 
@@ -16,15 +16,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # The Claude marketplace isn't a single subtree like chatgpt/ — the manifest
-      # lives at the repo root and the trees beside it — so assemble the mirror.
+      # The public mirror ships ONE plugin (`genudo`). The root manifest also lists
+      # `genudo-no-connector`, which is internal-only (team machines add
+      # genudo-ai/genudo_mcp as the `genudo-ai` marketplace to get it) — filter it out.
       - name: Assemble mirror
         run: |
           set -euo pipefail
           mkdir -p mirror/.claude-plugin
-          cp .claude-plugin/marketplace.json mirror/.claude-plugin/
+          jq '.plugins |= map(select(.name == "genudo"))' .claude-plugin/marketplace.json \
+            > mirror/.claude-plugin/marketplace.json
+          test "$(jq '.plugins | length' mirror/.claude-plugin/marketplace.json)" = 1
           cp -R genudo-plugin mirror/
-          cp -R genudo-plugin-no-connector mirror/
           cp .github/claude-plugin-README.md mirror/README.md
 
       - name: Push to genudo-ai/claude-plugin

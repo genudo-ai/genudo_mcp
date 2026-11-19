@@ -89,40 +89,6 @@ in Cowork & Code**; the connector, being remote, works everywhere — including 
 **Coming:** the same plugin, publicly searchable in Claude's **Browse plugins** directory
 (submitted, pending review).
 
-### Plugin global, connector per project — agencies & multi-account users
-
-Working across several Genudo accounts from one machine? You want the **skills and agents
-everywhere**, but a **different Genudo account in each client's project**. The bundled
-connector in ① is one global server — the opposite. Install the **`genudo-no-connector`**
-plugin instead: identical 37 skills and 7 agents, **no bundled connector**, nothing to strip
-out.
-
-**1. Plugin — global, once:**
-```
-/plugin marketplace add genudo-ai/claude-plugin
-/plugin install genudo-no-connector@genudo-ai
-```
-
-**2. Connector — from inside each client's project directory:**
-```
-claude mcp add --transport http genudo https://api.genudo.ai/mcp --scope project
-```
-Each project signs in to its own Genudo account through the browser, so there are no tokens to
-create, rotate or keep apart. `--scope project` writes a shared `.mcp.json` that travels with
-the client's repo and contains **no secret** — just the URL; every teammate signs in as
-themselves. Use `--scope local` to keep the server private to you.
-
-Prefer a token per client instead (CI, shared machines)? Use the stdio bridge from option ③
-with `--scope local --env GENUDO_TOKEN=CLIENT_TOKEN`.
-
-Verify from inside the project: `claude mcp list`. The server name `genudo` is free —
-`genudo-no-connector` registers no MCP server, so there's no collision with the per-project one.
-
-| | Scope | Auth |
-|---|---|---|
-| Skills + agents (`genudo-no-connector`) | user / global — every project | none |
-| Connector (`genudo`) | project or local — that directory only | browser sign-in, per account |
-
 ---
 
 ## ② Remote connector (URL + OAuth) — tools everywhere, no setup ★★★★☆
@@ -267,7 +233,6 @@ sequences, knowledge base) — no reinstall needed.
 | Tools only (Desktop, one-click) | Install `genudo.mcpb` |
 | Tools only (other client) | Point it at `https://api.genudo.ai/mcp`, or add the stdio JSON block from option ③ |
 | Desktop app (full experience) | Upload `genudo-plugin.zip` — the connector comes with it |
-| Global skills, own connection per client project | `/plugin install genudo-no-connector@genudo-ai`, then `claude mcp add --transport http genudo https://api.genudo.ai/mcp --scope project` in each project |
 | Get a token | Only needed for the stdio bridge — see [Get a token](#get-a-token) |
 
 ---

@@ -12,6 +12,9 @@
   - Call `list_whatsapp_groups` before sending alerts or auditing WhatsApp deal rooms.
 - **Data Validation**: When upserting knowledge points (`upsert_knowledge_points`), validate text payloads, ensure a stable `default_id` is provided, and supply complete values matching table column schemas.
 - **Safe State Changes**: When updating live pipelines or stages (`update_pipeline`, `update_stage`), present a before-and-after comparison of instructions and stage settings before pushing changes.
+- **Operational Setting Constraints**:
+  - `followup_limit`: Number of follow-ups per hour. MUST be divisible by 6 (giving an integer when divided by 6, e.g. 6, 12, 18, 24, 30, 36, 42, 48, 54, 60). Never send arbitrary values (e.g. 5, 7, 9, 10); the backend strictly validates divisibility by 6.
+  - `agent_memory_window`: Number of days of conversation history remembered (e.g. 7, 14, 30 days). This is measured in calendar DAYS, NOT message or turn count.
 - **Error Diagnostics**: On 401 or token errors, instruct the user to verify that their GenuDo token has the `mcp:use` scope enabled under **Developer > API Keys & Tokens** in the GenuDo dashboard.
 
 ---

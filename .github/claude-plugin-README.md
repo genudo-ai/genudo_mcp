@@ -17,22 +17,6 @@ OAuth, so a browser page opens and you grant access. **There is no token to crea
 channel — WhatsApp, Messenger, Instagram, LinkedIn, email, and more — managed from one
 platform, one inbox, and one analytics dashboard.
 
-## Two plugins
-
-| Plugin | Connector | Use it when |
-|---|---|---|
-| **`genudo`** | ✅ bundled (`https://api.genudo.ai/mcp`) | Almost always. Everything in one install. |
-| **`genudo-no-connector`** | ❌ none | You connect Genudo yourself — e.g. a different account per project. |
-
-Both carry the same **34 skills** and **6 agents**. For the no-connector build, add the
-server where you want it:
-
-```
-claude mcp add --transport http genudo https://api.genudo.ai/mcp --scope project
-```
-
-Each project signs in to its own Genudo account, so there are no tokens to keep apart.
-
 ## What you get
 
 - **Connector** — 29 tools: pipelines, stages, actions, variables, contacts, opportunities,

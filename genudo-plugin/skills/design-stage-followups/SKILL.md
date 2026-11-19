@@ -31,7 +31,7 @@ exists, you will `update_followup` (it returns the `followup_id`); if not, `crea
    wants to review before it goes live.
 2. Existing: `update_followup` — **`intervals` REPLACES the whole schedule**; always send the
    full list, never a delta. Pass `after_followup_stage_id: null` to remove the transition.
-3. Cap total follow-ups per conversation with `followup_limit` via `configure-pipeline-settings`.
+3. Configure pipeline-level follow-up throughput with `followup_limit` via `configure-pipeline-settings` (number of follow-ups per hour; MUST be divisible by 6, e.g. 6, 12, 18, 24, 30...).
 
 ## Output
 
